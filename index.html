@@ -1,1 +1,1544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YJ's World</title>
+    <style>
+        body {
+            margin: 0;
+            background: #d7d7d7;
+            color: #222;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 13px;
+        }
 
+        a {
+            color: #0000cc;
+        }
+
+        .page {
+            width: 900px;
+            margin: 12px auto;
+            background: white;
+            border: 3px ridge #999;
+        }
+
+        .topbar {
+            background: linear-gradient(#4c6fae, #1d396c);
+            color: white;
+            padding: 8px 12px;
+            border-bottom: 3px ridge #aaa;
+        }
+
+        .topbar h1 {
+            margin: 0;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 30px;
+            text-shadow: 2px 2px #111;
+        }
+
+        .tagline {
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .nav {
+            background: #eeeeee;
+            border-bottom: 2px solid #888;
+            padding: 5px;
+            text-align: center;
+        }
+
+        .nav a {
+            display: inline-block;
+            padding: 4px 13px;
+            margin: 0 2px;
+            background: #d4d0c8;
+            border: 2px outset #fff;
+            color: #000;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .nav a:active {
+            border-style: inset;
+        }
+
+        .marquee {
+            background: #000;
+            color: #00ff00;
+            padding: 4px;
+            font-family: "Courier New", monospace;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 650px 230px;
+            gap: 10px;
+            padding: 10px;
+        }
+
+        .box {
+            border: 2px solid #777;
+            margin-bottom: 10px;
+            background: #fafafa;
+        }
+
+        .box-title {
+            background: #c5d5ef;
+            border-bottom: 2px solid #777;
+            padding: 5px 7px;
+            font-weight: bold;
+            color: #10264d;
+        }
+
+        .box-body {
+            padding: 8px;
+        }
+
+        .welcome {
+            background: #ffffcc;
+            border-color: #999900;
+        }
+
+        .forum-row {
+            display: grid;
+            grid-template-columns: 70px 1fr 90px;
+            border-bottom: 1px solid #aaa;
+            padding: 8px 4px;
+            align-items: center;
+        }
+
+        .forum-row:last-child {
+            border-bottom: 0;
+        }
+
+        .forum-icon {
+            font-size: 27px;
+            text-align: center;
+        }
+
+        .forum-title a {
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .forum-description {
+            color: #555;
+            margin-top: 3px;
+        }
+
+        .stats {
+            text-align: center;
+            color: #555;
+            font-size: 11px;
+        }
+
+        .user-card {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            padding: 5px;
+            background: white;
+            border: 1px solid #aaa;
+        }
+
+        .user-card img {
+            width: 42px;
+            height: 42px;
+            object-fit: cover;
+            border: 1px solid #333;
+            background: #ddd;
+        }
+
+        input,
+        textarea,
+        select {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 5px;
+            border: 2px inset #ddd;
+            background: white;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 13px;
+            margin-bottom: 7px;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        button {
+            padding: 5px 12px;
+            background: #d4d0c8;
+            border: 2px outset #fff;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:active {
+            border-style: inset;
+        }
+
+        .status {
+            padding: 6px;
+            background: #e5ffe5;
+            border: 1px solid #589958;
+            display: none;
+            margin-bottom: 8px;
+        }
+
+        .error {
+            background: #ffe5e5;
+            border-color: #aa5555;
+        }
+
+        .post {
+            border: 1px solid #888;
+            margin-bottom: 8px;
+            background: white;
+        }
+
+        .post-header {
+            background: #dedede;
+            padding: 5px;
+            border-bottom: 1px solid #888;
+            font-weight: bold;
+        }
+
+        .post-content {
+            display: grid;
+            grid-template-columns: 100px 1fr;
+            min-height: 100px;
+        }
+
+        .post-user {
+            background: #eeeeee;
+            border-right: 1px solid #aaa;
+            padding: 7px;
+            text-align: center;
+        }
+
+        .post-user img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border: 1px solid #555;
+        }
+
+        .post-body {
+            padding: 10px;
+            white-space: pre-wrap;
+        }
+
+        .admin-panel {
+            display: none;
+        }
+
+        .admin-user {
+            display: grid;
+            grid-template-columns: 50px 1fr auto;
+            gap: 8px;
+            align-items: center;
+            padding: 6px;
+            border-bottom: 1px solid #aaa;
+            background: white;
+        }
+
+        .admin-user img {
+            width: 45px;
+            height: 45px;
+            object-fit: cover;
+        }
+
+        .small {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .footer {
+            border-top: 3px ridge #999;
+            background: #eeeeee;
+            padding: 12px;
+            text-align: center;
+            font-size: 11px;
+            color: #444;
+        }
+
+        .footer strong {
+            color: #222;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid #aaa;
+            margin: 12px 0;
+        }
+
+        @media (max-width: 940px) {
+            .page {
+                width: 96%;
+            }
+
+            .content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        #updateBanner {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 99999;
+            background: #ffffcc;
+            color: #000;
+            border-bottom: 3px ridge #999;
+            padding: 8px 10px;
+            text-align: center;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 13px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
+        }
+
+        #updateBanner strong {
+            color: #000080;
+        }
+
+        #updateBanner button {
+            margin-left: 8px;
+            padding: 2px 8px;
+            border: 2px outset #ccc;
+            background: #ddd;
+            color: #000;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        #updateBanner button:active {
+            border-style: inset;
+        }
+
+        #updateBanner .update-close {
+            margin-left: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="updateBanner">
+        <strong>A new version of YJ's World is available!</strong>
+        <button type="button" onclick="reloadForUpdate()">Reload now</button>
+        <button type="button" class="update-close" onclick="hideUpdateBanner()">×</button>
+    </div>
+
+    <div class="page">
+
+        <div class="topbar">
+            <h1>YJ's World</h1>
+            <div class="tagline">Built and owned by yours truly, your mom.</div>
+        </div>
+
+        <div class="nav">
+            <a href="#home">Home</a>
+            <a href="#forums">Forums</a>
+            <a href="#members">Members</a>
+            <a href="#signup">Join</a>
+            <a href="#member-login">Member Login</a>
+            <a href="#owner-login">Owner Login</a>
+        </div>
+
+        <div class="marquee">
+            *** Welcome to YJ's World! *** Please enjoy your stay! ***
+        </div>
+
+        <div class="content">
+
+            <main>
+
+                <section class="box welcome" id="home">
+                    <div class="box-title">Important Notice</div>
+                    <div class="box-body">
+                        Welcome to YJ's World! The initial setup was kind of rough, and YJ's World runs on generously provided free services, so it's bound to run into errors. You can visit <a href="https://retry-yjs-world-2.onrender.com/health">this</a> page to check the status on the backend running YJ's World (fancy term for our servers.)</div>
+                </section>
+
+                <section class="box" id="forums">
+                    <div class="box-title">Forum Index</div>
+
+                    <div class="box-body">
+
+                        <div class="forum-row">
+                            <div class="forum-icon">💬</div>
+                            <div class="forum-title">
+                                <a href="#general">General Discussion</a>
+                                <div class="forum-description">
+                                    Talk about whatever you want.
+                                </div>
+                            </div>
+                            <div class="stats">
+                                0 Topics<br>
+                                0 Posts
+                            </div>
+                        </div>
+
+                        <div class="forum-row">
+                            <div class="forum-icon">🎮</div>
+                            <div class="forum-title">
+                                <a href="#games">Games & Stuff</a>
+                                <div class="forum-description">
+                                    Games, computers, and internet things.
+                                </div>
+                            </div>
+                            <div class="stats">
+                                0 Topics<br>
+                                0 Posts
+                            </div>
+                        </div>
+
+                        <div class="forum-row">
+                            <div class="forum-icon">📸</div>
+                            <div class="forum-title">
+                                <a href="#photos">Pictures</a>
+                                <div class="forum-description">
+                                    Share your favorite images.
+                                </div>
+                            </div>
+                            <div class="stats">
+                                0 Topics<br>
+                                0 Posts
+                            </div>
+                        </div>
+
+                        <div class="forum-row">
+                            <div class="forum-icon">⭐</div>
+                            <div class="forum-title">
+                                <a href="#offtopic">Off Topic</a>
+                                <div class="forum-description">
+                                    Anything that doesn't fit elsewhere.
+                                </div>
+                            </div>
+                            <div class="stats">
+                                0 Topics<br>
+                                0 Posts
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <section class="box" id="members">
+                    <div class="box-title">Members</div>
+                    <div class="box-body" id="memberList">
+                        <div class="small">
+                            No members have joined yet.
+                        </div>
+                    </div>
+                </section>
+
+                <section class="box" id="signup">
+                    <div class="box-title">Create Your Account</div>
+
+                    <div class="box-body">
+
+                        <div id="signupStatus" class="status"></div>
+
+                        <form id="signupForm">
+
+                            <label for="username">
+                                <strong>Username:</strong>
+                            </label>
+
+                            <input
+                                id="username"
+                                type="text"
+                                maxlength="24"
+                                required
+                            >
+
+                            <label for="signupPassword">
+                                <strong>Password:</strong>
+                            </label>
+
+                            <input
+                                id="signupPassword"
+                                type="password"
+                                minlength="8"
+                                required
+                            >
+
+                            <label for="profileImage">
+                                <strong>Profile Image:</strong>
+                            </label>
+
+                            <input
+                                id="profileImage"
+                                type="file"
+                                accept="image/*"
+                                required
+                            >
+
+                            <button type="submit">
+                                Register Me!
+                            </button>
+
+                        </form>
+
+                    </div>
+                </section>
+
+                <section class="box" id="member-login">
+                    <div class="box-title">Member Login</div>
+
+                    <div class="box-body">
+                        <div id="memberLoginStatus" class="status"></div>
+
+                        <form id="memberLoginForm">
+                            <label for="loginUsername">
+                                <strong>Username:</strong>
+                            </label>
+
+                            <input
+                                id="loginUsername"
+                                type="text"
+                                maxlength="24"
+                                required
+                            >
+
+                            <label for="loginPassword">
+                                <strong>Password:</strong>
+                            </label>
+
+                            <input
+                                id="loginPassword"
+                                type="password"
+                                required
+                            >
+
+                            <button type="submit">
+                                Log In
+                            </button>
+                        </form>
+
+                        <div
+                            id="memberControls"
+                            style="display:none; margin-top:10px;"
+                        >
+                            <strong id="memberWelcome"></strong>
+                            <br><br>
+                            <button type="button" id="memberLogout">
+                                Log Out
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="box" id="owner-login">
+                    <div class="box-title">Site Owner Login</div>
+
+                    <div class="box-body">
+
+                        <div id="ownerStatus" class="status"></div>
+
+                        <form id="ownerLoginForm">
+
+                            <label for="ownerUsername">
+                                <strong>Username:</strong>
+                            </label>
+
+                            <input
+                                id="ownerUsername"
+                                type="text"
+                                maxlength="24"
+                                placeholder="YeetJeepo"
+                                required
+                            >
+
+                            <label for="ownerPassword">
+                                <strong>Password:</strong>
+                            </label>
+
+                            <input
+                                id="ownerPassword"
+                                type="password"
+                                required
+                            >
+
+                            <button type="submit">
+                                Log In
+                            </button>
+
+                        </form>
+
+                        <div
+                            id="ownerControls"
+                            style="display:none; margin-top:10px;"
+                        >
+                            <strong>✓ Logged in as Site Owner</strong>
+
+                            <br><br>
+
+                            <button type="button" id="ownerLogout">
+                                Log Out
+                            </button>
+                        </div>
+
+                    </div>
+                </section>
+
+                <section class="box" id="newpost">
+
+                    <div class="box-title">
+                        Post a Message
+                    </div>
+
+                    <div class="box-body">
+
+                        <div id="postStatus" class="status"></div>
+
+                        <form id="postForm">
+
+                            <label for="postAuthor">
+                                <strong>Username:</strong>
+                            </label>
+
+                            <input
+                                id="postAuthor"
+                                type="text"
+                                maxlength="24"
+                                required
+                            >
+
+                            <label for="postTitle">
+                                <strong>Topic:</strong>
+                            </label>
+
+                            <input
+                                id="postTitle"
+                                type="text"
+                                maxlength="80"
+                                required
+                            >
+
+                            <label for="postText">
+                                <strong>Message:</strong>
+                            </label>
+
+                            <textarea
+                                id="postText"
+                                required
+                            ></textarea>
+
+                            <button type="submit">
+                                Post Message
+                            </button>
+
+                        </form>
+
+                    </div>
+                </section>
+
+                <section class="box" id="posts">
+
+                    <div class="box-title">
+                        Latest Posts
+                    </div>
+
+                    <div class="box-body" id="postList">
+                        <div class="small">
+                            No posts yet.
+                        </div>
+                    </div>
+
+                </section>
+
+                <section
+                    class="box admin-panel"
+                    id="admin"
+                >
+
+                    <div class="box-title">
+                        Admin Control Panel
+                    </div>
+
+                    <div class="box-body">
+
+                        <div id="adminStatus" class="status"></div>
+
+                        <label for="adminUsername">
+                            <strong>Appoint Administrator:</strong>
+                        </label>
+
+                        <input
+                            id="adminUsername"
+                            type="text"
+                            placeholder="Enter an existing username"
+                        >
+
+                        <button
+                            type="button"
+                            id="appointAdmin"
+                        >
+                            Appoint as Admin
+                        </button>
+
+                        <hr>
+
+                        <strong>
+                            Members & Moderation
+                        </strong>
+
+                        <div id="adminMemberList"></div>
+
+                    </div>
+
+                </section>
+
+            </main>
+
+            <aside>
+
+                <section class="box">
+
+                    <div class="box-title">
+                        Who's Online?
+                    </div>
+
+                    <div class="box-body">
+
+                        <div id="onlineCount">
+                            0 members online
+                        </div>
+
+                        <div class="small">
+                            You are visiting YJ's World?
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <section class="box">
+
+                    <div class="box-title">
+                        Quick Links
+                    </div>
+
+                    <div class="box-body">
+
+                        <a href="#signup">
+                            Create Account
+                        </a>
+
+                        <br><br>
+
+                        <a href="#forums">
+                            Forum Index
+                        </a>
+
+                        <br><br>
+
+                        <a href="#members">
+                            Member List
+                        </a>
+
+                        <br><br>
+
+                        <a href="#owner-login">
+                            Owner Login
+                        </a>
+
+                    </div>
+
+                </section>
+
+                <section class="box">
+
+                    <div class="box-title">
+                        Site Info
+                    </div>
+
+                    <div class="box-body">
+
+                        <strong>YJ's World</strong>
+
+                        <br>
+
+                        Est. September 24, 2026
+
+                        <br><br>
+
+                        Current version: Alpha
+                        
+                        Currently tracking issues involving requests from source "https://yjsworld.neocities.org" to "retry-yjs-world-2.onrender.com"
+                        
+                        We are currently working on fixing the issues
+
+                    </div>
+
+                </section>
+
+            </aside>
+
+        </div>
+
+        <div class="footer">
+
+            <strong>YJ's World?</strong>
+
+            <br>
+
+            © YJ's World, YeetJeepo 2026
+
+            <br><br>
+
+            Contact me:
+            <a href="mailto:yeetjeepo@outlook.com">
+                yeetjeepo@outlook.com
+            </a>
+            or
+            <a href="mailto:yeetjeepoofficial@outlook.com">
+            yeetjeepoofficial@outlook.com
+            </a>
+
+        </div>
+
+    </div>
+
+    <script>
+        const API_BASE = "https://retry-yjs-world-2.onrender.com";
+
+        const SITE_VERSION = "alpha";
+
+        let members = [];
+        let posts = [];
+        let currentUser = null;
+        let memberToken = localStorage.getItem("yjs_world_member_token") || "";
+        let ownerToken = localStorage.getItem("yjs_world_owner_token") || "";
+
+        let updateBannerVisible = false;
+
+        function showUpdateBanner() {
+            const banner =
+                document.getElementById("updateBanner");
+
+            if (!banner) {
+                return;
+            }
+
+            banner.style.display = "block";
+            updateBannerVisible = true;
+        }
+
+        function hideUpdateBanner() {
+            const banner =
+                document.getElementById("updateBanner");
+
+            if (!banner) {
+                return;
+            }
+
+            banner.style.display = "none";
+            updateBannerVisible = false;
+        }
+
+        function reloadForUpdate() {
+            window.location.reload();
+        }
+
+        async function checkForUpdates() {
+            try {
+                const response =
+                    await fetch(
+                        "/version.txt?check=" +
+                        Date.now(),
+                        {
+                            cache: "no-store"
+                        }
+                    );
+
+                if (!response.ok) {
+                    return;
+                }
+
+                const latestVersion =
+                    (await response.text()).trim();
+
+                if (
+                    latestVersion &&
+                    latestVersion !== SITE_VERSION
+                ) {
+                    showUpdateBanner();
+                }
+            } catch (error) {
+                console.log(
+                    "Could not check for site updates."
+                );
+            }
+        }
+
+        document.addEventListener(
+            "keydown",
+            event => {
+                const activeElement =
+                    document.activeElement;
+
+                const typing =
+                    activeElement &&
+                    (
+                        activeElement.tagName === "INPUT" ||
+                        activeElement.tagName === "TEXTAREA" ||
+                        activeElement.isContentEditable
+                    );
+
+                if (typing) {
+                    return;
+                }
+
+                if (
+                    event.key === "`" ||
+                    event.code === "Backquote"
+                ) {
+                    showUpdateBanner();
+                }
+            }
+        );
+
+        setTimeout(
+            checkForUpdates,
+            5000
+        );
+
+        setInterval(
+            checkForUpdates,
+            5 * 60 * 1000
+        );
+
+        function showStatus(element, message, isError = false) {
+            element.textContent = message;
+            element.className = isError ? "status error" : "status";
+            element.style.display = "block";
+        }
+
+        function escapeHTML(value) {
+            return String(value)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        async function api(path, options = {}) {
+    const headers = {
+        ...(options.body ? { "Content-Type": "application/json" } : {}),
+        ...(options.headers || {})
+    };
+
+    let response;
+
+    try {
+        response = await fetch(API_BASE + path, {
+            ...options,
+            headers
+        });
+    } catch (error) {
+        throw new Error(`Connection failed while requesting ${path}: ${error.message}`);
+    }
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+        throw new Error(
+            `${path} returned ${response.status}: ${data.error || "Request failed."}`
+        );
+    }
+
+    return data;
+}
+
+        function memberHeaders() {
+            return memberToken
+                ? { Authorization: `Bearer ${memberToken}` }
+                : {};
+        }
+
+        function ownerHeaders() {
+            return ownerToken
+                ? { Authorization: `Bearer ${ownerToken}` }
+                : {};
+        }
+
+        async function loadMembers() {
+            members = await api("/api/members");
+            renderMembers();
+        }
+
+        async function loadPosts() {
+            posts = await api("/api/posts");
+            renderPosts();
+        }
+
+        async function restoreMemberLogin() {
+            if (!memberToken) {
+                updateMemberControls();
+                return;
+            }
+
+            try {
+                currentUser = await api("/api/me", {
+                    headers: memberHeaders()
+                });
+            } catch {
+                memberToken = "";
+                currentUser = null;
+                localStorage.removeItem("yjs_world_member_token");
+            }
+
+            updateMemberControls();
+        }
+
+        function updateMemberControls() {
+            const form = document.getElementById("memberLoginForm");
+            const controls = document.getElementById("memberControls");
+            const welcome = document.getElementById("memberWelcome");
+            const postAuthor = document.getElementById("postAuthor");
+
+            if (currentUser) {
+                form.style.display = "none";
+                controls.style.display = "block";
+                welcome.textContent = `✓ Logged in as ${currentUser.username}`;
+                postAuthor.value = currentUser.username;
+                postAuthor.readOnly = true;
+            } else {
+                form.style.display = "block";
+                controls.style.display = "none";
+                welcome.textContent = "";
+                postAuthor.value = "";
+                postAuthor.readOnly = false;
+            }
+        }
+
+        function renderMembers() {
+            const list = document.getElementById("memberList");
+            const adminList = document.getElementById("adminMemberList");
+
+            if (members.length === 0) {
+                list.innerHTML =
+                    '<div class="small">No members have joined yet.</div>';
+                adminList.innerHTML =
+                    '<div class="small">No members to moderate.</div>';
+            } else {
+                list.innerHTML = members.map(member => `
+                    <div class="user-card">
+                        <img src="${member.image || ""}" alt="">
+                        <div>
+                            <strong>${escapeHTML(member.username)}</strong>
+                            ${
+                                member.isAdmin
+                                    ? '<div class="small">Administrator</div>'
+                                    : '<div class="small">Member</div>'
+                            }
+                        </div>
+                    </div>
+                `).join("");
+
+                if (ownerToken) {
+                    adminList.innerHTML = members.map(member => `
+                        <div class="admin-user">
+                            <img src="${member.image || ""}" alt="">
+                            <div>
+                                <strong>${escapeHTML(member.username)}</strong>
+                                <div class="small">
+                                    ${member.isAdmin ? "Administrator" : "Member"}
+                                </div>
+                            </div>
+                            <div>
+                                ${
+                                    member.isAdmin
+                                        ? `<button type="button" onclick="removeAdmin('${member.id}')">Remove Admin</button>`
+                                        : `<button type="button" onclick="makeAdmin('${member.id}')">Make Admin</button>`
+                                }
+                                <button type="button" onclick="removeMember('${member.id}')">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    `).join("");
+                } else {
+                    adminList.innerHTML =
+                        '<div class="small">Owner login required for moderation.</div>';
+                }
+            }
+
+            document.getElementById("onlineCount").textContent =
+                `${members.length} member${members.length === 1 ? "" : "s"} online`;
+        }
+
+        function renderPosts() {
+            const list = document.getElementById("postList");
+
+            if (posts.length === 0) {
+                list.innerHTML =
+                    '<div class="small">No posts yet.</div>';
+                return;
+            }
+
+            list.innerHTML = posts.map(post => {
+                const member = members.find(
+                    m => m.id === post.authorId
+                );
+
+                return `
+                    <div class="post">
+                        <div class="post-header">
+                            ${escapeHTML(post.title)}
+                            <span class="small">
+                                — ${escapeHTML(post.date)}
+                            </span>
+                        </div>
+
+                        <div class="post-content">
+                            <div class="post-user">
+                                ${
+                                    member
+                                        ? `<img src="${member.image || ""}" alt="">`
+                                        : ""
+                                }
+                                <br>
+                                <strong>${escapeHTML(post.author)}</strong>
+                            </div>
+
+                            <div class="post-body">
+                                ${escapeHTML(post.text)}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join("");
+        }
+
+        document
+            .getElementById("signupForm")
+            .addEventListener("submit", async event => {
+                event.preventDefault();
+
+                const username =
+                    document.getElementById("username").value.trim();
+
+                const password =
+                    document.getElementById("signupPassword").value;
+
+                const imageFile =
+                    document.getElementById("profileImage").files[0];
+
+                const status =
+                    document.getElementById("signupStatus");
+
+                if (!username || !password || !imageFile) {
+                    showStatus(
+                        status,
+                        "Please enter a username, password, and choose an image.",
+                        true
+                    );
+                    return;
+                }
+
+                try {
+                    const image = await readImage(imageFile);
+
+                    const result = await api("/api/register", {
+                        method: "POST",
+                        body: JSON.stringify({
+                            username,
+                            password,
+                            image
+                        })
+                    });
+
+                    memberToken = result.token;
+                    currentUser = result.member;
+
+                    localStorage.setItem(
+                        "yjs_world_member_token",
+                        memberToken
+                    );
+
+                    document.getElementById("signupForm").reset();
+
+                    showStatus(
+                        status,
+                        "Welcome to YJ's World? Your account has been created!"
+                    );
+
+                    updateMemberControls();
+                    await loadMembers();
+                } catch (error) {
+                    showStatus(status, error.message, true);
+                }
+            });
+
+        document
+            .getElementById("memberLoginForm")
+            .addEventListener("submit", async event => {
+                event.preventDefault();
+
+                const username =
+                    document.getElementById("loginUsername").value.trim();
+
+                const password =
+                    document.getElementById("loginPassword").value;
+
+                const status =
+                    document.getElementById("memberLoginStatus");
+
+                try {
+                    const result = await api("/api/login", {
+                        method: "POST",
+                        body: JSON.stringify({
+                            username,
+                            password
+                        })
+                    });
+
+                    memberToken = result.token;
+                    currentUser = result.member;
+
+                    localStorage.setItem(
+                        "yjs_world_member_token",
+                        memberToken
+                    );
+
+                    document.getElementById("memberLoginForm").reset();
+
+                    showStatus(
+                        status,
+                        `Welcome back, ${currentUser.username}!`
+                    );
+
+                    updateMemberControls();
+                    await loadMembers();
+                } catch (error) {
+                    showStatus(status, error.message, true);
+                }
+            });
+
+        document
+            .getElementById("memberLogout")
+            .addEventListener("click", () => {
+                memberToken = "";
+                currentUser = null;
+                localStorage.removeItem("yjs_world_member_token");
+                updateMemberControls();
+            });
+
+        document
+            .getElementById("ownerLoginForm")
+            .addEventListener("submit", async event => {
+                event.preventDefault();
+
+                const username =
+                    document.getElementById("ownerUsername").value.trim();
+
+                const password =
+                    document.getElementById("ownerPassword").value;
+
+                const status =
+                    document.getElementById("ownerStatus");
+
+                try {
+                    const result = await api("/api/owner/login", {
+                        method: "POST",
+                        body: JSON.stringify({
+                            username,
+                            password
+                        })
+                    });
+
+                    ownerToken = result.token;
+
+                    localStorage.setItem(
+                        "yjs_world_owner_token",
+                        ownerToken
+                    );
+
+                    showStatus(
+                        status,
+                        "Welcome back, YeetJeepo!"
+                    );
+
+                    document.getElementById("ownerControls").style.display =
+                        "block";
+
+                    document.getElementById("ownerLoginForm").style.display =
+                        "none";
+
+                    document.getElementById("admin").style.display =
+                        "block";
+
+                    renderMembers();
+                } catch (error) {
+                    showStatus(status, error.message, true);
+                }
+            });
+
+        document
+            .getElementById("ownerLogout")
+            .addEventListener("click", () => {
+                ownerToken = "";
+                localStorage.removeItem("yjs_world_owner_token");
+
+                document.getElementById("ownerLoginForm").reset();
+                document.getElementById("ownerLoginForm").style.display = "block";
+                document.getElementById("ownerControls").style.display = "none";
+                document.getElementById("admin").style.display = "none";
+                document.getElementById("ownerStatus").style.display = "none";
+
+                renderMembers();
+            });
+
+        document
+            .getElementById("postForm")
+            .addEventListener("submit", async event => {
+                event.preventDefault();
+
+                const title =
+                    document.getElementById("postTitle").value.trim();
+
+                const text =
+                    document.getElementById("postText").value.trim();
+
+                const status =
+                    document.getElementById("postStatus");
+
+                if (!currentUser || !memberToken) {
+                    showStatus(
+                        status,
+                        "Please log in before posting.",
+                        true
+                    );
+                    return;
+                }
+
+                if (!title || !text) {
+                    showStatus(
+                        status,
+                        "Please enter a topic and message.",
+                        true
+                    );
+                    return;
+                }
+
+                try {
+                    await api("/api/posts", {
+                        method: "POST",
+                        headers: memberHeaders(),
+                        body: JSON.stringify({
+                            title,
+                            text
+                        })
+                    });
+
+                    await loadPosts();
+
+                    document.getElementById("postTitle").value = "";
+                    document.getElementById("postText").value = "";
+
+                    showStatus(
+                        status,
+                        "Your message has been posted!"
+                    );
+                } catch (error) {
+                    showStatus(status, error.message, true);
+                }
+            });
+
+        document
+            .getElementById("appointAdmin")
+            .addEventListener("click", async () => {
+                const username =
+                    document.getElementById("adminUsername").value.trim();
+
+                const status =
+                    document.getElementById("adminStatus");
+
+                const member = members.find(
+                    item =>
+                        item.username.toLowerCase() ===
+                        username.toLowerCase()
+                );
+
+                if (!member) {
+                    showStatus(
+                        status,
+                        "That username does not exist.",
+                        true
+                    );
+                    return;
+                }
+
+                try {
+                    await api(`/api/admin/members/${member.id}/admin`, {
+                        method: "POST",
+                        headers: ownerHeaders(),
+                        body: JSON.stringify({
+                            isAdmin: true
+                        })
+                    });
+
+                    await loadMembers();
+
+                    document.getElementById("adminUsername").value = "";
+
+                    showStatus(
+                        status,
+                        `${member.username} has been appointed as an administrator.`
+                    );
+                } catch (error) {
+                    showStatus(status, error.message, true);
+                }
+            });
+
+        async function makeAdmin(id) {
+            try {
+                await api(`/api/admin/members/${id}/admin`, {
+                    method: "POST",
+                    headers: ownerHeaders(),
+                    body: JSON.stringify({
+                        isAdmin: true
+                    })
+                });
+
+                await loadMembers();
+            } catch (error) {
+                showStatus(
+                    document.getElementById("adminStatus"),
+                    error.message,
+                    true
+                );
+            }
+        }
+
+        async function removeAdmin(id) {
+            try {
+                await api(`/api/admin/members/${id}/admin`, {
+                    method: "POST",
+                    headers: ownerHeaders(),
+                    body: JSON.stringify({
+                        isAdmin: false
+                    })
+                });
+
+                await loadMembers();
+            } catch (error) {
+                showStatus(
+                    document.getElementById("adminStatus"),
+                    error.message,
+                    true
+                );
+            }
+        }
+
+        async function removeMember(id) {
+            try {
+                await api(`/api/admin/members/${id}`, {
+                    method: "DELETE",
+                    headers: ownerHeaders()
+                });
+
+                if (
+                    currentUser &&
+                    currentUser.id === id
+                ) {
+                    memberToken = "";
+                    currentUser = null;
+                    localStorage.removeItem("yjs_world_member_token");
+                    updateMemberControls();
+                }
+
+                await loadMembers();
+                await loadPosts();
+            } catch (error) {
+                showStatus(
+                    document.getElementById("adminStatus"),
+                    error.message,
+                    true
+                );
+            }
+        }
+
+        function readImage(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+
+                reader.onload = () => {
+                    resolve(reader.result);
+                };
+
+                reader.onerror = () => {
+                    reject(new Error("Could not read image."));
+                };
+
+                reader.readAsDataURL(file);
+            });
+        }
+
+               async function startPage() {
+            let membersLoaded = false;
+
+            try {
+                await loadMembers();
+                membersLoaded = true;
+            } catch (error) {
+                document.getElementById("memberList").innerHTML =
+                    `<div class="small">Could not load members: ${escapeHTML(error.message)}</div>`;
+            }
+
+            try {
+                await loadPosts();
+            } catch (error) {
+                document.getElementById("postList").innerHTML =
+                    `<div class="small">Could not load posts: ${escapeHTML(error.message)}</div>`;
+            }
+
+            await restoreMemberLogin();
+
+            if (ownerToken) {
+                try {
+                    await api("/api/members", {
+                        headers: ownerHeaders()
+                    });
+
+                    document.getElementById("ownerLoginForm").style.display =
+                        "none";
+
+                    document.getElementById("ownerControls").style.display =
+                        "block";
+
+                    document.getElementById("admin").style.display =
+                        "block";
+                } catch {
+                    ownerToken = "";
+                    localStorage.removeItem("yjs_world_owner_token");
+                }
+            }
+
+            if (membersLoaded) {
+                renderMembers();
+            }
+
+            renderPosts();
+            updateMemberControls();
+        }
+        
+        startPage();
+    </script>
+
+</body>
+</html>
