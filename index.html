@@ -869,13 +869,12 @@
 
         async function checkForUpdates() {
             try {
-                const versionURL =
-                    new URL("version.txt", document.baseURI);
+                const versionURL = new URL("version.txt", document.baseURI);
+versionURL.searchParams.set("check", Date.now());
 
-                versionURL.searchParams.set(
-                    "check",
-                    Date.now()
-                );
+const response = await fetch(versionURL.href, {
+    cache: "no-store"
+});
 
                 const response =
                     await fetch(versionURL.href, {
