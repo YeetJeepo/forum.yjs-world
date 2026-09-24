@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>YJ's World</title>
+
     <style>
         body {
             margin: 0;
@@ -331,28 +333,66 @@
         }
     </style>
 </head>
+
 <body>
 
     <div id="updateBanner">
         <strong>A new version of YJ's World is available!</strong>
-        <button type="button" onclick="reloadForUpdate()">Reload now</button>
-        <button type="button" class="update-close" onclick="hideUpdateBanner()">×</button>
+
+        <button
+            type="button"
+            onclick="reloadForUpdate()"
+        >
+            Reload now
+        </button>
+
+        <button
+            type="button"
+            class="update-close"
+            onclick="hideUpdateBanner()"
+        >
+            ×
+        </button>
     </div>
 
     <div class="page">
 
         <div class="topbar">
+
             <h1>YJ's World</h1>
-            <div class="tagline">Built and owned by yours truly, your mom.</div>
+
+            <div class="tagline">
+                Built and owned by yours truly, your mom.
+            </div>
+
         </div>
 
         <div class="nav">
-            <a href="#home">Home</a>
-            <a href="#forums">Forums</a>
-            <a href="#members">Members</a>
-            <a href="#signup">Join</a>
-            <a href="#member-login">Member Login</a>
-            <a href="#owner-login">Owner Login</a>
+
+            <a href="#home">
+                Home
+            </a>
+
+            <a href="#forums">
+                Forums
+            </a>
+
+            <a href="#members">
+                Members
+            </a>
+
+            <a href="#signup">
+                Join
+            </a>
+
+            <a href="#member-login">
+                Member Login
+            </a>
+
+            <a href="#owner-login">
+                Owner Login
+            </a>
+
         </div>
 
         <div class="marquee">
@@ -363,97 +403,196 @@
 
             <main>
 
-                <section class="box welcome" id="home">
-                    <div class="box-title">Important Notice</div>
-                    <div class="box-body">
-                        Welcome to YJ's World! You may be wondering why there is <a href="yjs-world.neocities.org>">another</a> version of YJ's World on the internet out there, and that's just because we originally tried hosting the site on Neocities before realizing that our requests to our API were getting blocked.
+                <!-- HOME -->
+
+                <section
+                    class="box welcome"
+                    id="home"
+                >
+
+                    <div class="box-title">
+                        Important Notice
                     </div>
+
+                    <div class="box-body">
+
+                        Welcome to YJ's World! You may be wondering why there is
+                        <a href="https://yjsworld.neocities.org">
+                            another
+                        </a>
+                        version of YJ's World on the internet out there, and that's
+                        just because we originally tried hosting the site on
+                        Neocities before moving the frontend to GitHub Pages.
+
+                    </div>
+
                 </section>
 
-                <section class="box" id="forums">
-                    <div class="box-title">Forum Index</div>
+                <!-- FORUMS -->
+
+                <section
+                    class="box"
+                    id="forums"
+                >
+
+                    <div class="box-title">
+                        Forum Index
+                    </div>
 
                     <div class="box-body">
 
                         <div class="forum-row">
-                            <div class="forum-icon">💬</div>
+
+                            <div class="forum-icon">
+                                💬
+                            </div>
+
                             <div class="forum-title">
-                                <a href="#general">General Discussion</a>
+
+                                <a href="#general">
+                                    General Discussion
+                                </a>
+
                                 <div class="forum-description">
                                     Talk about whatever you want.
                                 </div>
+
                             </div>
+
                             <div class="stats">
                                 0 Topics<br>
                                 0 Posts
                             </div>
+
                         </div>
 
                         <div class="forum-row">
-                            <div class="forum-icon">🎮</div>
+
+                            <div class="forum-icon">
+                                🎮
+                            </div>
+
                             <div class="forum-title">
-                                <a href="#games">Games & Stuff</a>
+
+                                <a href="#games">
+                                    Games & Stuff
+                                </a>
+
                                 <div class="forum-description">
                                     Games, computers, and internet things.
                                 </div>
+
                             </div>
+
                             <div class="stats">
                                 0 Topics<br>
                                 0 Posts
                             </div>
+
                         </div>
 
                         <div class="forum-row">
-                            <div class="forum-icon">📸</div>
+
+                            <div class="forum-icon">
+                                📸
+                            </div>
+
                             <div class="forum-title">
-                                <a href="#photos">Pictures</a>
+
+                                <a href="#photos">
+                                    Pictures
+                                </a>
+
                                 <div class="forum-description">
                                     Share your favorite images.
                                 </div>
+
                             </div>
+
                             <div class="stats">
                                 0 Topics<br>
                                 0 Posts
                             </div>
+
                         </div>
 
                         <div class="forum-row">
-                            <div class="forum-icon">⭐</div>
+
+                            <div class="forum-icon">
+                                ⭐
+                            </div>
+
                             <div class="forum-title">
-                                <a href="#offtopic">Off Topic</a>
+
+                                <a href="#offtopic">
+                                    Off Topic
+                                </a>
+
                                 <div class="forum-description">
                                     Anything that doesn't fit elsewhere.
                                 </div>
+
                             </div>
+
                             <div class="stats">
                                 0 Topics<br>
                                 0 Posts
                             </div>
+
                         </div>
 
                     </div>
+
                 </section>
 
-                <section class="box" id="members">
-                    <div class="box-title">Members</div>
-                    <div class="box-body" id="memberList">
+                <!-- MEMBERS -->
+
+                <section
+                    class="box"
+                    id="members"
+                >
+
+                    <div class="box-title">
+                        Members
+                    </div>
+
+                    <div
+                        class="box-body"
+                        id="memberList"
+                    >
+
                         <div class="small">
                             No members have joined yet.
                         </div>
+
                     </div>
+
                 </section>
 
-                <section class="box" id="signup">
-                    <div class="box-title">Create Your Account</div>
+                <!-- SIGN UP -->
+
+                <section
+                    class="box"
+                    id="signup"
+                >
+
+                    <div class="box-title">
+                        Create Your Account
+                    </div>
 
                     <div class="box-body">
 
-                        <div id="signupStatus" class="status"></div>
+                        <div
+                            id="signupStatus"
+                            class="status"
+                        ></div>
 
                         <form id="signupForm">
 
                             <label for="username">
-                                <strong>Username:</strong>
+                                <strong>
+                                    Username:
+                                </strong>
                             </label>
 
                             <input
@@ -464,7 +603,9 @@
                             >
 
                             <label for="signupPassword">
-                                <strong>Password:</strong>
+                                <strong>
+                                    Password:
+                                </strong>
                             </label>
 
                             <input
@@ -475,7 +616,9 @@
                             >
 
                             <label for="profileImage">
-                                <strong>Profile Image:</strong>
+                                <strong>
+                                    Profile Image:
+                                </strong>
                             </label>
 
                             <input
@@ -492,19 +635,33 @@
                         </form>
 
                     </div>
+
                 </section>
 
-                <section class="box" id="member-login">
-                    <div class="box-title">Member Login</div>
+                <!-- MEMBER LOGIN -->
+
+                <section
+                    class="box"
+                    id="member-login"
+                >
+
+                    <div class="box-title">
+                        Member Login
+                    </div>
 
                     <div class="box-body">
 
-                        <div id="memberLoginStatus" class="status"></div>
+                        <div
+                            id="memberLoginStatus"
+                            class="status"
+                        ></div>
 
                         <form id="memberLoginForm">
 
                             <label for="loginUsername">
-                                <strong>Username:</strong>
+                                <strong>
+                                    Username:
+                                </strong>
                             </label>
 
                             <input
@@ -515,7 +672,9 @@
                             >
 
                             <label for="loginPassword">
-                                <strong>Password:</strong>
+                                <strong>
+                                    Password:
+                                </strong>
                             </label>
 
                             <input
@@ -534,72 +693,143 @@
                             id="memberControls"
                             style="display:none; margin-top:10px;"
                         >
+
                             <strong id="memberWelcome"></strong>
 
                             <br><br>
 
-                            <button type="button" id="memberLogout">
+                            <button
+                                type="button"
+                                id="memberLogout"
+                            >
                                 Log Out
                             </button>
+
                         </div>
 
                     </div>
+
                 </section>
 
-                <section class="box" id="owner-login">
-                    <div class="box-title">Site Owner Login</div>
+                <!-- OWNER LOGIN -->
+
+                <section
+                    class="box"
+                    id="owner-login"
+                >
+
+                    <div class="box-title">
+                        Site Owner Login
+                    </div>
 
                     <div class="box-body">
 
-                        <div id="ownerStatus" class="status"></div>
+                        <div
+                            id="ownerStatus"
+                            class="status"
+                        ></div>
 
-                        <form id="ownerLoginForm">
+                        <!-- CLIENT-SIDE OWNER ACCESS GATE -->
 
-                            <label for="ownerUsername">
-                                <strong>Username:</strong>
+                        <div id="ownerLoginGate">
+
+                            <label for="ownerAccessCode">
+                                <strong>
+                                    Owner Access Code:
+                                </strong>
                             </label>
 
                             <input
-                                id="ownerUsername"
-                                type="text"
-                                maxlength="24"
-                                placeholder="YeetJeepo"
-                                required
-                            >
-
-                            <label for="ownerPassword">
-                                <strong>Password:</strong>
-                            </label>
-
-                            <input
-                                id="ownerPassword"
+                                id="ownerAccessCode"
                                 type="password"
-                                required
+                                autocomplete="off"
+                                placeholder="Enter access code"
                             >
 
-                            <button type="submit">
-                                Log In
+                            <button
+                                type="button"
+                                id="ownerAccessButton"
+                            >
+                                Continue to Owner Login
                             </button>
 
-                        </form>
+                        </div>
+
+                        <!-- ACTUAL OWNER API LOGIN -->
+
+                        <div
+                            id="ownerLoginArea"
+                            style="display:none;"
+                        >
+
+                            <form id="ownerLoginForm">
+
+                                <label for="ownerUsername">
+                                    <strong>
+                                        Username:
+                                    </strong>
+                                </label>
+
+                                <input
+                                    id="ownerUsername"
+                                    type="text"
+                                    maxlength="24"
+                                    placeholder="YeetJeepo"
+                                    required
+                                >
+
+                                <label for="ownerPassword">
+                                    <strong>
+                                        Password:
+                                    </strong>
+                                </label>
+
+                                <input
+                                    id="ownerPassword"
+                                    type="password"
+                                    required
+                                >
+
+                                <button type="submit">
+                                    Log In
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                        <!-- OWNER CONTROLS -->
 
                         <div
                             id="ownerControls"
                             style="display:none; margin-top:10px;"
                         >
-                            <strong>✓ Logged in as Site Owner</strong>
+
+                            <strong>
+                                ✓ Logged in as Site Owner
+                            </strong>
 
                             <br><br>
 
-                            <button type="button" id="ownerLogout">
+                            <button
+                                type="button"
+                                id="ownerLogout"
+                            >
                                 Log Out
                             </button>
+
                         </div>
 
                     </div>
+
                 </section>
 
-                <section class="box" id="newpost">
+                <!-- NEW POST -->
+
+                <section
+                    class="box"
+                    id="newpost"
+                >
 
                     <div class="box-title">
                         Post a Message
@@ -607,23 +837,17 @@
 
                     <div class="box-body">
 
-                        <div id="postStatus" class="status"></div>
+                        <div
+                            id="postStatus"
+                            class="status"
+                        ></div>
 
                         <form id="postForm">
 
-                            <label for="postAuthor">
-                                <strong>Username:</strong>
-                            </label>
-
-                            <input
-                                id="postAuthor"
-                                type="text"
-                                maxlength="24"
-                                required
-                            >
-
                             <label for="postTitle">
-                                <strong>Topic:</strong>
+                                <strong>
+                                    Topic:
+                                </strong>
                             </label>
 
                             <input
@@ -634,7 +858,9 @@
                             >
 
                             <label for="postText">
-                                <strong>Message:</strong>
+                                <strong>
+                                    Message:
+                                </strong>
                             </label>
 
                             <textarea
@@ -648,22 +874,44 @@
 
                         </form>
 
+                        <div
+                            class="small"
+                            style="margin-top:7px;"
+                        >
+                            You must be logged in to post.
+                            Your username is automatically taken
+                            from your account.
+                        </div>
+
                     </div>
+
                 </section>
 
-                <section class="box" id="posts">
+                <!-- POSTS -->
+
+                <section
+                    class="box"
+                    id="posts"
+                >
 
                     <div class="box-title">
                         Latest Posts
                     </div>
 
-                    <div class="box-body" id="postList">
+                    <div
+                        class="box-body"
+                        id="postList"
+                    >
+
                         <div class="small">
                             No posts yet.
                         </div>
+
                     </div>
 
                 </section>
+
+                <!-- ADMIN -->
 
                 <section
                     class="box admin-panel"
@@ -676,10 +924,15 @@
 
                     <div class="box-body">
 
-                        <div id="adminStatus" class="status"></div>
+                        <div
+                            id="adminStatus"
+                            class="status"
+                        ></div>
 
                         <label for="adminUsername">
-                            <strong>Appoint Administrator:</strong>
+                            <strong>
+                                Appoint Administrator:
+                            </strong>
                         </label>
 
                         <input
@@ -709,7 +962,11 @@
 
             </main>
 
+            <!-- SIDEBAR -->
+
             <aside>
+
+                <!-- ONLINE -->
 
                 <section class="box">
 
@@ -730,6 +987,8 @@
                     </div>
 
                 </section>
+
+                <!-- QUICK LINKS -->
 
                 <section class="box">
 
@@ -765,6 +1024,8 @@
 
                 </section>
 
+                <!-- SITE INFO -->
+
                 <section class="box">
 
                     <div class="box-title">
@@ -773,7 +1034,9 @@
 
                     <div class="box-body">
 
-                        <strong>YJ's World</strong>
+                        <strong>
+                            YJ's World
+                        </strong>
 
                         <br>
 
@@ -799,9 +1062,13 @@
 
         </div>
 
+        <!-- FOOTER -->
+
         <div class="footer">
 
-            <strong>YJ's World?</strong>
+            <strong>
+                YJ's World?
+            </strong>
 
             <br>
 
@@ -810,6 +1077,7 @@
             <br><br>
 
             Contact me:
+
             <a href="mailto:yeetjeepo@outlook.com">
                 yeetjeepo@outlook.com
             </a>
@@ -825,93 +1093,173 @@
     </div>
 
     <script>
-        const API_BASE = "https://retry-yjs-world-2.onrender.com";
 
-        const SITE_VERSION = "alpha";
+        /* =========================================================
+           CONFIGURATION
+           ========================================================= */
+
+        const API_BASE =
+            "https://retry-yjs-world-2.onrender.com";
+
+        const SITE_VERSION =
+            "alpha";
+
+        /*
+         * This is only a client-side access gate.
+         *
+         * The actual owner authentication is still performed
+         * securely by the Render API using the owner username
+         * and password.
+         */
+        const OWNER_ACCESS_CODE =
+            "YeetJeepoIGuess";
+
+
+        /* =========================================================
+           STATE
+           ========================================================= */
 
         let members = [];
+
         let posts = [];
+
         let currentUser = null;
+
         let memberToken =
-            localStorage.getItem("yjs_world_member_token") || "";
+            localStorage.getItem(
+                "yjs_world_member_token"
+            ) || "";
+
         let ownerToken =
-            localStorage.getItem("yjs_world_owner_token") || "";
+            localStorage.getItem(
+                "yjs_world_owner_token"
+            ) || "";
 
         let updateBannerVisible = false;
 
+
+        /* =========================================================
+           UPDATE BANNER
+           ========================================================= */
+
         function showUpdateBanner() {
+
             const banner =
-                document.getElementById("updateBanner");
+                document.getElementById(
+                    "updateBanner"
+                );
 
             if (!banner) {
                 return;
             }
 
-            banner.style.display = "block";
-            updateBannerVisible = true;
+            banner.style.display =
+                "block";
+
+            updateBannerVisible =
+                true;
         }
+
 
         function hideUpdateBanner() {
+
             const banner =
-                document.getElementById("updateBanner");
+                document.getElementById(
+                    "updateBanner"
+                );
 
             if (!banner) {
                 return;
             }
 
-            banner.style.display = "none";
-            updateBannerVisible = false;
+            banner.style.display =
+                "none";
+
+            updateBannerVisible =
+                false;
         }
 
+
         function reloadForUpdate() {
+
             window.location.reload();
         }
 
-        async function checkForUpdates() {
-            try {
-                const versionURL = new URL("version.txt", document.baseURI);
-versionURL.searchParams.set("check", Date.now());
 
-const response = await fetch(versionURL.href, {
-    cache: "no-store"
-});
+        async function checkForUpdates() {
+
+            try {
+
+                /*
+                 * Using document.baseURI makes this work with
+                 * GitHub Pages project/custom-domain hosting.
+                 */
+
+                const versionURL =
+                    new URL(
+                        "version.txt",
+                        document.baseURI
+                    );
+
+                versionURL.searchParams.set(
+                    "check",
+                    Date.now()
+                );
 
                 const response =
-                    await fetch(versionURL.href, {
-                        cache: "no-store"
-                    });
+                    await fetch(
+                        versionURL.href,
+                        {
+                            cache: "no-store"
+                        }
+                    );
 
                 if (!response.ok) {
                     return;
                 }
 
                 const latestVersion =
-                    (await response.text()).trim();
+                    (
+                        await response.text()
+                    ).trim();
 
                 if (
                     latestVersion &&
                     latestVersion !== SITE_VERSION
                 ) {
+
                     showUpdateBanner();
+
                 }
+
             } catch (error) {
+
                 console.log(
                     "Could not check for site updates."
                 );
+
             }
         }
+
+
+        /* =========================================================
+           UPDATE SHORTCUT
+           ========================================================= */
 
         document.addEventListener(
             "keydown",
             event => {
+
                 const activeElement =
                     document.activeElement;
 
                 const typing =
                     activeElement &&
                     (
-                        activeElement.tagName === "INPUT" ||
-                        activeElement.tagName === "TEXTAREA" ||
+                        activeElement.tagName ===
+                            "INPUT" ||
+                        activeElement.tagName ===
+                            "TEXTAREA" ||
                         activeElement.isContentEditable
                     );
 
@@ -923,85 +1271,148 @@ const response = await fetch(versionURL.href, {
                     event.key === "`" ||
                     event.code === "Backquote"
                 ) {
+
                     showUpdateBanner();
+
                 }
+
             }
         );
+
 
         setTimeout(
             checkForUpdates,
             5000
         );
 
+
         setInterval(
             checkForUpdates,
             5 * 60 * 1000
         );
+
+
+        /* =========================================================
+           STATUS MESSAGES
+           ========================================================= */
 
         function showStatus(
             element,
             message,
             isError = false
         ) {
-            element.textContent = message;
+
+            element.textContent =
+                message;
+
             element.className =
                 isError
                     ? "status error"
                     : "status";
-            element.style.display = "block";
+
+            element.style.display =
+                "block";
         }
+
+
+        /* =========================================================
+           HTML ESCAPING
+           ========================================================= */
 
         function escapeHTML(value) {
+
             return String(value)
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+                .replace(
+                    />/g,
+                    "&gt;"
+                )
+                .replace(
+                    /"/g,
+                    "&quot;"
+                )
+                .replace(
+                    /'/g,
+                    "&#039;"
+                );
         }
 
-        async function api(path, options = {}) {
+
+        /* =========================================================
+           API WRAPPER
+           ========================================================= */
+
+        async function api(
+            path,
+            options = {}
+        ) {
+
             const headers = {
+
                 ...(options.body
                     ? {
                         "Content-Type":
                             "application/json"
                     }
                     : {}),
+
                 ...(options.headers || {})
+
             };
 
             let response;
 
             try {
-                response = await fetch(
-                    API_BASE + path,
-                    {
-                        ...options,
-                        headers
-                    }
-                );
+
+                response =
+                    await fetch(
+                        API_BASE + path,
+                        {
+                            ...options,
+                            headers
+                        }
+                    );
+
             } catch (error) {
+
                 throw new Error(
                     `Connection failed while requesting ${path}: ${error.message}`
                 );
+
             }
 
             const data =
                 await response
                     .json()
-                    .catch(() => ({}));
+                    .catch(
+                        () => ({})
+                    );
 
             if (!response.ok) {
+
                 throw new Error(
                     `${path} returned ${response.status}: ${data.error || "Request failed."}`
                 );
+
             }
 
             return data;
         }
 
+
+        /* =========================================================
+           AUTHORIZATION HEADERS
+           ========================================================= */
+
         function memberHeaders() {
+
             return memberToken
                 ? {
                     Authorization:
@@ -1010,7 +1421,9 @@ const response = await fetch(versionURL.href, {
                 : {};
         }
 
+
         function ownerHeaders() {
+
             return ownerToken
                 ? {
                     Authorization:
@@ -1019,35 +1432,68 @@ const response = await fetch(versionURL.href, {
                 : {};
         }
 
+
+        /* =========================================================
+           LOAD MEMBERS
+           ========================================================= */
+
         async function loadMembers() {
+
             members =
-                await api("/api/members");
+                await api(
+                    "/api/members"
+                );
 
             renderMembers();
         }
 
+
+        /* =========================================================
+           LOAD POSTS
+           ========================================================= */
+
         async function loadPosts() {
+
             posts =
-                await api("/api/posts");
+                await api(
+                    "/api/posts"
+                );
 
             renderPosts();
         }
 
+
+        /* =========================================================
+           RESTORE MEMBER LOGIN
+           ========================================================= */
+
         async function restoreMemberLogin() {
+
             if (!memberToken) {
+
                 updateMemberControls();
+
                 return;
             }
 
             try {
+
                 currentUser =
-                    await api("/api/me", {
-                        headers:
-                            memberHeaders()
-                    });
+                    await api(
+                        "/api/me",
+                        {
+                            headers:
+                                memberHeaders()
+                        }
+                    );
+
             } catch {
-                memberToken = "";
-                currentUser = null;
+
+                memberToken =
+                    "";
+
+                currentUser =
+                    null;
 
                 localStorage.removeItem(
                     "yjs_world_member_token"
@@ -1057,7 +1503,13 @@ const response = await fetch(versionURL.href, {
             updateMemberControls();
         }
 
+
+        /* =========================================================
+           MEMBER CONTROLS
+           ========================================================= */
+
         function updateMemberControls() {
+
             const form =
                 document.getElementById(
                     "memberLoginForm"
@@ -1073,35 +1525,38 @@ const response = await fetch(versionURL.href, {
                     "memberWelcome"
                 );
 
-            const postAuthor =
-                document.getElementById(
-                    "postAuthor"
-                );
-
             if (currentUser) {
-                form.style.display = "none";
-                controls.style.display = "block";
+
+                form.style.display =
+                    "none";
+
+                controls.style.display =
+                    "block";
 
                 welcome.textContent =
                     `✓ Logged in as ${currentUser.username}`;
 
-                postAuthor.value =
-                    currentUser.username;
-
-                postAuthor.readOnly = true;
             } else {
-                form.style.display = "block";
-                controls.style.display = "none";
 
-                welcome.textContent = "";
+                form.style.display =
+                    "block";
 
-                postAuthor.value = "";
+                controls.style.display =
+                    "none";
 
-                postAuthor.readOnly = false;
+                welcome.textContent =
+                    "";
+
             }
         }
 
+
+        /* =========================================================
+           RENDER MEMBERS
+           ========================================================= */
+
         function renderMembers() {
+
             const list =
                 document.getElementById(
                     "memberList"
@@ -1113,94 +1568,132 @@ const response = await fetch(versionURL.href, {
                 );
 
             if (members.length === 0) {
+
                 list.innerHTML =
                     '<div class="small">No members have joined yet.</div>';
 
                 adminList.innerHTML =
                     '<div class="small">No members to moderate.</div>';
+
             } else {
+
                 list.innerHTML =
-                    members.map(member => `
-                        <div class="user-card">
-                            <img
-                                src="${member.image || ""}"
-                                alt=""
-                            >
+                    members
+                        .map(
+                            member => `
 
-                            <div>
-                                <strong>
-                                    ${escapeHTML(member.username)}
-                                </strong>
+                                <div class="user-card">
 
-                                ${
-                                    member.isAdmin
-                                        ? '<div class="small">Administrator</div>'
-                                        : '<div class="small">Member</div>'
-                                }
-                            </div>
-                        </div>
-                    `).join("");
+                                    <img
+                                        src="${member.image || ""}"
+                                        alt=""
+                                    >
 
-                if (ownerToken) {
-                    adminList.innerHTML =
-                        members.map(member => `
-                            <div class="admin-user">
+                                    <div>
 
-                                <img
-                                    src="${member.image || ""}"
-                                    alt=""
-                                >
+                                        <strong>
+                                            ${escapeHTML(
+                                                member.username
+                                            )}
+                                        </strong>
 
-                                <div>
-                                    <strong>
-                                        ${escapeHTML(member.username)}
-                                    </strong>
-
-                                    <div class="small">
                                         ${
                                             member.isAdmin
-                                                ? "Administrator"
-                                                : "Member"
+                                                ? `
+                                                    <div class="small">
+                                                        Administrator
+                                                    </div>
+                                                `
+                                                : `
+                                                    <div class="small">
+                                                        Member
+                                                    </div>
+                                                `
                                         }
+
                                     </div>
-                                </div>
-
-                                <div>
-
-                                    ${
-                                        member.isAdmin
-                                            ? `
-                                                <button
-                                                    type="button"
-                                                    onclick="removeAdmin('${member.id}')"
-                                                >
-                                                    Remove Admin
-                                                </button>
-                                            `
-                                            : `
-                                                <button
-                                                    type="button"
-                                                    onclick="makeAdmin('${member.id}')"
-                                                >
-                                                    Make Admin
-                                                </button>
-                                            `
-                                    }
-
-                                    <button
-                                        type="button"
-                                        onclick="removeMember('${member.id}')"
-                                    >
-                                        Delete
-                                    </button>
 
                                 </div>
 
-                            </div>
-                        `).join("");
+                            `
+                        )
+                        .join("");
+
+
+                if (ownerToken) {
+
+                    adminList.innerHTML =
+                        members
+                            .map(
+                                member => `
+
+                                    <div class="admin-user">
+
+                                        <img
+                                            src="${member.image || ""}"
+                                            alt=""
+                                        >
+
+                                        <div>
+
+                                            <strong>
+                                                ${escapeHTML(
+                                                    member.username
+                                                )}
+                                            </strong>
+
+                                            <div class="small">
+                                                ${
+                                                    member.isAdmin
+                                                        ? "Administrator"
+                                                        : "Member"
+                                                }
+                                            </div>
+
+                                        </div>
+
+                                        <div>
+
+                                            ${
+                                                member.isAdmin
+                                                    ? `
+                                                        <button
+                                                            type="button"
+                                                            onclick="removeAdmin('${member.id}')"
+                                                        >
+                                                            Remove Admin
+                                                        </button>
+                                                    `
+                                                    : `
+                                                        <button
+                                                            type="button"
+                                                            onclick="makeAdmin('${member.id}')"
+                                                        >
+                                                            Make Admin
+                                                        </button>
+                                                    `
+                                            }
+
+                                            <button
+                                                type="button"
+                                                onclick="removeMember('${member.id}')"
+                                            >
+                                                Delete
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+
+                                `
+                            )
+                            .join("");
+
                 } else {
+
                     adminList.innerHTML =
                         '<div class="small">Owner login required for moderation.</div>';
+
                 }
             }
 
@@ -1210,13 +1703,20 @@ const response = await fetch(versionURL.href, {
                 `${members.length} member${members.length === 1 ? "" : "s"} online`;
         }
 
+
+        /* =========================================================
+           RENDER POSTS
+           ========================================================= */
+
         function renderPosts() {
+
             const list =
                 document.getElementById(
                     "postList"
                 );
 
             if (posts.length === 0) {
+
                 list.innerHTML =
                     '<div class="small">No posts yet.</div>';
 
@@ -1224,65 +1724,90 @@ const response = await fetch(versionURL.href, {
             }
 
             list.innerHTML =
-                posts.map(post => {
-                    const member =
-                        members.find(
-                            m =>
-                                m.id ===
-                                post.authorId
-                        );
+                posts
+                    .map(
+                        post => {
 
-                    return `
-                        <div class="post">
+                            const member =
+                                members.find(
+                                    m =>
+                                        m.id ===
+                                        post.authorId
+                                );
 
-                            <div class="post-header">
-                                ${escapeHTML(post.title)}
+                            return `
 
-                                <span class="small">
-                                    —
-                                    ${escapeHTML(post.date)}
-                                </span>
-                            </div>
+                                <div class="post">
 
-                            <div class="post-content">
+                                    <div class="post-header">
 
-                                <div class="post-user">
+                                        ${escapeHTML(
+                                            post.title
+                                        )}
 
-                                    ${
-                                        member
-                                            ? `
-                                                <img
-                                                    src="${member.image || ""}"
-                                                    alt=""
-                                                >
-                                            `
-                                            : ""
-                                    }
+                                        <span class="small">
+                                            —
+                                            ${escapeHTML(
+                                                post.date
+                                            )}
+                                        </span>
 
-                                    <br>
+                                    </div>
 
-                                    <strong>
-                                        ${escapeHTML(post.author)}
-                                    </strong>
+                                    <div class="post-content">
+
+                                        <div class="post-user">
+
+                                            ${
+                                                member
+                                                    ? `
+                                                        <img
+                                                            src="${member.image || ""}"
+                                                            alt=""
+                                                        >
+                                                    `
+                                                    : ""
+                                            }
+
+                                            <br>
+
+                                            <strong>
+                                                ${escapeHTML(
+                                                    post.author
+                                                )}
+                                            </strong>
+
+                                        </div>
+
+                                        <div class="post-body">
+                                            ${escapeHTML(
+                                                post.text
+                                            )}
+                                        </div>
+
+                                    </div>
 
                                 </div>
 
-                                <div class="post-body">
-                                    ${escapeHTML(post.text)}
-                                </div>
-
-                            </div>
-
-                        </div>
-                    `;
-                }).join("");
+                            `;
+                        }
+                    )
+                    .join("");
         }
 
+
+        /* =========================================================
+           MEMBER REGISTRATION
+           ========================================================= */
+
         document
-            .getElementById("signupForm")
+            .getElementById(
+                "signupForm"
+            )
             .addEventListener(
                 "submit",
                 async event => {
+
                     event.preventDefault();
 
                     const username =
@@ -1310,6 +1835,7 @@ const response = await fetch(versionURL.href, {
                         !password ||
                         !imageFile
                     ) {
+
                         showStatus(
                             status,
                             "Please enter a username, password, and choose an image.",
@@ -1320,6 +1846,7 @@ const response = await fetch(versionURL.href, {
                     }
 
                     try {
+
                         const image =
                             await readImage(
                                 imageFile
@@ -1330,6 +1857,7 @@ const response = await fetch(versionURL.href, {
                                 "/api/register",
                                 {
                                     method: "POST",
+
                                     body:
                                         JSON.stringify({
                                             username,
@@ -1366,20 +1894,31 @@ const response = await fetch(versionURL.href, {
                         await loadMembers();
 
                     } catch (error) {
+
                         showStatus(
                             status,
                             error.message,
                             true
                         );
+
                     }
+
                 }
             );
 
+
+        /* =========================================================
+           MEMBER LOGIN
+           ========================================================= */
+
         document
-            .getElementById("memberLoginForm")
+            .getElementById(
+                "memberLoginForm"
+            )
             .addEventListener(
                 "submit",
                 async event => {
+
                     event.preventDefault();
 
                     const username =
@@ -1398,11 +1937,13 @@ const response = await fetch(versionURL.href, {
                         );
 
                     try {
+
                         const result =
                             await api(
                                 "/api/login",
                                 {
                                     method: "POST",
+
                                     body:
                                         JSON.stringify({
                                             username,
@@ -1438,36 +1979,144 @@ const response = await fetch(versionURL.href, {
                         await loadMembers();
 
                     } catch (error) {
+
                         showStatus(
                             status,
                             error.message,
                             true
                         );
+
                     }
+
                 }
             );
 
+
+        /* =========================================================
+           MEMBER LOGOUT
+           ========================================================= */
+
         document
-            .getElementById("memberLogout")
+            .getElementById(
+                "memberLogout"
+            )
             .addEventListener(
                 "click",
                 () => {
-                    memberToken = "";
-                    currentUser = null;
+
+                    memberToken =
+                        "";
+
+                    currentUser =
+                        null;
 
                     localStorage.removeItem(
                         "yjs_world_member_token"
                     );
 
                     updateMemberControls();
+
                 }
             );
 
+
+        /* =========================================================
+           OWNER ACCESS CODE GATE
+           ========================================================= */
+
         document
-            .getElementById("ownerLoginForm")
+            .getElementById(
+                "ownerAccessButton"
+            )
+            .addEventListener(
+                "click",
+                () => {
+
+                    const code =
+                        document.getElementById(
+                            "ownerAccessCode"
+                        ).value;
+
+                    const status =
+                        document.getElementById(
+                            "ownerStatus"
+                        );
+
+                    if (
+                        code ===
+                        OWNER_ACCESS_CODE
+                    ) {
+
+                        document.getElementById(
+                            "ownerLoginGate"
+                        ).style.display =
+                            "none";
+
+                        document.getElementById(
+                            "ownerLoginArea"
+                        ).style.display =
+                            "block";
+
+                        status.style.display =
+                            "none";
+
+                    } else {
+
+                        showStatus(
+                            status,
+                            "Incorrect owner access code.",
+                            true
+                        );
+
+                    }
+
+                }
+            );
+
+
+        /* =========================================================
+           OWNER ACCESS CODE ENTER KEY
+           ========================================================= */
+
+        document
+            .getElementById(
+                "ownerAccessCode"
+            )
+            .addEventListener(
+                "keydown",
+                event => {
+
+                    if (
+                        event.key ===
+                        "Enter"
+                    ) {
+
+                        event.preventDefault();
+
+                        document
+                            .getElementById(
+                                "ownerAccessButton"
+                            )
+                            .click();
+
+                    }
+
+                }
+            );
+
+
+        /* =========================================================
+           OWNER LOGIN
+           ========================================================= */
+
+        document
+            .getElementById(
+                "ownerLoginForm"
+            )
             .addEventListener(
                 "submit",
                 async event => {
+
                     event.preventDefault();
 
                     const username =
@@ -1486,11 +2135,13 @@ const response = await fetch(versionURL.href, {
                         );
 
                     try {
+
                         const result =
                             await api(
                                 "/api/owner/login",
                                 {
                                     method: "POST",
+
                                     body:
                                         JSON.stringify({
                                             username,
@@ -1513,14 +2164,19 @@ const response = await fetch(versionURL.href, {
                         );
 
                         document.getElementById(
+                            "ownerLoginArea"
+                        ).style.display =
+                            "none";
+
+                        document.getElementById(
+                            "ownerLoginGate"
+                        ).style.display =
+                            "none";
+
+                        document.getElementById(
                             "ownerControls"
                         ).style.display =
                             "block";
-
-                        document.getElementById(
-                            "ownerLoginForm"
-                        ).style.display =
-                            "none";
 
                         document.getElementById(
                             "admin"
@@ -1530,21 +2186,33 @@ const response = await fetch(versionURL.href, {
                         renderMembers();
 
                     } catch (error) {
+
                         showStatus(
                             status,
                             error.message,
                             true
                         );
+
                     }
+
                 }
             );
 
+
+        /* =========================================================
+           OWNER LOGOUT
+           ========================================================= */
+
         document
-            .getElementById("ownerLogout")
+            .getElementById(
+                "ownerLogout"
+            )
             .addEventListener(
                 "click",
                 () => {
-                    ownerToken = "";
+
+                    ownerToken =
+                        "";
 
                     localStorage.removeItem(
                         "yjs_world_owner_token"
@@ -1557,12 +2225,27 @@ const response = await fetch(versionURL.href, {
                         .reset();
 
                     document.getElementById(
-                        "ownerLoginForm"
+                        "ownerLoginArea"
+                    ).style.display =
+                        "none";
+
+                    document.getElementById(
+                        "ownerControls"
+                    ).style.display =
+                        "none";
+
+                    document.getElementById(
+                        "ownerLoginGate"
                     ).style.display =
                         "block";
 
                     document.getElementById(
-                        "ownerControls"
+                        "ownerAccessCode"
+                    ).value =
+                        "";
+
+                    document.getElementById(
+                        "ownerStatus"
                     ).style.display =
                         "none";
 
@@ -1571,20 +2254,24 @@ const response = await fetch(versionURL.href, {
                     ).style.display =
                         "none";
 
-                    document.getElementById(
-                        "ownerStatus"
-                    ).style.display =
-                        "none";
-
                     renderMembers();
+
                 }
             );
 
+
+        /* =========================================================
+           CREATE POST
+           ========================================================= */
+
         document
-            .getElementById("postForm")
+            .getElementById(
+                "postForm"
+            )
             .addEventListener(
                 "submit",
                 async event => {
+
                     event.preventDefault();
 
                     const title =
@@ -1606,6 +2293,7 @@ const response = await fetch(versionURL.href, {
                         !currentUser ||
                         !memberToken
                     ) {
+
                         showStatus(
                             status,
                             "Please log in before posting.",
@@ -1615,7 +2303,11 @@ const response = await fetch(versionURL.href, {
                         return;
                     }
 
-                    if (!title || !text) {
+                    if (
+                        !title ||
+                        !text
+                    ) {
+
                         showStatus(
                             status,
                             "Please enter a topic and message.",
@@ -1626,12 +2318,15 @@ const response = await fetch(versionURL.href, {
                     }
 
                     try {
+
                         await api(
                             "/api/posts",
                             {
                                 method: "POST",
+
                                 headers:
                                     memberHeaders(),
+
                                 body:
                                     JSON.stringify({
                                         title,
@@ -1644,11 +2339,13 @@ const response = await fetch(versionURL.href, {
 
                         document.getElementById(
                             "postTitle"
-                        ).value = "";
+                        ).value =
+                            "";
 
                         document.getElementById(
                             "postText"
-                        ).value = "";
+                        ).value =
+                            "";
 
                         showStatus(
                             status,
@@ -1656,20 +2353,31 @@ const response = await fetch(versionURL.href, {
                         );
 
                     } catch (error) {
+
                         showStatus(
                             status,
                             error.message,
                             true
                         );
+
                     }
+
                 }
             );
 
+
+        /* =========================================================
+           APPOINT ADMIN
+           ========================================================= */
+
         document
-            .getElementById("appointAdmin")
+            .getElementById(
+                "appointAdmin"
+            )
             .addEventListener(
                 "click",
                 async () => {
+
                     const username =
                         document.getElementById(
                             "adminUsername"
@@ -1683,11 +2391,13 @@ const response = await fetch(versionURL.href, {
                     const member =
                         members.find(
                             item =>
-                                item.username.toLowerCase() ===
+                                item.username
+                                    .toLowerCase() ===
                                 username.toLowerCase()
                         );
 
                     if (!member) {
+
                         showStatus(
                             status,
                             "That username does not exist.",
@@ -1698,12 +2408,15 @@ const response = await fetch(versionURL.href, {
                     }
 
                     try {
+
                         await api(
                             `/api/admin/members/${member.id}/admin`,
                             {
                                 method: "POST",
+
                                 headers:
                                     ownerHeaders(),
+
                                 body:
                                     JSON.stringify({
                                         isAdmin: true
@@ -1715,7 +2428,8 @@ const response = await fetch(versionURL.href, {
 
                         document.getElementById(
                             "adminUsername"
-                        ).value = "";
+                        ).value =
+                            "";
 
                         showStatus(
                             status,
@@ -1723,23 +2437,35 @@ const response = await fetch(versionURL.href, {
                         );
 
                     } catch (error) {
+
                         showStatus(
                             status,
                             error.message,
                             true
                         );
+
                     }
+
                 }
             );
 
+
+        /* =========================================================
+           MAKE ADMIN
+           ========================================================= */
+
         async function makeAdmin(id) {
+
             try {
+
                 await api(
                     `/api/admin/members/${id}/admin`,
                     {
                         method: "POST",
+
                         headers:
                             ownerHeaders(),
+
                         body:
                             JSON.stringify({
                                 isAdmin: true
@@ -1750,6 +2476,7 @@ const response = await fetch(versionURL.href, {
                 await loadMembers();
 
             } catch (error) {
+
                 showStatus(
                     document.getElementById(
                         "adminStatus"
@@ -1757,17 +2484,27 @@ const response = await fetch(versionURL.href, {
                     error.message,
                     true
                 );
+
             }
         }
 
+
+        /* =========================================================
+           REMOVE ADMIN
+           ========================================================= */
+
         async function removeAdmin(id) {
+
             try {
+
                 await api(
                     `/api/admin/members/${id}/admin`,
                     {
                         method: "POST",
+
                         headers:
                             ownerHeaders(),
+
                         body:
                             JSON.stringify({
                                 isAdmin: false
@@ -1778,6 +2515,7 @@ const response = await fetch(versionURL.href, {
                 await loadMembers();
 
             } catch (error) {
+
                 showStatus(
                     document.getElementById(
                         "adminStatus"
@@ -1785,15 +2523,24 @@ const response = await fetch(versionURL.href, {
                     error.message,
                     true
                 );
+
             }
         }
 
+
+        /* =========================================================
+           REMOVE MEMBER
+           ========================================================= */
+
         async function removeMember(id) {
+
             try {
+
                 await api(
                     `/api/admin/members/${id}`,
                     {
                         method: "DELETE",
+
                         headers:
                             ownerHeaders()
                     }
@@ -1803,8 +2550,12 @@ const response = await fetch(versionURL.href, {
                     currentUser &&
                     currentUser.id === id
                 ) {
-                    memberToken = "";
-                    currentUser = null;
+
+                    memberToken =
+                        "";
+
+                    currentUser =
+                        null;
 
                     localStorage.removeItem(
                         "yjs_world_member_token"
@@ -1814,9 +2565,11 @@ const response = await fetch(versionURL.href, {
                 }
 
                 await loadMembers();
+
                 await loadPosts();
 
             } catch (error) {
+
                 showStatus(
                     document.getElementById(
                         "adminStatus"
@@ -1824,64 +2577,106 @@ const response = await fetch(versionURL.href, {
                     error.message,
                     true
                 );
+
             }
         }
 
+
+        /* =========================================================
+           IMAGE READER
+           ========================================================= */
+
         function readImage(file) {
+
             return new Promise(
-                (resolve, reject) => {
+                (
+                    resolve,
+                    reject
+                ) => {
+
                     const reader =
                         new FileReader();
 
-                    reader.onload = () => {
-                        resolve(
-                            reader.result
-                        );
-                    };
+                    reader.onload =
+                        () => {
 
-                    reader.onerror = () => {
-                        reject(
-                            new Error(
-                                "Could not read image."
-                            )
-                        );
-                    };
+                            resolve(
+                                reader.result
+                            );
+
+                        };
+
+                    reader.onerror =
+                        () => {
+
+                            reject(
+                                new Error(
+                                    "Could not read image."
+                                )
+                            );
+
+                        };
 
                     reader.readAsDataURL(
                         file
                     );
+
                 }
             );
         }
 
+
+        /* =========================================================
+           START PAGE
+           ========================================================= */
+
         async function startPage() {
-            let membersLoaded = false;
+
+            let membersLoaded =
+                false;
 
             try {
+
                 await loadMembers();
-                membersLoaded = true;
+
+                membersLoaded =
+                    true;
 
             } catch (error) {
+
                 document.getElementById(
                     "memberList"
                 ).innerHTML =
                     `<div class="small">Could not load members: ${escapeHTML(error.message)}</div>`;
+
             }
 
+
             try {
+
                 await loadPosts();
 
             } catch (error) {
+
                 document.getElementById(
                     "postList"
                 ).innerHTML =
                     `<div class="small">Could not load posts: ${escapeHTML(error.message)}</div>`;
+
             }
+
 
             await restoreMemberLogin();
 
+
+            /* =====================================================
+               RESTORE OWNER LOGIN
+               ===================================================== */
+
             if (ownerToken) {
+
                 try {
+
                     await api(
                         "/api/members",
                         {
@@ -1890,8 +2685,19 @@ const response = await fetch(versionURL.href, {
                         }
                     );
 
+                    /*
+                     * A valid owner token means the actual
+                     * API authentication already succeeded,
+                     * so don't require the access code again.
+                     */
+
                     document.getElementById(
-                        "ownerLoginForm"
+                        "ownerLoginGate"
+                    ).style.display =
+                        "none";
+
+                    document.getElementById(
+                        "ownerLoginArea"
                     ).style.display =
                         "none";
 
@@ -1906,23 +2712,34 @@ const response = await fetch(versionURL.href, {
                         "block";
 
                 } catch {
-                    ownerToken = "";
+
+                    ownerToken =
+                        "";
 
                     localStorage.removeItem(
                         "yjs_world_owner_token"
                     );
+
                 }
             }
+
 
             if (membersLoaded) {
                 renderMembers();
             }
 
             renderPosts();
+
             updateMemberControls();
         }
 
+
+        /* =========================================================
+           START
+           ========================================================= */
+
         startPage();
+
     </script>
 
 </body>
