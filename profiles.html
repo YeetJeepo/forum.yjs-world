@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>YJ's World - Member Profile</title>
+
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            background: #eeeeee;
+            color: #111111;
+            font-family: "Times New Roman", Times, serif;
+        }
+
+        body {
+            min-height: 100vh;
+        }
+
+        .page {
+            width: 900px;
+            max-width: calc(100% - 20px);
+            margin: 0 auto;
+            background: #ffffff;
+            border-left: 1px solid #777777;
+            border-right: 1px solid #777777;
+            min-height: 100vh;
+        }
+
+        .header {
+            background:
+                linear-gradient(
+                    #4169a1,
+                    #203d6e
+                );
+            color: white;
+            border: 1px solid #777777;
+            padding: 10px 14px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 32px;
+            text-shadow: 1px 1px #000000;
+        }
+
+        .header p {
+            margin: 2px 0 0;
+            font-size: 14px;
+        }
+
+        .nav {
+            text-align: center;
+            background: #eeeeee;
+            border-bottom: 1px solid #777777;
+            padding: 7px 4px;
+        }
+
+        .nav a {
+            display: inline-block;
+            margin: 0 4px;
+            padding: 4px 14px;
+            background: #dddddd;
+            border: 2px outset #ffffff;
+            color: #000000;
+            text-decoration: none;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 13px;
+        }
+
+        .nav a:hover {
+            background: #ffffff;
+        }
+
+        .marquee {
+            background: #000000;
+            color: #00ff00;
+            font-family: "Courier New", monospace;
+            font-size: 13px;
+            padding: 5px;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .content {
+            padding: 10px;
+        }
+
+        .section {
+            border: 2px solid #888888;
+            margin-bottom: 12px;
+            background: #ffffff;
+        }
+
+        .section-title {
+            background: #cbd9ec;
+            border-bottom: 1px solid #888888;
+            padding: 6px 8px;
+            font-weight: bold;
+            color: #10284b;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+        }
+
+        .section-body {
+            padding: 12px;
+        }
+
+        .profile-card {
+            display: flex;
+            gap: 18px;
+            align-items: flex-start;
+        }
+
+        .profile-image-container {
+            width: 140px;
+            min-width: 140px;
+            text-align: center;
+        }
+
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border: 2px inset #ffffff;
+            background: #dddddd;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .profile-image-placeholder {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+            border: 2px inset #ffffff;
+            background: #dddddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #555555;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12px;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .username {
+            font-size: 28px;
+            margin: 0 0 5px;
+            color: #003399;
+        }
+
+        .admin-badge {
+            display: inline-block;
+            background: #ffff99;
+            border: 1px solid #999900;
+            padding: 2px 6px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .info-table {
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 500px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 13px;
+        }
+
+        .info-table td {
+            border: 1px solid #bbbbbb;
+            padding: 5px 7px;
+            vertical-align: top;
+        }
+
+        .info-table td:first-child {
+            width: 130px;
+            background: #eeeeee;
+            font-weight: bold;
+        }
+
+        .post {
+            border: 1px solid #999999;
+            margin-bottom: 12px;
+            background: #ffffff;
+        }
+
+        .post-header {
+            background: #d5dfef;
+            border-bottom: 1px solid #999999;
+            padding: 6px 8px;
+            font-weight: bold;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            color: #10284b;
+        }
+
+        .post-date {
+            float: right;
+            font-weight: normal;
+            font-size: 11px;
+            color: #555555;
+        }
+
+        .post-body {
+            padding: 9px;
+        }
+
+        .post-text {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 14px;
+        }
+
+        .small {
+            font-size: 11px;
+            color: #555555;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .loading {
+            padding: 25px;
+            text-align: center;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #444444;
+        }
+
+        .error {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #990000;
+            background: #ffe0e0;
+            color: #990000;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 13px;
+        }
+
+        .empty {
+            padding: 15px;
+            text-align: center;
+            color: #555555;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 13px;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 5px 12px;
+            background: #dddddd;
+            border: 2px outset #ffffff;
+            color: #000000;
+            text-decoration: none;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .back-button:hover {
+            background: #ffffff;
+        }
+
+        .footer {
+            border-top: 1px solid #888888;
+            background: #eeeeee;
+            text-align: center;
+            padding: 12px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11px;
+            color: #555555;
+        }
+
+        .footer a {
+            color: #0000cc;
+        }
+
+        @media (max-width: 650px) {
+            .profile-card {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .profile-info {
+                width: 100%;
+            }
+
+            .profile-image-container {
+                width: 100%;
+            }
+
+            .post-date {
+                float: none;
+                display: block;
+                margin-top: 3px;
+            }
+
+            .nav a {
+                margin: 2px;
+                padding: 4px 8px;
+            }
+
+            .header h1 {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <div class="header">
+        <h1>YJ's World?</h1>
+
+        <p>
+            This page isn't looking quite right.
+        </p>
+    </div>
+
+    <div class="nav">
+
+        <a href="index.html">
+            Home
+        </a>
+
+        <a href="index.html#forum">
+            Forums
+        </a>
+
+        <a href="members.html">
+            Members
+        </a>
+
+        <a href="index.html#signup">
+            Join
+        </a>
+
+        <a href="index.html#login">
+            Member Login
+        </a>
+
+    </div>
+
+    <div class="marquee">
+        *** Welcome to YJ's World! Checking out a member profile... ***
+
+    </div>
+
+    <div class="content">
+
+        <div style="margin-bottom: 10px;">
+            <a
+                href="members.html"
+                class="back-button"
+            >
+                &lt;&lt; Back to Members
+            </a>
+        </div>
+
+        <div class="section">
+
+            <div class="section-title">
+                Member Profile
+            </div>
+
+            <div
+                class="section-body"
+                id="profileArea"
+            >
+
+                <div class="loading">
+                    Loading profile...
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="section">
+
+            <div class="section-title">
+                Forum Posts
+            </div>
+
+            <div
+                class="section-body"
+                id="postsArea"
+            >
+
+                <div class="loading">
+                    Loading posts...
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="footer">
+
+        <strong>
+            YJ's World?
+        </strong>
+
+        <br>
+
+        © Horribly put together 2026 page for an outdated version of this site.
+
+        <br><br>
+
+        Contact me:
+        <a href="mailto:yeetjeepo@outlook.com">
+            yeetjeepo@outlook.com
+        </a>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    /*
+     * YJ's World profile page
+     *
+     * This page expects:
+     *
+     * profile.html?id=MEMBER_ID
+     *
+     * Example:
+     *
+     * profile.html?id=6ab5a47a18aa43705adb6d43
+     */
+
+    const API_BASE =
+        "https://retry-yjs-world-2.onrender.com";
+
+
+    /*
+     * Escape text before inserting it into HTML.
+     */
+    function escapeHTML(value) {
+
+        return String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    }
+
+
+    /*
+     * API helper.
+     */
+    async function api(
+        path,
+        options = {}
+    ) {
+
+        const response =
+            await fetch(
+                `${API_BASE}${path}`,
+                {
+                    ...options,
+
+                    headers: {
+                        "Content-Type":
+                            "application/json",
+
+                        ...(options.headers || {})
+                    }
+                }
+            );
+
+
+        let data = null;
+
+        try {
+
+            data =
+                await response.json();
+
+        } catch {
+
+            data = null;
+
+        }
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data &&
+                data.error
+                    ? data.error
+                    : `Request failed with status ${response.status}.`
+            );
+
+        }
+
+
+        return data;
+
+    }
+
+
+    /*
+     * Get the member ID from:
+     *
+     * profile.html?id=...
+     */
+    function getMemberId() {
+
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
+
+        return (
+            params.get("id") ||
+            ""
+        ).trim();
+
+    }
+
+
+    /*
+     * Format the date that comes from
+     * the backend.
+     */
+    function formatMemberDate(value) {
+
+        if (!value) {
+
+            return "Unknown";
+
+        }
+
+
+        const date =
+            new Date(value);
+
+
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
+
+            return String(value);
+
+        }
+
+
+        return date.toLocaleDateString(
+            "en-US",
+            {
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+            }
+        );
+
+    }
+
+
+    /*
+     * Format post timestamps.
+     *
+     * The backend also supplies "date",
+     * which is the site's displayed date.
+     */
+    function formatPostDate(post) {
+
+        if (post.date) {
+
+            return post.date;
+
+        }
+
+
+        if (post.created) {
+
+            const date =
+                new Date(post.created);
+
+
+            if (
+                !Number.isNaN(
+                    date.getTime()
+                )
+            ) {
+
+                return date.toLocaleDateString(
+                    "en-US"
+                );
+
+            }
+
+        }
+
+
+        return "";
+
+    }
+
+
+    /*
+     * Show the profile itself.
+     */
+    function renderProfile(member) {
+
+        const area =
+            document.getElementById(
+                "profileArea"
+            );
+
+
+        if (!member) {
+
+            area.innerHTML = `
+                <div class="error">
+                    Sorry, that member could not be found.
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        const image =
+            member.image
+                ? `
+                    <img
+                        class="profile-image"
+                        src="${escapeHTML(member.image)}"
+                        alt="${escapeHTML(member.username)}'s profile image"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                    >
+
+                    <div
+                        class="profile-image-placeholder"
+                        style="display:none;"
+                    >
+                        No image
+                    </div>
+                `
+                : `
+                    <div class="profile-image-placeholder">
+                        No image
+                    </div>
+                `;
+
+
+        const adminBadge =
+            member.admin
+                ? `
+                    <div class="admin-badge">
+                        ★ SITE ADMIN ★
+                    </div>
+                `
+                : "";
+
+
+        area.innerHTML = `
+
+            <div class="profile-card">
+
+                <div class="profile-image-container">
+
+                    ${image}
+
+                </div>
+
+
+                <div class="profile-info">
+
+                    <h2 class="username">
+                        ${escapeHTML(member.username)}
+                    </h2>
+
+                    ${adminBadge}
+
+
+                    <table class="info-table">
+
+                        <tr>
+                            <td>
+                                Username
+                            </td>
+
+                            <td>
+                                ${escapeHTML(member.username)}
+                            </td>
+                        </tr>
+
+
+                        <tr>
+                            <td>
+                                Member Since
+                            </td>
+
+                            <td>
+                                ${escapeHTML(
+                                    formatMemberDate(
+                                        member.created
+                                    )
+                                )}
+                            </td>
+                        </tr>
+
+
+                        <tr>
+                            <td>
+                                Status
+                            </td>
+
+                            <td>
+                                ${
+                                    member.admin
+                                        ? "Site Administrator"
+                                        : "Registered Member"
+                                }
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        `;
+
+
+        document.title =
+            `${member.username} - YJ's World`;
+
+    }
+
+
+    /*
+     * Show posts written by this member.
+     */
+    function renderPosts(
+        member,
+        allPosts
+    ) {
+
+        const area =
+            document.getElementById(
+                "postsArea"
+            );
+
+
+        if (!member) {
+
+            area.innerHTML =
+                '<div class="empty">No posts to display.</div>';
+
+            return;
+
+        }
+
+
+        const memberId =
+            String(member._id);
+
+
+        const memberPosts =
+            Array.isArray(allPosts)
+                ? allPosts
+                    .filter(
+                        post =>
+                            post.authorId &&
+                            String(
+                                post.authorId
+                            ) === memberId
+                    )
+                    .sort(
+                        (a, b) => {
+
+                            const dateA =
+                                new Date(
+                                    a.created || 0
+                                ).getTime();
+
+                            const dateB =
+                                new Date(
+                                    b.created || 0
+                                ).getTime();
+
+                            return dateB - dateA;
+
+                        }
+                    )
+                : [];
+
+
+        if (
+            memberPosts.length === 0
+        ) {
+
+            area.innerHTML = `
+                <div class="empty">
+                    ${escapeHTML(member.username)}
+                    hasn't made any posts yet.
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        area.innerHTML =
+            memberPosts
+                .map(
+                    post => `
+
+                        <div class="post">
+
+                            <div class="post-header">
+
+                                ${escapeHTML(
+                                    post.title ||
+                                    "Untitled Post"
+                                )}
+
+                                <span class="post-date">
+
+                                    ${escapeHTML(
+                                        formatPostDate(post)
+                                    )}
+
+                                </span>
+
+                            </div>
+
+
+                            <div class="post-body">
+
+                                <div class="post-text">
+                                    ${escapeHTML(
+                                        post.text || ""
+                                    )}
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    `
+                )
+                .join("");
+
+    }
+
+
+    /*
+     * Load the profile and posts.
+     */
+    async function loadProfile() {
+
+        const profileArea =
+            document.getElementById(
+                "profileArea"
+            );
+
+        const postsArea =
+            document.getElementById(
+                "postsArea"
+            );
+
+
+        const memberId =
+            getMemberId();
+
+
+        if (!memberId) {
+
+            profileArea.innerHTML = `
+                <div class="error">
+
+                    No member ID was provided.
+
+                    <br><br>
+
+                    Please return to the
+                    <a href="members.html">
+                        members page
+                    </a>
+                    and choose a member.
+
+                </div>
+            `;
+
+
+            postsArea.innerHTML = `
+                <div class="empty">
+                    No member was selected.
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        try {
+
+            /*
+             * These are public API routes,
+             * so no login token is required.
+             */
+            const [
+                members,
+                posts
+            ] =
+                await Promise.all([
+                    api("/api/members"),
+                    api("/api/posts")
+                ]);
+
+
+            const member =
+                Array.isArray(members)
+                    ? members.find(
+                        item =>
+                            String(item._id) ===
+                            String(memberId)
+                    )
+                    : null;
+
+
+            if (!member) {
+
+                profileArea.innerHTML = `
+                    <div class="error">
+
+                        Member not found.
+
+                        <br><br>
+
+                        The member may have been
+                        deleted or the profile URL
+                        may be incorrect.
+
+                    </div>
+                `;
+
+
+                postsArea.innerHTML = `
+                    <div class="empty">
+                        No posts to display.
+                    </div>
+                `;
+
+                return;
+
+            }
+
+
+            renderProfile(member);
+
+            renderPosts(
+                member,
+                posts
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Profile loading error:",
+                error
+            );
+
+
+            profileArea.innerHTML = `
+                <div class="error">
+
+                    <strong>
+                        Unable to load this profile.
+                    </strong>
+
+                    <br><br>
+
+                    ${escapeHTML(
+                        error.message
+                    )}
+
+                    <br><br>
+
+                    Please try refreshing the page.
+
+                </div>
+            `;
+
+
+            postsArea.innerHTML = `
+                <div class="empty">
+                    The member's posts could not be loaded.
+                </div>
+            `;
+
+        }
+
+    }
+
+
+    /*
+     * Start the page.
+     */
+    loadProfile();
+
+</script>
+
+</body>
+</html>
