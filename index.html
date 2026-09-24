@@ -378,8 +378,8 @@
             </a>
 
             <a href="members.html">
-    Members
-</a>
+                Members
+            </a>
 
             <a href="#signup">
                 Join
@@ -427,6 +427,7 @@
                     </div>
 
                 </section>
+
 
                 <!-- FORUMS -->
 
@@ -545,6 +546,7 @@
 
                 </section>
 
+
                 <!-- SIGN UP -->
 
                 <section
@@ -613,6 +615,7 @@
                     </div>
 
                 </section>
+
 
                 <!-- MEMBER LOGIN -->
 
@@ -687,6 +690,7 @@
 
                 </section>
 
+
                 <!-- OWNER LOGIN -->
 
                 <section
@@ -704,8 +708,6 @@
                             id="ownerStatus"
                             class="status"
                         ></div>
-
-                        <!-- CLIENT-SIDE OWNER ACCESS GATE -->
 
                         <div id="ownerLoginGate">
 
@@ -731,7 +733,6 @@
 
                         </div>
 
-                        <!-- ACTUAL OWNER API LOGIN -->
 
                         <div
                             id="ownerLoginArea"
@@ -774,7 +775,6 @@
 
                         </div>
 
-                        <!-- OWNER CONTROLS -->
 
                         <div
                             id="ownerControls"
@@ -799,6 +799,7 @@
                     </div>
 
                 </section>
+
 
                 <!-- NEW POST -->
 
@@ -863,6 +864,7 @@
 
                 </section>
 
+
                 <!-- POSTS -->
 
                 <section
@@ -886,6 +888,7 @@
                     </div>
 
                 </section>
+
 
                 <!-- ADMIN -->
 
@@ -938,6 +941,7 @@
 
             </main>
 
+
             <!-- SIDEBAR -->
 
             <aside>
@@ -964,6 +968,7 @@
 
                 </section>
 
+
                 <!-- QUICK LINKS -->
 
                 <section class="box">
@@ -987,8 +992,8 @@
                         <br><br>
 
                         <a href="members.html">
-    Members
-</a>
+                            Members
+                        </a>
 
                         <br><br>
 
@@ -999,6 +1004,7 @@
                     </div>
 
                 </section>
+
 
                 <!-- SITE INFO -->
 
@@ -1038,6 +1044,7 @@
 
         </div>
 
+
         <!-- FOOTER -->
 
         <div class="footer">
@@ -1067,6 +1074,7 @@
         </div>
 
     </div>
+
 
     <script>
 
@@ -1167,8 +1175,8 @@
             try {
 
                 /*
-                 * Using document.baseURI makes this work with
-                 * GitHub Pages project/custom-domain hosting.
+                 * Using document.baseURI makes version.txt work
+                 * correctly on GitHub Pages project sites.
                  */
 
                 const versionURL =
@@ -1277,6 +1285,10 @@
             message,
             isError = false
         ) {
+
+            if (!element) {
+                return;
+            }
 
             element.textContent =
                 message;
@@ -1501,6 +1513,10 @@
                     "memberWelcome"
                 );
 
+            if (!form || !controls || !welcome) {
+                return;
+            }
+
             if (currentUser) {
 
                 form.style.display =
@@ -1533,6 +1549,17 @@
 
         function renderMembers() {
 
+            /*
+             * IMPORTANT:
+             *
+             * memberList was removed from the HTML.
+             *
+             * Therefore it is OPTIONAL now.
+             *
+             * The admin list still exists and the online count
+             * still exists, so those are updated normally.
+             */
+
             const list =
                 document.getElementById(
                     "memberList"
@@ -1543,60 +1570,86 @@
                     "adminMemberList"
                 );
 
-            if (members.length === 0) {
+            const onlineCount =
+                document.getElementById(
+                    "onlineCount"
+                );
 
-                list.innerHTML =
-                    '<div class="small">No members have joined yet.</div>';
 
-                adminList.innerHTML =
-                    '<div class="small">No members to moderate.</div>';
+            /*
+             * If memberList exists, update it.
+             *
+             * If it does not exist, simply skip it.
+             */
 
-            } else {
+            if (list) {
 
-                list.innerHTML =
-                    members
-                        .map(
-                            member => `
+                if (members.length === 0) {
 
-                                <div class="user-card">
+                    list.innerHTML =
+                        '<div class="small">No members have joined yet.</div>';
 
-                                    <img
-                                        src="${member.image || ""}"
-                                        alt=""
-                                    >
+                } else {
 
-                                    <div>
+                    list.innerHTML =
+                        members
+                            .map(
+                                member => `
 
-                                        <strong>
-                                            ${escapeHTML(
-                                                member.username
-                                            )}
-                                        </strong>
+                                    <div class="user-card">
 
-                                        ${
-                                            member.isAdmin
-                                                ? `
-                                                    <div class="small">
-                                                        Administrator
-                                                    </div>
-                                                `
-                                                : `
-                                                    <div class="small">
-                                                        Member
-                                                    </div>
-                                                `
-                                        }
+                                        <img
+                                            src="${member.image || ""}"
+                                            alt=""
+                                        >
+
+                                        <div>
+
+                                            <strong>
+                                                ${escapeHTML(
+                                                    member.username
+                                                )}
+                                            </strong>
+
+                                            ${
+                                                member.isAdmin
+                                                    ? `
+                                                        <div class="small">
+                                                            Administrator
+                                                        </div>
+                                                    `
+                                                    : `
+                                                        <div class="small">
+                                                            Member
+                                                        </div>
+                                                    `
+                                            }
+
+                                        </div>
 
                                     </div>
 
-                                </div>
+                                `
+                            )
+                            .join("");
 
-                            `
-                        )
-                        .join("");
+                }
+
+            }
 
 
-                if (ownerToken) {
+            /*
+             * Admin moderation list.
+             */
+
+            if (adminList) {
+
+                if (members.length === 0) {
+
+                    adminList.innerHTML =
+                        '<div class="small">No members to moderate.</div>';
+
+                } else if (ownerToken) {
 
                     adminList.innerHTML =
                         members
@@ -1671,12 +1724,20 @@
                         '<div class="small">Owner login required for moderation.</div>';
 
                 }
+
             }
 
-            document.getElementById(
-                "onlineCount"
-            ).textContent =
-                `${members.length} member${members.length === 1 ? "" : "s"} online`;
+
+            /*
+             * Online count.
+             */
+
+            if (onlineCount) {
+
+                onlineCount.textContent =
+                    `${members.length} member${members.length === 1 ? "" : "s"} online`;
+
+            }
         }
 
 
@@ -1690,6 +1751,10 @@
                 document.getElementById(
                     "postList"
                 );
+
+            if (!list) {
+                return;
+            }
 
             if (posts.length === 0) {
 
@@ -1914,6 +1979,10 @@
 
                     try {
 
+                        /*
+                         * Authenticate with the Render API.
+                         */
+
                         const result =
                             await api(
                                 "/api/login",
@@ -1928,6 +1997,11 @@
                                 }
                             );
 
+
+                        /*
+                         * Store the member session.
+                         */
+
                         memberToken =
                             result.token;
 
@@ -1939,11 +2013,21 @@
                             memberToken
                         );
 
+
+                        /*
+                         * Clear the login form.
+                         */
+
                         document
                             .getElementById(
                                 "memberLoginForm"
                             )
                             .reset();
+
+
+                        /*
+                         * Update the logged-in display.
+                         */
 
                         showStatus(
                             status,
@@ -1952,7 +2036,45 @@
 
                         updateMemberControls();
 
-                        await loadMembers();
+
+                        /*
+                         * Refresh members if available.
+                         *
+                         * Because memberList is now optional,
+                         * this will no longer crash if the member
+                         * list block has been removed.
+                         */
+
+                        try {
+
+                            await loadMembers();
+
+                        } catch (memberError) {
+
+                            console.log(
+                                "Member list could not be refreshed:",
+                                memberError
+                            );
+
+                        }
+
+
+                        /*
+                         * Refresh posts too.
+                         */
+
+                        try {
+
+                            await loadPosts();
+
+                        } catch (postError) {
+
+                            console.log(
+                                "Posts could not be refreshed:",
+                                postError
+                            );
+
+                        }
 
                     } catch (error) {
 
@@ -2265,6 +2387,12 @@
                             "postStatus"
                         );
 
+
+                    /*
+                     * Posting requires a valid logged-in
+                     * member session.
+                     */
+
                     if (
                         !currentUser ||
                         !memberToken
@@ -2278,6 +2406,7 @@
 
                         return;
                     }
+
 
                     if (
                         !title ||
@@ -2293,7 +2422,15 @@
                         return;
                     }
 
+
                     try {
+
+                        /*
+                         * The member JWT is sent to the backend.
+                         *
+                         * The backend can therefore determine
+                         * which member created the post.
+                         */
 
                         await api(
                             "/api/posts",
@@ -2311,7 +2448,17 @@
                             }
                         );
 
+
+                        /*
+                         * Refresh the post list.
+                         */
+
                         await loadPosts();
+
+
+                        /*
+                         * Clear the form.
+                         */
 
                         document.getElementById(
                             "postTitle"
@@ -2322,6 +2469,7 @@
                             "postText"
                         ).value =
                             "";
+
 
                         showStatus(
                             status,
@@ -2608,25 +2756,45 @@
 
         async function startPage() {
 
-            let membersLoaded =
-                false;
+            /*
+             * Load members.
+             *
+             * The member list itself is optional now, so even
+             * though /api/members loads, the page will not crash
+             * if memberList is absent from the HTML.
+             */
 
             try {
 
                 await loadMembers();
 
-                membersLoaded =
-                    true;
-
             } catch (error) {
 
-                document.getElementById(
-                    "memberList"
-                ).innerHTML =
-                    `<div class="small">Could not load members: ${escapeHTML(error.message)}</div>`;
+                const memberList =
+                    document.getElementById(
+                        "memberList"
+                    );
+
+                if (memberList) {
+
+                    memberList.innerHTML =
+                        `<div class="small">Could not load members: ${escapeHTML(error.message)}</div>`;
+
+                } else {
+
+                    console.log(
+                        "Could not load members:",
+                        error
+                    );
+
+                }
 
             }
 
+
+            /*
+             * Load posts.
+             */
 
             try {
 
@@ -2634,13 +2802,24 @@
 
             } catch (error) {
 
-                document.getElementById(
-                    "postList"
-                ).innerHTML =
-                    `<div class="small">Could not load posts: ${escapeHTML(error.message)}</div>`;
+                const postList =
+                    document.getElementById(
+                        "postList"
+                    );
+
+                if (postList) {
+
+                    postList.innerHTML =
+                        `<div class="small">Could not load posts: ${escapeHTML(error.message)}</div>`;
+
+                }
 
             }
 
+
+            /*
+             * Restore member login.
+             */
 
             await restoreMemberLogin();
 
@@ -2700,9 +2879,11 @@
             }
 
 
-            if (membersLoaded) {
-                renderMembers();
-            }
+            /*
+             * Final UI refresh.
+             */
+
+            renderMembers();
 
             renderPosts();
 
