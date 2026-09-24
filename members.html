@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Members - YJ's World</title>
+
+    <style>
+
+        body {
+            margin: 0;
+            background: #d7d7d7;
+            color: #222;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 13px;
+        }
+
+        a {
+            color: #0000cc;
+        }
+
+        .page {
+            width: 900px;
+            margin: 12px auto;
+            background: white;
+            border: 3px ridge #999;
+        }
+
+        .topbar {
+            background: linear-gradient(#4c6fae, #1d396c);
+            color: white;
+            padding: 8px 12px;
+            border-bottom: 3px ridge #aaa;
+        }
+
+        .topbar h1 {
+            margin: 0;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 30px;
+            text-shadow: 2px 2px #111;
+        }
+
+        .tagline {
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .nav {
+            background: #eeeeee;
+            border-bottom: 2px solid #888;
+            padding: 5px;
+            text-align: center;
+        }
+
+        .nav a {
+            display: inline-block;
+            padding: 4px 13px;
+            margin: 0 2px;
+            background: #d4d0c8;
+            border: 2px outset #fff;
+            color: #000;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .nav a:active {
+            border-style: inset;
+        }
+
+        .marquee {
+            background: #000;
+            color: #00ff00;
+            padding: 4px;
+            font-family: "Courier New", monospace;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 650px 230px;
+            gap: 10px;
+            padding: 10px;
+        }
+
+        .box {
+            border: 2px solid #777;
+            margin-bottom: 10px;
+            background: #fafafa;
+        }
+
+        .box-title {
+            background: #c5d5ef;
+            border-bottom: 2px solid #777;
+            padding: 5px 7px;
+            font-weight: bold;
+            color: #10264d;
+        }
+
+        .box-body {
+            padding: 8px;
+        }
+
+        .welcome {
+            background: #ffffcc;
+            border-color: #999900;
+        }
+
+        .user-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            padding: 8px;
+            background: white;
+            border: 1px solid #aaa;
+        }
+
+        .user-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .user-card img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border: 1px solid #333;
+            background: #ddd;
+            flex-shrink: 0;
+        }
+
+        .user-name {
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .user-role {
+            margin-top: 3px;
+            color: #555;
+            font-size: 11px;
+        }
+
+        .status {
+            padding: 6px;
+            background: #e5ffe5;
+            border: 1px solid #589958;
+            display: none;
+            margin-bottom: 8px;
+        }
+
+        .error {
+            background: #ffe5e5;
+            border-color: #aa5555;
+        }
+
+        .small {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .footer {
+            border-top: 3px ridge #999;
+            background: #eeeeee;
+            padding: 12px;
+            text-align: center;
+            font-size: 11px;
+            color: #444;
+        }
+
+        .footer strong {
+            color: #222;
+        }
+
+        @media (max-width: 940px) {
+
+            .page {
+                width: 96%;
+            }
+
+            .content {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="page">
+
+        <!-- HEADER -->
+
+        <div class="topbar">
+
+            <h1>YJ's World</h1>
+
+            <div class="tagline">
+                Built and owned by yours truly, your mom.
+            </div>
+
+        </div>
+
+
+        <!-- NAVIGATION -->
+
+        <div class="nav">
+
+            <a href="index.html#home">
+                Home
+            </a>
+
+            <a href="index.html#forums">
+                Forums
+            </a>
+
+            <a href="members.html">
+                Members
+            </a>
+
+            <a href="index.html#signup">
+                Join
+            </a>
+
+            <a href="index.html#member-login">
+                Member Login
+            </a>
+
+            <a href="index.html#owner-login">
+                Owner Login
+            </a>
+
+        </div>
+
+
+        <!-- MARQUEE -->
+
+        <div class="marquee">
+            *** Welcome to the YJ's World Member List! ***
+        </div>
+
+
+        <!-- CONTENT -->
+
+        <div class="content">
+
+            <main>
+
+                <!-- PAGE INTRO -->
+
+                <section class="box welcome">
+
+                    <div class="box-title">
+                        YJ's World Members
+                    </div>
+
+                    <div class="box-body">
+
+                        Welcome to the YJ's World member list!
+
+                        <br><br>
+
+                        Everyone who has registered an account
+                        will appear here.
+
+                    </div>
+
+                </section>
+
+
+                <!-- MEMBER LIST -->
+
+                <section class="box">
+
+                    <div class="box-title">
+                        Member List
+                    </div>
+
+                    <div class="box-body">
+
+                        <div
+                            id="memberStatus"
+                            class="status"
+                        ></div>
+
+                        <div
+                            id="memberList"
+                        >
+
+                            <div class="small">
+                                Loading members...
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </main>
+
+
+            <!-- SIDEBAR -->
+
+            <aside>
+
+                <!-- MEMBER COUNT -->
+
+                <section class="box">
+
+                    <div class="box-title">
+                        Members
+                    </div>
+
+                    <div class="box-body">
+
+                        <strong id="memberCount">
+                            Loading...
+                        </strong>
+
+                        <div class="small">
+                            registered members
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- QUICK LINKS -->
+
+                <section class="box">
+
+                    <div class="box-title">
+                        Quick Links
+                    </div>
+
+                    <div class="box-body">
+
+                        <a href="index.html#home">
+                            Home
+                        </a>
+
+                        <br><br>
+
+                        <a href="index.html#forums">
+                            Forum Index
+                        </a>
+
+                        <br><br>
+
+                        <a href="members.html">
+                            Member List
+                        </a>
+
+                        <br><br>
+
+                        <a href="index.html#signup">
+                            Create Account
+                        </a>
+
+                        <br><br>
+
+                        <a href="index.html#member-login">
+                            Member Login
+                        </a>
+
+                        <br><br>
+
+                        <a href="index.html#owner-login">
+                            Owner Login
+                        </a>
+
+                    </div>
+
+                </section>
+
+
+                <!-- SITE INFO -->
+
+                <section class="box">
+
+                    <div class="box-title">
+                        Site Info
+                    </div>
+
+                    <div class="box-body">
+
+                        <strong>
+                            YJ's World
+                        </strong>
+
+                        <br>
+
+                        Est. September 24, 2026
+
+                        <br><br>
+
+                        Current version: Alpha
+
+                        <br><br>
+
+                        Frontend hosted by GitHub Pages.
+
+                        <br>
+
+                        Backend hosted by Render.
+
+                    </div>
+
+                </section>
+
+            </aside>
+
+        </div>
+
+
+        <!-- FOOTER -->
+
+        <div class="footer">
+
+            <strong>
+                YJ's World?
+            </strong>
+
+            <br>
+
+            © YJ's World, YeetJeepo 2026
+
+            <br><br>
+
+            Contact me:
+
+            <a href="mailto:yeetjeepo@outlook.com">
+                yeetjeepo@outlook.com
+            </a>
+
+            or
+
+            <a href="mailto:yeetjeepoofficial@outlook.com">
+                yeetjeepoofficial@outlook.com
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        /* =========================================================
+           CONFIGURATION
+           ========================================================= */
+
+        const API_BASE =
+            "https://retry-yjs-world-2.onrender.com";
+
+
+        /* =========================================================
+           HTML ESCAPING
+           ========================================================= */
+
+        function escapeHTML(value) {
+
+            return String(value)
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+                .replace(
+                    />/g,
+                    "&gt;"
+                )
+                .replace(
+                    /"/g,
+                    "&quot;"
+                )
+                .replace(
+                    /'/g,
+                    "&#039;"
+                );
+
+        }
+
+
+        /* =========================================================
+           API
+           ========================================================= */
+
+        async function api(path) {
+
+            let response;
+
+            try {
+
+                response =
+                    await fetch(
+                        API_BASE + path
+                    );
+
+            } catch (error) {
+
+                throw new Error(
+                    `Connection failed while requesting ${path}: ${error.message}`
+                );
+
+            }
+
+            const data =
+                await response
+                    .json()
+                    .catch(
+                        () => ({})
+                    );
+
+            if (!response.ok) {
+
+                throw new Error(
+                    `${path} returned ${response.status}: ${data.error || "Request failed."}`
+                );
+
+            }
+
+            return data;
+
+        }
+
+
+        /* =========================================================
+           LOAD MEMBERS
+           ========================================================= */
+
+        async function loadMembers() {
+
+            const list =
+                document.getElementById(
+                    "memberList"
+                );
+
+            const status =
+                document.getElementById(
+                    "memberStatus"
+                );
+
+            const count =
+                document.getElementById(
+                    "memberCount"
+                );
+
+            try {
+
+                const members =
+                    await api(
+                        "/api/members"
+                    );
+
+
+                count.textContent =
+                    members.length;
+
+
+                if (members.length === 0) {
+
+                    list.innerHTML = `
+                        <div class="small">
+                            No members have joined yet.
+                        </div>
+                    `;
+
+                    return;
+                }
+
+
+                list.innerHTML =
+                    members
+                        .map(
+                            member => `
+
+                                <div class="user-card">
+
+                                    <img
+                                        src="${member.image || ""}"
+                                        alt=""
+                                    >
+
+                                    <div>
+
+                                        <div class="user-name">
+                                            ${escapeHTML(
+                                                member.username
+                                            )}
+                                        </div>
+
+                                        <div class="user-role">
+
+                                            ${
+                                                member.isAdmin
+                                                    ? "Administrator"
+                                                    : "Member"
+                                            }
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            `
+                        )
+                        .join("");
+
+
+            } catch (error) {
+
+                count.textContent =
+                    "—";
+
+                list.innerHTML =
+                    `<div class="small">
+                        Could not load members.
+                    </div>`;
+
+                status.textContent =
+                    error.message;
+
+                status.className =
+                    "status error";
+
+                status.style.display =
+                    "block";
+
+            }
+
+        }
+
+
+        /* =========================================================
+           START
+           ========================================================= */
+
+        loadMembers();
+
+    </script>
+
+</body>
+</html>
