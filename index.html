@@ -157,6 +157,10 @@
             background: #ddd;
         }
 
+        .user-card a {
+            font-weight: bold;
+        }
+
         input,
         textarea,
         select {
@@ -233,12 +237,20 @@
             border: 1px solid #555;
         }
 
+        .post-user a {
+            text-decoration: none;
+            color: #000;
+        }
+
+        .post-user a:hover strong {
+            text-decoration: underline;
+        }
+
         .post-body {
             padding: 10px;
             white-space: pre-wrap;
         }
 
-        /* Small owner post controls */
         .post-actions {
             display: flex;
             justify-content: flex-end;
@@ -282,6 +294,29 @@
         .small {
             font-size: 11px;
             color: #666;
+        }
+
+        .profile-preview {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px;
+            background: white;
+            border: 1px solid #aaa;
+            margin-bottom: 10px;
+        }
+
+        .profile-preview img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border: 2px solid #555;
+            background: #ddd;
+        }
+
+        .profile-preview a {
+            font-size: 16px;
+            font-weight: bold;
         }
 
         .footer {
@@ -358,7 +393,10 @@
 <body>
 
     <div id="updateBanner">
-        <strong>A new version of YJ's World is available!</strong>
+
+        <strong>
+            A new version of YJ's World is available!
+        </strong>
 
         <button
             type="button"
@@ -374,19 +412,24 @@
         >
             ×
         </button>
+
     </div>
+
 
     <div class="page">
 
         <div class="topbar">
 
-            <h1>YJ's World</h1>
+            <h1>
+                YJ's World
+            </h1>
 
             <div class="tagline">
                 Built and owned by yours truly, your mom.
             </div>
 
         </div>
+
 
         <div class="nav">
 
@@ -416,9 +459,11 @@
 
         </div>
 
+
         <div class="marquee">
             *** Welcome to YJ's World! *** Please enjoy your stay! ***
         </div>
+
 
         <div class="content">
 
@@ -489,6 +534,7 @@
 
                         </div>
 
+
                         <div class="forum-row">
 
                             <div class="forum-icon">
@@ -514,6 +560,7 @@
 
                         </div>
 
+
                         <div class="forum-row">
 
                             <div class="forum-icon">
@@ -538,6 +585,7 @@
                             </div>
 
                         </div>
+
 
                         <div class="forum-row">
 
@@ -686,6 +734,7 @@
 
                         </form>
 
+
                         <div
                             id="memberControls"
                             style="display:none; margin-top:10px;"
@@ -725,6 +774,7 @@
                             class="status"
                         ></div>
 
+
                         <div id="ownerLoginGate">
 
                             <label for="ownerAccessCode">
@@ -748,6 +798,7 @@
                             </button>
 
                         </div>
+
 
                         <div
                             id="ownerLoginArea"
@@ -789,6 +840,7 @@
                             </form>
 
                         </div>
+
 
                         <div
                             id="ownerControls"
@@ -863,6 +915,7 @@
 
                         </form>
 
+
                         <div
                             class="small"
                             style="margin-top:7px;"
@@ -897,6 +950,7 @@
                             </label>
 
                             <select id="postSort">
+
                                 <option value="newest">
                                     Newest first
                                 </option>
@@ -904,6 +958,7 @@
                                 <option value="oldest">
                                     Oldest first
                                 </option>
+
                             </select>
 
                         </div>
@@ -1460,6 +1515,34 @@
 
 
         /* =========================================================
+           PROFILE LINK
+           ========================================================= */
+
+        function profileURL(memberId) {
+
+            return `profile.html?id=${encodeURIComponent(memberId)}`;
+        }
+
+
+        function profileLink(memberId, content) {
+
+            if (!memberId) {
+
+                return content;
+
+            }
+
+            return `
+                <a
+                    href="${profileURL(memberId)}"
+                >
+                    ${content}
+                </a>
+            `;
+        }
+
+
+        /* =========================================================
            RESTORE MEMBER LOGIN
            ========================================================= */
 
@@ -1596,14 +1679,16 @@
 
                                         <div>
 
-                                            <strong>
+                                            <a
+                                                href="${profileURL(member._id)}"
+                                            >
                                                 ${escapeHTML(
                                                     member.username
                                                 )}
-                                            </strong>
+                                            </a>
 
                                             ${
-                                                member.isAdmin
+                                                member.admin
                                                     ? `
                                                         <div class="small">
                                                             Administrator
@@ -1660,7 +1745,7 @@
 
                                             <div class="small">
                                                 ${
-                                                    member.isAdmin
+                                                    member.admin
                                                         ? "Administrator"
                                                         : "Member"
                                                 }
@@ -1671,7 +1756,7 @@
                                         <div>
 
                                             ${
-                                                member.isAdmin
+                                                member.admin
                                                     ? `
                                                         <button
                                                             type="button"
@@ -1718,7 +1803,7 @@
             if (onlineCount) {
 
                 onlineCount.textContent =
-                    `${members.length} member${members.length === 1 ? "" : "s"} online`;
+                    `${members.length} member${members.length === 1 ? "" : "s"} registered`;
 
             }
         }
@@ -1803,6 +1888,58 @@
                                 );
 
 
+                            const authorContent =
+                                escapeHTML(
+                                    post.author
+                                );
+
+
+                            const authorName =
+                                post.authorId
+                                    ? profileLink(
+                                        post.authorId,
+                                        authorContent
+                                    )
+                                    : authorContent;
+
+
+                            const authorAvatar =
+                                member &&
+                                member.image
+                                    ? `
+                                        <img
+                                            src="${member.image}"
+                                            alt=""
+                                        >
+                                    `
+                                    : "";
+
+
+                            const authorBlock =
+                                post.authorId
+                                    ? `
+                                        <a
+                                            href="${profileURL(post.authorId)}"
+                                        >
+                                            ${authorAvatar}
+                                            <br>
+
+                                            <strong>
+                                                ${authorContent}
+                                            </strong>
+                                        </a>
+                                    `
+                                    : `
+                                        ${authorAvatar}
+
+                                        <br>
+
+                                        <strong>
+                                            ${authorContent}
+                                        </strong>
+                                    `;
+
+
                             return `
 
                                 <div class="post">
@@ -1826,24 +1963,7 @@
 
                                         <div class="post-user">
 
-                                            ${
-                                                member
-                                                    ? `
-                                                        <img
-                                                            src="${member.image || ""}"
-                                                            alt=""
-                                                        >
-                                                    `
-                                                    : ""
-                                            }
-
-                                            <br>
-
-                                            <strong>
-                                                ${escapeHTML(
-                                                    post.author
-                                                )}
-                                            </strong>
+                                            ${authorBlock}
 
                                         </div>
 
@@ -1853,6 +1973,7 @@
                                             ${escapeHTML(
                                                 post.text
                                             )}
+
 
                                             ${
                                                 ownerToken
@@ -1946,6 +2067,7 @@
                             "signupStatus"
                         );
 
+
                     if (
                         !username ||
                         !password ||
@@ -1961,12 +2083,14 @@
                         return;
                     }
 
+
                     try {
 
                         const image =
                             await readImage(
                                 imageFile
                             );
+
 
                         const result =
                             await api(
@@ -1983,16 +2107,19 @@
                                 }
                             );
 
+
                         memberToken =
                             result.token;
 
                         currentUser =
                             result.member;
 
+
                         localStorage.setItem(
                             "yjs_world_member_token",
                             memberToken
                         );
+
 
                         document
                             .getElementById(
@@ -2000,10 +2127,12 @@
                             )
                             .reset();
 
+
                         showStatus(
                             status,
                             "Welcome to YJ's World? Your account has been created!"
                         );
+
 
                         updateMemberControls();
 
@@ -2037,20 +2166,24 @@
 
                     event.preventDefault();
 
+
                     const username =
                         document.getElementById(
                             "loginUsername"
                         ).value.trim();
+
 
                     const password =
                         document.getElementById(
                             "loginPassword"
                         ).value;
 
+
                     const status =
                         document.getElementById(
                             "memberLoginStatus"
                         );
+
 
                     try {
 
@@ -2075,6 +2208,7 @@
                         currentUser =
                             result.member;
 
+
                         localStorage.setItem(
                             "yjs_world_member_token",
                             memberToken
@@ -2092,6 +2226,7 @@
                             status,
                             `Welcome back, ${currentUser.username}!`
                         );
+
 
                         updateMemberControls();
 
@@ -2155,9 +2290,11 @@
                     currentUser =
                         null;
 
+
                     localStorage.removeItem(
                         "yjs_world_member_token"
                     );
+
 
                     updateMemberControls();
 
@@ -2182,10 +2319,12 @@
                             "ownerAccessCode"
                         ).value;
 
+
                     const status =
                         document.getElementById(
                             "ownerStatus"
                         );
+
 
                     if (
                         code ===
@@ -2197,10 +2336,12 @@
                         ).style.display =
                             "none";
 
+
                         document.getElementById(
                             "ownerLoginArea"
                         ).style.display =
                             "block";
+
 
                         status.style.display =
                             "none";
@@ -2264,6 +2405,7 @@
 
                     event.preventDefault();
 
+
                     const username =
                         document
                             .getElementById(
@@ -2272,6 +2414,7 @@
                             .value
                             .trim();
 
+
                     const password =
                         document
                             .getElementById(
@@ -2279,10 +2422,12 @@
                             )
                             .value;
 
+
                     const status =
                         document.getElementById(
                             "ownerStatus"
                         );
+
 
                     try {
 
@@ -2300,33 +2445,40 @@
                                 }
                             );
 
+
                         ownerToken =
                             result.token;
+
 
                         localStorage.setItem(
                             "yjs_world_owner_token",
                             ownerToken
                         );
 
+
                         showStatus(
                             status,
                             "Welcome back, YeetJeepo!"
                         );
+
 
                         document.getElementById(
                             "ownerControls"
                         ).style.display =
                             "block";
 
+
                         document.getElementById(
                             "ownerLoginForm"
                         ).style.display =
                             "none";
 
+
                         document.getElementById(
                             "admin"
                         ).style.display =
                             "block";
+
 
                         renderPosts();
 
@@ -2361,9 +2513,11 @@
                     ownerToken =
                         "";
 
+
                     localStorage.removeItem(
                         "yjs_world_owner_token"
                     );
+
 
                     document
                         .getElementById(
@@ -2371,35 +2525,42 @@
                         )
                         .reset();
 
+
                     document.getElementById(
                         "ownerLoginArea"
                     ).style.display =
                         "none";
+
 
                     document.getElementById(
                         "ownerControls"
                     ).style.display =
                         "none";
 
+
                     document.getElementById(
                         "ownerLoginGate"
                     ).style.display =
                         "block";
+
 
                     document.getElementById(
                         "ownerAccessCode"
                     ).value =
                         "";
 
+
                     document.getElementById(
                         "ownerStatus"
                     ).style.display =
                         "none";
 
+
                     document.getElementById(
                         "admin"
                     ).style.display =
                         "none";
+
 
                     renderMembers();
 
@@ -2423,6 +2584,7 @@
 
                     event.preventDefault();
 
+
                     const title =
                         document
                             .getElementById(
@@ -2431,6 +2593,7 @@
                             .value
                             .trim();
 
+
                     const text =
                         document
                             .getElementById(
@@ -2438,6 +2601,7 @@
                             )
                             .value
                             .trim();
+
 
                     const status =
                         document.getElementById(
@@ -2507,6 +2671,7 @@
                         ).value =
                             "";
 
+
                         document.getElementById(
                             "postText"
                         ).value =
@@ -2544,6 +2709,7 @@
                     event.target.closest(
                         ".edit-post"
                     );
+
 
                 if (!button) {
                     return;
@@ -2690,6 +2856,7 @@
                         ".delete-post"
                     );
 
+
                 if (!button) {
                     return;
                 }
@@ -2767,10 +2934,12 @@
                             .value
                             .trim();
 
+
                     const status =
                         document.getElementById(
                             "adminStatus"
                         );
+
 
                     const member =
                         members.find(
@@ -2862,6 +3031,7 @@
                     }
                 );
 
+
                 await loadMembers();
 
             } catch (error) {
@@ -2900,6 +3070,7 @@
                             })
                     }
                 );
+
 
                 await loadMembers();
 
@@ -2947,9 +3118,11 @@
                     currentUser =
                         null;
 
+
                     localStorage.removeItem(
                         "yjs_world_member_token"
                     );
+
 
                     updateMemberControls();
 
@@ -2989,6 +3162,7 @@
                     const reader =
                         new FileReader();
 
+
                     reader.onload =
                         () => {
 
@@ -2997,6 +3171,7 @@
                             );
 
                         };
+
 
                     reader.onerror =
                         () => {
@@ -3008,6 +3183,7 @@
                             );
 
                         };
+
 
                     reader.readAsDataURL(
                         file
@@ -3034,6 +3210,7 @@
                     document.getElementById(
                         "memberList"
                     );
+
 
                 if (memberList) {
 
@@ -3062,6 +3239,7 @@
                     document.getElementById(
                         "postList"
                     );
+
 
                 if (postList) {
 
@@ -3098,25 +3276,30 @@
                     ).style.display =
                         "none";
 
+
                     document.getElementById(
                         "ownerLoginArea"
                     ).style.display =
                         "none";
+
 
                     document.getElementById(
                         "ownerControls"
                     ).style.display =
                         "block";
 
+
                     document.getElementById(
                         "admin"
                     ).style.display =
                         "block";
 
+
                 } catch {
 
                     ownerToken =
                         "";
+
 
                     localStorage.removeItem(
                         "yjs_world_owner_token"
