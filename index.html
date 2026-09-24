@@ -733,7 +733,6 @@
 
                         </div>
 
-
                         <div
                             id="ownerLoginArea"
                             style="display:none;"
@@ -774,7 +773,6 @@
                             </form>
 
                         </div>
-
 
                         <div
                             id="ownerControls"
@@ -876,13 +874,39 @@
                         Latest Posts
                     </div>
 
-                    <div
-                        class="box-body"
-                        id="postList"
-                    >
+                    <div class="box-body">
 
-                        <div class="small">
-                            No posts yet.
+                        <!-- POST SORTING -->
+
+                        <div style="margin-bottom: 12px;">
+
+                            <label for="postSort">
+                                <strong>
+                                    Sort posts:
+                                </strong>
+                            </label>
+
+                            <select id="postSort">
+                                <option value="newest">
+                                    Newest first
+                                </option>
+
+                                <option value="oldest">
+                                    Oldest first
+                                </option>
+                            </select>
+
+                        </div>
+
+
+                        <!-- POST LIST -->
+
+                        <div id="postList">
+
+                            <div class="small">
+                                No posts yet.
+                            </div>
+
                         </div>
 
                     </div>
@@ -1173,11 +1197,6 @@
         async function checkForUpdates() {
 
             try {
-
-                /*
-                 * Using document.baseURI makes version.txt work
-                 * correctly on GitHub Pages project sites.
-                 */
 
                 const versionURL =
                     new URL(
@@ -1549,17 +1568,6 @@
 
         function renderMembers() {
 
-            /*
-             * IMPORTANT:
-             *
-             * memberList was removed from the HTML.
-             *
-             * Therefore it is OPTIONAL now.
-             *
-             * The admin list still exists and the online count
-             * still exists, so those are updated normally.
-             */
-
             const list =
                 document.getElementById(
                     "memberList"
@@ -1575,12 +1583,6 @@
                     "onlineCount"
                 );
 
-
-            /*
-             * If memberList exists, update it.
-             *
-             * If it does not exist, simply skip it.
-             */
 
             if (list) {
 
@@ -1637,10 +1639,6 @@
 
             }
 
-
-            /*
-             * Admin moderation list.
-             */
 
             if (adminList) {
 
@@ -1728,10 +1726,6 @@
             }
 
 
-            /*
-             * Online count.
-             */
-
             if (onlineCount) {
 
                 onlineCount.textContent =
@@ -1746,69 +1740,212 @@
            ========================================================= */
 
         function renderPosts() {
-    const list = document.getElementById("postList");
 
-    if (posts.length === 0) {
-        list.innerHTML =
-            '<div class="small">No posts yet.</div>';
-        return;
-    }
+            const list =
+                document.getElementById(
+                    "postList"
+                );
 
-    list.innerHTML = posts.map(post => {
-        const member = members.find(
-            m => m._id === post.authorId
-        );
+            const sortSelect =
+                document.getElementById(
+                    "postSort"
+                );
 
-        const deleteButton = ownerToken
-            ? `
-                <button
-                    type="button"
-                    class="delete-post"
-                    data-post-id="${post._id}"
-                >
-                    Delete Post
-                </button>
-            `
-            : "";
+            if (!list) {
+                return;
+            }
 
-        return `
-            <div class="post">
-                <div class="post-header">
-                    ${escapeHTML(post.title)}
-                    <span class="small">
-                        — ${escapeHTML(post.date)}
-                    </span>
-                </div>
+            if (posts.length === 0) {
 
-                <div class="post-content">
-                    <div class="post-user">
-                        ${
-                            member
-                                ? `<img src="${member.image}" alt="">`
-                                : ""
+                list.innerHTML =
+                    '<div class="small">No posts yet.</div>';
+
+                return;
+            }
+
+
+            /*
+             * Read the selected sorting mode.
+             *
+             * Newest is the default if the dropdown
+             * does not exist for any reason.
+             */
+
+            const sortOrder =
+                sortSelect
+                    ? sortSelect.value
+                    : "newest";
+
+
+            /*
+             * Make a copy before sorting so the original
+             * posts array remains untouched.
+             */
+
+            const sortedPosts =
+                posts
+                    .slice()
+                    .sort(
+                        (a, b) => {
+
+                            const dateA =
+                                new Date(
+                                    a.created
+                                ).getTime();
+
+                            const dateB =
+                                new Date(
+                                    b.created
+                                ).getTime();
+
+
+                            /*
+                             * Oldest first:
+                             * smaller timestamp comes first.
+                             */
+
+                            if (
+                                sortOrder ===
+                                "oldest"
+                            ) {
+
+                                return dateA - dateB;
+
+                            }
+
+
+                            /*
+                             * Newest first:
+                             * larger timestamp comes first.
+                             */
+
+                            return dateB - dateA;
+
                         }
-                        <br>
-                        <strong>${escapeHTML(post.author)}</strong>
-                    </div>
+                    );
 
-                    <div class="post-body">
-                        ${escapeHTML(post.text)}
 
-                        ${
-                            ownerToken
-                                ? `
-                                    <div style="margin-top:10px;">
-                                        ${deleteButton}
+            list.innerHTML =
+                sortedPosts
+                    .map(
+                        post => {
+
+                            const member =
+                                members.find(
+                                    m =>
+                                        m._id ===
+                                        post.authorId
+                                );
+
+
+                            const deleteButton =
+                                ownerToken
+                                    ? `
+                                        <button
+                                            type="button"
+                                            class="delete-post"
+                                            data-post-id="${post._id}"
+                                        >
+                                            Delete Post
+                                        </button>
+                                    `
+                                    : "";
+
+
+                            return `
+
+                                <div class="post">
+
+                                    <div class="post-header">
+
+                                        ${escapeHTML(
+                                            post.title
+                                        )}
+
+                                        <span class="small">
+                                            — ${escapeHTML(
+                                                post.date
+                                            )}
+                                        </span>
+
                                     </div>
-                                `
-                                : ""
+
+
+                                    <div class="post-content">
+
+                                        <div class="post-user">
+
+                                            ${
+                                                member
+                                                    ? `
+                                                        <img
+                                                            src="${member.image || ""}"
+                                                            alt=""
+                                                        >
+                                                    `
+                                                    : ""
+                                            }
+
+                                            <br>
+
+                                            <strong>
+                                                ${escapeHTML(
+                                                    post.author
+                                                )}
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div class="post-body">
+
+                                            ${escapeHTML(
+                                                post.text
+                                            )}
+
+                                            ${
+                                                ownerToken
+                                                    ? `
+                                                        <div
+                                                            style="margin-top:10px;"
+                                                        >
+                                                            ${deleteButton}
+                                                        </div>
+                                                    `
+                                                    : ""
+                                            }
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            `;
+
                         }
-                    </div>
-                </div>
-            </div>
-        `;
-    }).join("");
-}
+                    )
+                    .join("");
+        }
+
+
+        /* =========================================================
+           POST SORTING
+           ========================================================= */
+
+        document
+            .getElementById(
+                "postSort"
+            )
+            .addEventListener(
+                "change",
+                () => {
+
+                    renderPosts();
+
+                }
+            );
+
 
         /* =========================================================
            MEMBER REGISTRATION
@@ -1952,10 +2089,6 @@
 
                     try {
 
-                        /*
-                         * Authenticate with the Render API.
-                         */
-
                         const result =
                             await api(
                                 "/api/login",
@@ -1971,10 +2104,6 @@
                             );
 
 
-                        /*
-                         * Store the member session.
-                         */
-
                         memberToken =
                             result.token;
 
@@ -1987,20 +2116,12 @@
                         );
 
 
-                        /*
-                         * Clear the login form.
-                         */
-
                         document
                             .getElementById(
                                 "memberLoginForm"
                             )
                             .reset();
 
-
-                        /*
-                         * Update the logged-in display.
-                         */
 
                         showStatus(
                             status,
@@ -2009,14 +2130,6 @@
 
                         updateMemberControls();
 
-
-                        /*
-                         * Refresh members if available.
-                         *
-                         * Because memberList is now optional,
-                         * this will no longer crash if the member
-                         * list block has been removed.
-                         */
 
                         try {
 
@@ -2031,10 +2144,6 @@
 
                         }
 
-
-                        /*
-                         * Refresh posts too.
-                         */
 
                         try {
 
@@ -2181,68 +2290,109 @@
            ========================================================= */
 
         document
-    .getElementById("ownerLoginForm")
-    .addEventListener("submit", async event => {
-        event.preventDefault();
+            .getElementById(
+                "ownerLoginForm"
+            )
+            .addEventListener(
+                "submit",
+                async event => {
 
-        const username =
-            document.getElementById("ownerUsername").value.trim();
+                    event.preventDefault();
 
-        const password =
-            document.getElementById("ownerPassword").value;
+                    const username =
+                        document
+                            .getElementById(
+                                "ownerUsername"
+                            )
+                            .value
+                            .trim();
 
-        const status =
-            document.getElementById("ownerStatus");
+                    const password =
+                        document
+                            .getElementById(
+                                "ownerPassword"
+                            )
+                            .value;
 
-        try {
-            const result = await api("/api/owner/login", {
-                method: "POST",
-                body: JSON.stringify({
-                    username,
-                    password
-                })
-            });
+                    const status =
+                        document.getElementById(
+                            "ownerStatus"
+                        );
 
-            ownerToken = result.token;
+                    try {
 
-            localStorage.setItem(
-                "yjs_world_owner_token",
-                ownerToken
+                        const result =
+                            await api(
+                                "/api/owner/login",
+                                {
+                                    method: "POST",
+
+                                    body:
+                                        JSON.stringify({
+                                            username,
+                                            password
+                                        })
+                                }
+                            );
+
+                        ownerToken =
+                            result.token;
+
+                        localStorage.setItem(
+                            "yjs_world_owner_token",
+                            ownerToken
+                        );
+
+                        showStatus(
+                            status,
+                            "Welcome back, YeetJeepo!"
+                        );
+
+                        document.getElementById(
+                            "ownerControls"
+                        ).style.display =
+                            "block";
+
+                        document.getElementById(
+                            "ownerLoginForm"
+                        ).style.display =
+                            "none";
+
+                        document.getElementById(
+                            "admin"
+                        ).style.display =
+                            "block";
+
+
+                        /*
+                         * Re-render posts so Delete Post
+                         * buttons immediately appear.
+                         */
+
+                        renderPosts();
+
+
+                        /*
+                         * Re-render members so the
+                         * moderation controls appear.
+                         */
+
+                        renderMembers();
+
+                    } catch (error) {
+
+                        showStatus(
+                            status,
+                            error.message,
+                            true
+                        );
+
+                    }
+
+                }
             );
 
-            showStatus(
-                status,
-                "Welcome back, YeetJeepo!"
-            );
 
-            document.getElementById("ownerControls").style.display =
-                "block";
-
-            document.getElementById("ownerLoginForm").style.display =
-                "none";
-
-            document.getElementById("admin").style.display =
-                "block";
-
-            /*
-             * Owner is now the active poster.
-             */
-
-            
-            /*
-             * Re-render posts so Delete buttons appear.
-             */
-            renderPosts();
-
-            /*
-             * Re-render members so owner moderation controls appear.
-             */
-            renderMembers();
-
-        } catch (error) {
-            showStatus(status, error.message, true);
-        }
-    });
         /* =========================================================
            OWNER LOGOUT
            ========================================================= */
@@ -2298,7 +2448,15 @@
                     ).style.display =
                         "none";
 
+
+                    /*
+                     * Re-render both members and posts
+                     * so owner-only controls disappear.
+                     */
+
                     renderMembers();
+
+                    renderPosts();
 
                 }
             );
@@ -2309,106 +2467,203 @@
            ========================================================= */
 
         document
-    .getElementById("postForm")
-    .addEventListener("submit", async event => {
-        event.preventDefault();
+            .getElementById(
+                "postForm"
+            )
+            .addEventListener(
+                "submit",
+                async event => {
 
-        const title =
-            document.getElementById("postTitle").value.trim();
+                    event.preventDefault();
 
-        const text =
-            document.getElementById("postText").value.trim();
+                    const title =
+                        document
+                            .getElementById(
+                                "postTitle"
+                            )
+                            .value
+                            .trim();
 
-        const status =
-            document.getElementById("postStatus");
+                    const text =
+                        document
+                            .getElementById(
+                                "postText"
+                            )
+                            .value
+                            .trim();
 
-        /*
-         * Either a logged-in member OR the site owner
-         * is allowed to post.
-         */
-        if (!memberToken && !ownerToken) {
-            showStatus(
-                status,
-                "Please log in before posting.",
-                true
+                    const status =
+                        document.getElementById(
+                            "postStatus"
+                        );
+
+
+                    /*
+                     * Either a logged-in member OR the site
+                     * owner is allowed to post.
+                     */
+
+                    if (
+                        !memberToken &&
+                        !ownerToken
+                    ) {
+
+                        showStatus(
+                            status,
+                            "Please log in before posting.",
+                            true
+                        );
+
+                        return;
+                    }
+
+
+                    if (
+                        !title ||
+                        !text
+                    ) {
+
+                        showStatus(
+                            status,
+                            "Please enter a topic and message.",
+                            true
+                        );
+
+                        return;
+                    }
+
+
+                    /*
+                     * Use the owner token when the owner is
+                     * logged in. Otherwise use the member token.
+                     */
+
+                    const headers =
+                        ownerToken
+                            ? ownerHeaders()
+                            : memberHeaders();
+
+
+                    try {
+
+                        await api(
+                            "/api/posts",
+                            {
+                                method: "POST",
+
+                                headers,
+
+                                body:
+                                    JSON.stringify({
+                                        title,
+                                        text
+                                    })
+                            }
+                        );
+
+
+                        await loadPosts();
+
+
+                        document.getElementById(
+                            "postTitle"
+                        ).value =
+                            "";
+
+                        document.getElementById(
+                            "postText"
+                        ).value =
+                            "";
+
+
+                        showStatus(
+                            status,
+                            "Your message has been posted!"
+                        );
+
+                    } catch (error) {
+
+                        showStatus(
+                            status,
+                            error.message,
+                            true
+                        );
+
+                    }
+
+                }
             );
-            return;
-        }
 
-        if (!title || !text) {
-            showStatus(
-                status,
-                "Please enter a topic and message.",
-                true
-            );
-            return;
-        }
 
-        /*
-         * Use the owner token when the owner is logged in.
-         * Otherwise use the member token.
-         */
-        const headers = ownerToken
-            ? ownerHeaders()
-            : memberHeaders();
+        /* =========================================================
+           DELETE POST
+           ========================================================= */
 
-        try {
-            await api("/api/posts", {
-                method: "POST",
-                headers,
-                body: JSON.stringify({
-                    title,
-                    text
-                })
-            });
+        document.addEventListener(
+            "click",
+            async event => {
 
-            await loadPosts();
+                const button =
+                    event.target.closest(
+                        ".delete-post"
+                    );
 
-            document.getElementById("postTitle").value = "";
-            document.getElementById("postText").value = "";
+                if (!button) {
+                    return;
+                }
 
-            showStatus(
-                status,
-                "Your message has been posted!"
-            );
 
-        } catch (error) {
-            showStatus(status, error.message, true);
-        }
-    });
+                if (!ownerToken) {
 
-        document.addEventListener("click", async event => {
-    const button =
-        event.target.closest(".delete-post");
+                    alert(
+                        "Owner login required."
+                    );
 
-    if (!button) {
-        return;
-    }
+                    return;
+                }
 
-    if (!ownerToken) {
-        alert("Owner login required.");
-        return;
-    }
 
-    const postId =
-        button.dataset.postId;
+                const postId =
+                    button.dataset.postId;
 
-    if (!confirm("Delete this post?")) {
-        return;
-    }
 
-    try {
-        await api(`/api/posts/${postId}`, {
-            method: "DELETE",
-            headers: ownerHeaders()
-        });
+                if (
+                    !confirm(
+                        "Delete this post?"
+                    )
+                ) {
 
-        await loadPosts();
+                    return;
 
-    } catch (error) {
-        alert(error.message);
-    }
-});
+                }
+
+
+                try {
+
+                    await api(
+                        `/api/posts/${postId}`,
+                        {
+                            method: "DELETE",
+
+                            headers:
+                                ownerHeaders()
+                        }
+                    );
+
+
+                    await loadPosts();
+
+                } catch (error) {
+
+                    alert(
+                        error.message
+                    );
+
+                }
+
+            }
+        );
+
 
         /* =========================================================
            APPOINT ADMIN
@@ -2423,9 +2678,12 @@
                 async () => {
 
                     const username =
-                        document.getElementById(
-                            "adminUsername"
-                        ).value.trim();
+                        document
+                            .getElementById(
+                                "adminUsername"
+                            )
+                            .value
+                            .trim();
 
                     const status =
                         document.getElementById(
@@ -2440,6 +2698,7 @@
                                 username.toLowerCase()
                         );
 
+
                     if (!member) {
 
                         showStatus(
@@ -2450,6 +2709,7 @@
 
                         return;
                     }
+
 
                     try {
 
@@ -2468,12 +2728,15 @@
                             }
                         );
 
+
                         await loadMembers();
+
 
                         document.getElementById(
                             "adminUsername"
                         ).value =
                             "";
+
 
                         showStatus(
                             status,
@@ -2590,6 +2853,7 @@
                     }
                 );
 
+
                 if (
                     currentUser &&
                     currentUser.id === id
@@ -2606,7 +2870,9 @@
                     );
 
                     updateMemberControls();
+
                 }
+
 
                 await loadMembers();
 
@@ -2676,14 +2942,6 @@
 
         async function startPage() {
 
-            /*
-             * Load members.
-             *
-             * The member list itself is optional now, so even
-             * though /api/members loads, the page will not crash
-             * if memberList is absent from the HTML.
-             */
-
             try {
 
                 await loadMembers();
@@ -2712,10 +2970,6 @@
             }
 
 
-            /*
-             * Load posts.
-             */
-
             try {
 
                 await loadPosts();
@@ -2737,10 +2991,6 @@
             }
 
 
-            /*
-             * Restore member login.
-             */
-
             await restoreMemberLogin();
 
 
@@ -2760,11 +3010,6 @@
                         }
                     );
 
-                    /*
-                     * A valid owner token means the actual
-                     * API authentication already succeeded,
-                     * so don't require the access code again.
-                     */
 
                     document.getElementById(
                         "ownerLoginGate"
@@ -2796,6 +3041,7 @@
                     );
 
                 }
+
             }
 
 
@@ -2808,6 +3054,7 @@
             renderPosts();
 
             updateMemberControls();
+
         }
 
 
