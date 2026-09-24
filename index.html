@@ -238,6 +238,27 @@
             white-space: pre-wrap;
         }
 
+        /* Small owner post controls */
+        .post-actions {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 4px;
+            margin-top: 10px;
+        }
+
+        .post-action-button {
+            padding: 2px 7px;
+            font-size: 10px;
+            font-weight: normal;
+            background: #d4d0c8;
+            border: 1px outset #fff;
+        }
+
+        .post-action-button:active {
+            border-style: inset;
+        }
+
         .admin-panel {
             display: none;
         }
@@ -403,8 +424,6 @@
 
             <main>
 
-                <!-- HOME -->
-
                 <section
                     class="box welcome"
                     id="home"
@@ -433,8 +452,6 @@
 
                 </section>
 
-
-                <!-- FORUMS -->
 
                 <section
                     class="box"
@@ -552,8 +569,6 @@
                 </section>
 
 
-                <!-- SIGN UP -->
-
                 <section
                     class="box"
                     id="signup"
@@ -621,8 +636,6 @@
 
                 </section>
 
-
-                <!-- MEMBER LOGIN -->
 
                 <section
                     class="box"
@@ -695,8 +708,6 @@
 
                 </section>
 
-
-                <!-- OWNER LOGIN -->
 
                 <section
                     class="box"
@@ -804,8 +815,6 @@
                 </section>
 
 
-                <!-- NEW POST -->
-
                 <section
                     class="box"
                     id="newpost"
@@ -868,8 +877,6 @@
                 </section>
 
 
-                <!-- POSTS -->
-
                 <section
                     class="box"
                     id="posts"
@@ -880,8 +887,6 @@
                     </div>
 
                     <div class="box-body">
-
-                        <!-- POST SORTING -->
 
                         <div style="margin-bottom: 12px;">
 
@@ -904,8 +909,6 @@
                         </div>
 
 
-                        <!-- POST LIST -->
-
                         <div id="postList">
 
                             <div class="small">
@@ -918,8 +921,6 @@
 
                 </section>
 
-
-                <!-- ADMIN -->
 
                 <section
                     class="box admin-panel"
@@ -971,11 +972,7 @@
             </main>
 
 
-            <!-- SIDEBAR -->
-
             <aside>
-
-                <!-- ONLINE -->
 
                 <section class="box">
 
@@ -997,8 +994,6 @@
 
                 </section>
 
-
-                <!-- QUICK LINKS -->
 
                 <section class="box">
 
@@ -1034,8 +1029,6 @@
 
                 </section>
 
-
-                <!-- SITE INFO -->
 
                 <section class="box">
 
@@ -1073,8 +1066,6 @@
 
         </div>
 
-
-        <!-- FOOTER -->
 
         <div class="footer">
 
@@ -1117,13 +1108,6 @@
         const SITE_VERSION =
             "alpha";
 
-        /*
-         * This is only a client-side access gate.
-         *
-         * The actual owner authentication is still performed
-         * securely by the Render API using the owner username
-         * and password.
-         */
         const OWNER_ACCESS_CODE =
             "YeetJeepoIGuess";
 
@@ -1691,7 +1675,7 @@
                                                     ? `
                                                         <button
                                                             type="button"
-                                                            onclick="removeAdmin('${member.id}')"
+                                                            onclick="removeAdmin('${member._id}')"
                                                         >
                                                             Remove Admin
                                                         </button>
@@ -1699,7 +1683,7 @@
                                                     : `
                                                         <button
                                                             type="button"
-                                                            onclick="makeAdmin('${member.id}')"
+                                                            onclick="makeAdmin('${member._id}')"
                                                         >
                                                             Make Admin
                                                         </button>
@@ -1708,7 +1692,7 @@
 
                                             <button
                                                 type="button"
-                                                onclick="removeMember('${member.id}')"
+                                                onclick="removeMember('${member._id}')"
                                             >
                                                 Delete
                                             </button>
@@ -1769,23 +1753,11 @@
             }
 
 
-            /*
-             * Read the selected sorting mode.
-             *
-             * Newest is the default if the dropdown
-             * does not exist for any reason.
-             */
-
             const sortOrder =
                 sortSelect
                     ? sortSelect.value
                     : "newest";
 
-
-            /*
-             * Make a copy before sorting so the original
-             * posts array remains untouched.
-             */
 
             const sortedPosts =
                 posts
@@ -1803,12 +1775,6 @@
                                     b.created
                                 ).getTime();
 
-
-                            /*
-                             * Oldest first:
-                             * smaller timestamp comes first.
-                             */
-
                             if (
                                 sortOrder ===
                                 "oldest"
@@ -1817,12 +1783,6 @@
                                 return dateA - dateB;
 
                             }
-
-
-                            /*
-                             * Newest first:
-                             * larger timestamp comes first.
-                             */
 
                             return dateB - dateA;
 
@@ -1841,20 +1801,6 @@
                                         m._id ===
                                         post.authorId
                                 );
-
-
-                            const deleteButton =
-                                ownerToken
-                                    ? `
-                                        <button
-                                            type="button"
-                                            class="delete-post"
-                                            data-post-id="${post._id}"
-                                        >
-                                            Delete Post
-                                        </button>
-                                    `
-                                    : "";
 
 
                             return `
@@ -1911,10 +1857,24 @@
                                             ${
                                                 ownerToken
                                                     ? `
-                                                        <div
-                                                            style="margin-top:10px;"
-                                                        >
-                                                            ${deleteButton}
+                                                        <div class="post-actions">
+
+                                                            <button
+                                                                type="button"
+                                                                class="post-action-button edit-post"
+                                                                data-post-id="${post._id}"
+                                                            >
+                                                                Edit Post
+                                                            </button>
+
+                                                            <button
+                                                                type="button"
+                                                                class="post-action-button delete-post"
+                                                                data-post-id="${post._id}"
+                                                            >
+                                                                Delete Post
+                                                            </button>
+
                                                         </div>
                                                     `
                                                     : ""
@@ -2368,19 +2328,7 @@
                         ).style.display =
                             "block";
 
-
-                        /*
-                         * Re-render posts so Delete Post
-                         * buttons immediately appear.
-                         */
-
                         renderPosts();
-
-
-                        /*
-                         * Re-render members so the
-                         * moderation controls appear.
-                         */
 
                         renderMembers();
 
@@ -2453,12 +2401,6 @@
                     ).style.display =
                         "none";
 
-
-                    /*
-                     * Re-render both members and posts
-                     * so owner-only controls disappear.
-                     */
-
                     renderMembers();
 
                     renderPosts();
@@ -2503,11 +2445,6 @@
                         );
 
 
-                    /*
-                     * Either a logged-in member OR the site
-                     * owner is allowed to post.
-                     */
-
                     if (
                         !memberToken &&
                         !ownerToken
@@ -2537,11 +2474,6 @@
                         return;
                     }
 
-
-                    /*
-                     * Use the owner token when the owner is
-                     * logged in. Otherwise use the member token.
-                     */
 
                     const headers =
                         ownerToken
@@ -2598,6 +2530,151 @@
 
                 }
             );
+
+
+        /* =========================================================
+           EDIT POST
+           ========================================================= */
+
+        document.addEventListener(
+            "click",
+            async event => {
+
+                const button =
+                    event.target.closest(
+                        ".edit-post"
+                    );
+
+                if (!button) {
+                    return;
+                }
+
+
+                if (!ownerToken) {
+
+                    alert(
+                        "Owner login required."
+                    );
+
+                    return;
+                }
+
+
+                const postId =
+                    button.dataset.postId;
+
+
+                const post =
+                    posts.find(
+                        item =>
+                            item._id ===
+                            postId
+                    );
+
+
+                if (!post) {
+
+                    alert(
+                        "Could not find that post."
+                    );
+
+                    return;
+                }
+
+
+                const newTitle =
+                    prompt(
+                        "Edit the topic:",
+                        post.title
+                    );
+
+
+                if (
+                    newTitle ===
+                    null
+                ) {
+
+                    return;
+                }
+
+
+                const cleanTitle =
+                    newTitle.trim();
+
+
+                if (!cleanTitle) {
+
+                    alert(
+                        "The topic cannot be empty."
+                    );
+
+                    return;
+                }
+
+
+                const newText =
+                    prompt(
+                        "Edit the message:",
+                        post.text
+                    );
+
+
+                if (
+                    newText ===
+                    null
+                ) {
+
+                    return;
+                }
+
+
+                const cleanText =
+                    newText.trim();
+
+
+                if (!cleanText) {
+
+                    alert(
+                        "The message cannot be empty."
+                    );
+
+                    return;
+                }
+
+
+                try {
+
+                    await api(
+                        `/api/posts/${postId}`,
+                        {
+                            method: "PATCH",
+
+                            headers:
+                                ownerHeaders(),
+
+                            body:
+                                JSON.stringify({
+                                    title:
+                                        cleanTitle,
+                                    text:
+                                        cleanText
+                                })
+                        }
+                    );
+
+
+                    await loadPosts();
+
+                } catch (error) {
+
+                    alert(
+                        error.message
+                    );
+
+                }
+
+            }
+        );
 
 
         /* =========================================================
@@ -2719,7 +2796,7 @@
                     try {
 
                         await api(
-                            `/api/admin/members/${member.id}/admin`,
+                            `/api/admin/members/${member._id}/admin`,
                             {
                                 method: "POST",
 
@@ -2861,7 +2938,7 @@
 
                 if (
                     currentUser &&
-                    currentUser.id === id
+                    currentUser._id === id
                 ) {
 
                     memberToken =
@@ -3049,10 +3126,6 @@
 
             }
 
-
-            /*
-             * Final UI refresh.
-             */
 
             renderMembers();
 
