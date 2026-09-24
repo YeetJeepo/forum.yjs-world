@@ -366,7 +366,8 @@
                 <section class="box welcome" id="home">
                     <div class="box-title">Important Notice</div>
                     <div class="box-body">
-                        Welcome to YJ's World! The initial setup was kind of rough, and YJ's World runs on generously provided free services, so it's bound to run into errors. You can visit <a href="https://retry-yjs-world-2.onrender.com/health">this</a> page to check the status on the backend running YJ's World (fancy term for our servers.)</div>
+                        Welcome to YJ's World! The initial setup was kind of rough, and YJ's World runs on generously provided free services, so it's bound to run into errors. You can visit <a href="https://retry-yjs-world-2.onrender.com/health" target="_blank" rel="noopener noreferrer">this</a> page to check the status on the backend running YJ's World (fancy term for our servers.)
+                    </div>
                 </section>
 
                 <section class="box" id="forums">
@@ -497,9 +498,11 @@
                     <div class="box-title">Member Login</div>
 
                     <div class="box-body">
+
                         <div id="memberLoginStatus" class="status"></div>
 
                         <form id="memberLoginForm">
+
                             <label for="loginUsername">
                                 <strong>Username:</strong>
                             </label>
@@ -524,6 +527,7 @@
                             <button type="submit">
                                 Log In
                             </button>
+
                         </form>
 
                         <div
@@ -531,11 +535,14 @@
                             style="display:none; margin-top:10px;"
                         >
                             <strong id="memberWelcome"></strong>
+
                             <br><br>
+
                             <button type="button" id="memberLogout">
                                 Log Out
                             </button>
                         </div>
+
                     </div>
                 </section>
 
@@ -775,10 +782,14 @@
                         <br><br>
 
                         Current version: Alpha
-                        
-                        Currently tracking issues involving requests from source "https://yjsworld.neocities.org" to "retry-yjs-world-2.onrender.com"
-                        
-                        We are currently working on fixing the issues
+
+                        <br><br>
+
+                        Frontend hosted by GitHub Pages.
+
+                        <br>
+
+                        Backend hosted by Render.
 
                     </div>
 
@@ -802,9 +813,11 @@
             <a href="mailto:yeetjeepo@outlook.com">
                 yeetjeepo@outlook.com
             </a>
+
             or
+
             <a href="mailto:yeetjeepoofficial@outlook.com">
-            yeetjeepoofficial@outlook.com
+                yeetjeepoofficial@outlook.com
             </a>
 
         </div>
@@ -819,8 +832,10 @@
         let members = [];
         let posts = [];
         let currentUser = null;
-        let memberToken = localStorage.getItem("yjs_world_member_token") || "";
-        let ownerToken = localStorage.getItem("yjs_world_owner_token") || "";
+        let memberToken =
+            localStorage.getItem("yjs_world_member_token") || "";
+        let ownerToken =
+            localStorage.getItem("yjs_world_owner_token") || "";
 
         let updateBannerVisible = false;
 
@@ -854,14 +869,18 @@
 
         async function checkForUpdates() {
             try {
+                const versionURL =
+                    new URL("version.txt", document.baseURI);
+
+                versionURL.searchParams.set(
+                    "check",
+                    Date.now()
+                );
+
                 const response =
-                    await fetch(
-                        "/version.txt?check=" +
-                        Date.now(),
-                        {
-                            cache: "no-store"
-                        }
-                    );
+                    await fetch(versionURL.href, {
+                        cache: "no-store"
+                    });
 
                 if (!response.ok) {
                     return;
@@ -920,9 +939,16 @@
             5 * 60 * 1000
         );
 
-        function showStatus(element, message, isError = false) {
+        function showStatus(
+            element,
+            message,
+            isError = false
+        ) {
             element.textContent = message;
-            element.className = isError ? "status error" : "status";
+            element.className =
+                isError
+                    ? "status error"
+                    : "status";
             element.style.display = "block";
         }
 
@@ -936,52 +962,75 @@
         }
 
         async function api(path, options = {}) {
-    const headers = {
-        ...(options.body ? { "Content-Type": "application/json" } : {}),
-        ...(options.headers || {})
-    };
+            const headers = {
+                ...(options.body
+                    ? {
+                        "Content-Type":
+                            "application/json"
+                    }
+                    : {}),
+                ...(options.headers || {})
+            };
 
-    let response;
+            let response;
 
-    try {
-        response = await fetch(API_BASE + path, {
-            ...options,
-            headers
-        });
-    } catch (error) {
-        throw new Error(`Connection failed while requesting ${path}: ${error.message}`);
-    }
+            try {
+                response = await fetch(
+                    API_BASE + path,
+                    {
+                        ...options,
+                        headers
+                    }
+                );
+            } catch (error) {
+                throw new Error(
+                    `Connection failed while requesting ${path}: ${error.message}`
+                );
+            }
 
-    const data = await response.json().catch(() => ({}));
+            const data =
+                await response
+                    .json()
+                    .catch(() => ({}));
 
-    if (!response.ok) {
-        throw new Error(
-            `${path} returned ${response.status}: ${data.error || "Request failed."}`
-        );
-    }
+            if (!response.ok) {
+                throw new Error(
+                    `${path} returned ${response.status}: ${data.error || "Request failed."}`
+                );
+            }
 
-    return data;
-}
+            return data;
+        }
 
         function memberHeaders() {
             return memberToken
-                ? { Authorization: `Bearer ${memberToken}` }
+                ? {
+                    Authorization:
+                        `Bearer ${memberToken}`
+                }
                 : {};
         }
 
         function ownerHeaders() {
             return ownerToken
-                ? { Authorization: `Bearer ${ownerToken}` }
+                ? {
+                    Authorization:
+                        `Bearer ${ownerToken}`
+                }
                 : {};
         }
 
         async function loadMembers() {
-            members = await api("/api/members");
+            members =
+                await api("/api/members");
+
             renderMembers();
         }
 
         async function loadPosts() {
-            posts = await api("/api/posts");
+            posts =
+                await api("/api/posts");
+
             renderPosts();
         }
 
@@ -992,433 +1041,720 @@
             }
 
             try {
-                currentUser = await api("/api/me", {
-                    headers: memberHeaders()
-                });
+                currentUser =
+                    await api("/api/me", {
+                        headers:
+                            memberHeaders()
+                    });
             } catch {
                 memberToken = "";
                 currentUser = null;
-                localStorage.removeItem("yjs_world_member_token");
+
+                localStorage.removeItem(
+                    "yjs_world_member_token"
+                );
             }
 
             updateMemberControls();
         }
 
         function updateMemberControls() {
-            const form = document.getElementById("memberLoginForm");
-            const controls = document.getElementById("memberControls");
-            const welcome = document.getElementById("memberWelcome");
-            const postAuthor = document.getElementById("postAuthor");
+            const form =
+                document.getElementById(
+                    "memberLoginForm"
+                );
+
+            const controls =
+                document.getElementById(
+                    "memberControls"
+                );
+
+            const welcome =
+                document.getElementById(
+                    "memberWelcome"
+                );
+
+            const postAuthor =
+                document.getElementById(
+                    "postAuthor"
+                );
 
             if (currentUser) {
                 form.style.display = "none";
                 controls.style.display = "block";
-                welcome.textContent = `✓ Logged in as ${currentUser.username}`;
-                postAuthor.value = currentUser.username;
+
+                welcome.textContent =
+                    `✓ Logged in as ${currentUser.username}`;
+
+                postAuthor.value =
+                    currentUser.username;
+
                 postAuthor.readOnly = true;
             } else {
                 form.style.display = "block";
                 controls.style.display = "none";
+
                 welcome.textContent = "";
+
                 postAuthor.value = "";
+
                 postAuthor.readOnly = false;
             }
         }
 
         function renderMembers() {
-            const list = document.getElementById("memberList");
-            const adminList = document.getElementById("adminMemberList");
+            const list =
+                document.getElementById(
+                    "memberList"
+                );
+
+            const adminList =
+                document.getElementById(
+                    "adminMemberList"
+                );
 
             if (members.length === 0) {
                 list.innerHTML =
                     '<div class="small">No members have joined yet.</div>';
+
                 adminList.innerHTML =
                     '<div class="small">No members to moderate.</div>';
             } else {
-                list.innerHTML = members.map(member => `
-                    <div class="user-card">
-                        <img src="${member.image || ""}" alt="">
-                        <div>
-                            <strong>${escapeHTML(member.username)}</strong>
-                            ${
-                                member.isAdmin
-                                    ? '<div class="small">Administrator</div>'
-                                    : '<div class="small">Member</div>'
-                            }
-                        </div>
-                    </div>
-                `).join("");
+                list.innerHTML =
+                    members.map(member => `
+                        <div class="user-card">
+                            <img
+                                src="${member.image || ""}"
+                                alt=""
+                            >
 
-                if (ownerToken) {
-                    adminList.innerHTML = members.map(member => `
-                        <div class="admin-user">
-                            <img src="${member.image || ""}" alt="">
                             <div>
-                                <strong>${escapeHTML(member.username)}</strong>
-                                <div class="small">
-                                    ${member.isAdmin ? "Administrator" : "Member"}
-                                </div>
-                            </div>
-                            <div>
+                                <strong>
+                                    ${escapeHTML(member.username)}
+                                </strong>
+
                                 ${
                                     member.isAdmin
-                                        ? `<button type="button" onclick="removeAdmin('${member.id}')">Remove Admin</button>`
-                                        : `<button type="button" onclick="makeAdmin('${member.id}')">Make Admin</button>`
+                                        ? '<div class="small">Administrator</div>'
+                                        : '<div class="small">Member</div>'
                                 }
-                                <button type="button" onclick="removeMember('${member.id}')">
-                                    Delete
-                                </button>
                             </div>
                         </div>
                     `).join("");
+
+                if (ownerToken) {
+                    adminList.innerHTML =
+                        members.map(member => `
+                            <div class="admin-user">
+
+                                <img
+                                    src="${member.image || ""}"
+                                    alt=""
+                                >
+
+                                <div>
+                                    <strong>
+                                        ${escapeHTML(member.username)}
+                                    </strong>
+
+                                    <div class="small">
+                                        ${
+                                            member.isAdmin
+                                                ? "Administrator"
+                                                : "Member"
+                                        }
+                                    </div>
+                                </div>
+
+                                <div>
+
+                                    ${
+                                        member.isAdmin
+                                            ? `
+                                                <button
+                                                    type="button"
+                                                    onclick="removeAdmin('${member.id}')"
+                                                >
+                                                    Remove Admin
+                                                </button>
+                                            `
+                                            : `
+                                                <button
+                                                    type="button"
+                                                    onclick="makeAdmin('${member.id}')"
+                                                >
+                                                    Make Admin
+                                                </button>
+                                            `
+                                    }
+
+                                    <button
+                                        type="button"
+                                        onclick="removeMember('${member.id}')"
+                                    >
+                                        Delete
+                                    </button>
+
+                                </div>
+
+                            </div>
+                        `).join("");
                 } else {
                     adminList.innerHTML =
                         '<div class="small">Owner login required for moderation.</div>';
                 }
             }
 
-            document.getElementById("onlineCount").textContent =
+            document.getElementById(
+                "onlineCount"
+            ).textContent =
                 `${members.length} member${members.length === 1 ? "" : "s"} online`;
         }
 
         function renderPosts() {
-            const list = document.getElementById("postList");
+            const list =
+                document.getElementById(
+                    "postList"
+                );
 
             if (posts.length === 0) {
                 list.innerHTML =
                     '<div class="small">No posts yet.</div>';
+
                 return;
             }
 
-            list.innerHTML = posts.map(post => {
-                const member = members.find(
-                    m => m.id === post.authorId
-                );
+            list.innerHTML =
+                posts.map(post => {
+                    const member =
+                        members.find(
+                            m =>
+                                m.id ===
+                                post.authorId
+                        );
 
-                return `
-                    <div class="post">
-                        <div class="post-header">
-                            ${escapeHTML(post.title)}
-                            <span class="small">
-                                — ${escapeHTML(post.date)}
-                            </span>
-                        </div>
+                    return `
+                        <div class="post">
 
-                        <div class="post-content">
-                            <div class="post-user">
-                                ${
-                                    member
-                                        ? `<img src="${member.image || ""}" alt="">`
-                                        : ""
-                                }
-                                <br>
-                                <strong>${escapeHTML(post.author)}</strong>
+                            <div class="post-header">
+                                ${escapeHTML(post.title)}
+
+                                <span class="small">
+                                    —
+                                    ${escapeHTML(post.date)}
+                                </span>
                             </div>
 
-                            <div class="post-body">
-                                ${escapeHTML(post.text)}
+                            <div class="post-content">
+
+                                <div class="post-user">
+
+                                    ${
+                                        member
+                                            ? `
+                                                <img
+                                                    src="${member.image || ""}"
+                                                    alt=""
+                                                >
+                                            `
+                                            : ""
+                                    }
+
+                                    <br>
+
+                                    <strong>
+                                        ${escapeHTML(post.author)}
+                                    </strong>
+
+                                </div>
+
+                                <div class="post-body">
+                                    ${escapeHTML(post.text)}
+                                </div>
+
                             </div>
+
                         </div>
-                    </div>
-                `;
-            }).join("");
+                    `;
+                }).join("");
         }
 
         document
             .getElementById("signupForm")
-            .addEventListener("submit", async event => {
-                event.preventDefault();
+            .addEventListener(
+                "submit",
+                async event => {
+                    event.preventDefault();
 
-                const username =
-                    document.getElementById("username").value.trim();
+                    const username =
+                        document.getElementById(
+                            "username"
+                        ).value.trim();
 
-                const password =
-                    document.getElementById("signupPassword").value;
+                    const password =
+                        document.getElementById(
+                            "signupPassword"
+                        ).value;
 
-                const imageFile =
-                    document.getElementById("profileImage").files[0];
+                    const imageFile =
+                        document.getElementById(
+                            "profileImage"
+                        ).files[0];
 
-                const status =
-                    document.getElementById("signupStatus");
+                    const status =
+                        document.getElementById(
+                            "signupStatus"
+                        );
 
-                if (!username || !password || !imageFile) {
-                    showStatus(
-                        status,
-                        "Please enter a username, password, and choose an image.",
-                        true
-                    );
-                    return;
+                    if (
+                        !username ||
+                        !password ||
+                        !imageFile
+                    ) {
+                        showStatus(
+                            status,
+                            "Please enter a username, password, and choose an image.",
+                            true
+                        );
+
+                        return;
+                    }
+
+                    try {
+                        const image =
+                            await readImage(
+                                imageFile
+                            );
+
+                        const result =
+                            await api(
+                                "/api/register",
+                                {
+                                    method: "POST",
+                                    body:
+                                        JSON.stringify({
+                                            username,
+                                            password,
+                                            image
+                                        })
+                                }
+                            );
+
+                        memberToken =
+                            result.token;
+
+                        currentUser =
+                            result.member;
+
+                        localStorage.setItem(
+                            "yjs_world_member_token",
+                            memberToken
+                        );
+
+                        document
+                            .getElementById(
+                                "signupForm"
+                            )
+                            .reset();
+
+                        showStatus(
+                            status,
+                            "Welcome to YJ's World? Your account has been created!"
+                        );
+
+                        updateMemberControls();
+
+                        await loadMembers();
+
+                    } catch (error) {
+                        showStatus(
+                            status,
+                            error.message,
+                            true
+                        );
+                    }
                 }
-
-                try {
-                    const image = await readImage(imageFile);
-
-                    const result = await api("/api/register", {
-                        method: "POST",
-                        body: JSON.stringify({
-                            username,
-                            password,
-                            image
-                        })
-                    });
-
-                    memberToken = result.token;
-                    currentUser = result.member;
-
-                    localStorage.setItem(
-                        "yjs_world_member_token",
-                        memberToken
-                    );
-
-                    document.getElementById("signupForm").reset();
-
-                    showStatus(
-                        status,
-                        "Welcome to YJ's World? Your account has been created!"
-                    );
-
-                    updateMemberControls();
-                    await loadMembers();
-                } catch (error) {
-                    showStatus(status, error.message, true);
-                }
-            });
+            );
 
         document
             .getElementById("memberLoginForm")
-            .addEventListener("submit", async event => {
-                event.preventDefault();
+            .addEventListener(
+                "submit",
+                async event => {
+                    event.preventDefault();
 
-                const username =
-                    document.getElementById("loginUsername").value.trim();
+                    const username =
+                        document.getElementById(
+                            "loginUsername"
+                        ).value.trim();
 
-                const password =
-                    document.getElementById("loginPassword").value;
+                    const password =
+                        document.getElementById(
+                            "loginPassword"
+                        ).value;
 
-                const status =
-                    document.getElementById("memberLoginStatus");
+                    const status =
+                        document.getElementById(
+                            "memberLoginStatus"
+                        );
 
-                try {
-                    const result = await api("/api/login", {
-                        method: "POST",
-                        body: JSON.stringify({
-                            username,
-                            password
-                        })
-                    });
+                    try {
+                        const result =
+                            await api(
+                                "/api/login",
+                                {
+                                    method: "POST",
+                                    body:
+                                        JSON.stringify({
+                                            username,
+                                            password
+                                        })
+                                }
+                            );
 
-                    memberToken = result.token;
-                    currentUser = result.member;
+                        memberToken =
+                            result.token;
 
-                    localStorage.setItem(
-                        "yjs_world_member_token",
-                        memberToken
-                    );
+                        currentUser =
+                            result.member;
 
-                    document.getElementById("memberLoginForm").reset();
+                        localStorage.setItem(
+                            "yjs_world_member_token",
+                            memberToken
+                        );
 
-                    showStatus(
-                        status,
-                        `Welcome back, ${currentUser.username}!`
-                    );
+                        document
+                            .getElementById(
+                                "memberLoginForm"
+                            )
+                            .reset();
 
-                    updateMemberControls();
-                    await loadMembers();
-                } catch (error) {
-                    showStatus(status, error.message, true);
+                        showStatus(
+                            status,
+                            `Welcome back, ${currentUser.username}!`
+                        );
+
+                        updateMemberControls();
+
+                        await loadMembers();
+
+                    } catch (error) {
+                        showStatus(
+                            status,
+                            error.message,
+                            true
+                        );
+                    }
                 }
-            });
+            );
 
         document
             .getElementById("memberLogout")
-            .addEventListener("click", () => {
-                memberToken = "";
-                currentUser = null;
-                localStorage.removeItem("yjs_world_member_token");
-                updateMemberControls();
-            });
+            .addEventListener(
+                "click",
+                () => {
+                    memberToken = "";
+                    currentUser = null;
+
+                    localStorage.removeItem(
+                        "yjs_world_member_token"
+                    );
+
+                    updateMemberControls();
+                }
+            );
 
         document
             .getElementById("ownerLoginForm")
-            .addEventListener("submit", async event => {
-                event.preventDefault();
+            .addEventListener(
+                "submit",
+                async event => {
+                    event.preventDefault();
 
-                const username =
-                    document.getElementById("ownerUsername").value.trim();
+                    const username =
+                        document.getElementById(
+                            "ownerUsername"
+                        ).value.trim();
 
-                const password =
-                    document.getElementById("ownerPassword").value;
+                    const password =
+                        document.getElementById(
+                            "ownerPassword"
+                        ).value;
 
-                const status =
-                    document.getElementById("ownerStatus");
+                    const status =
+                        document.getElementById(
+                            "ownerStatus"
+                        );
 
-                try {
-                    const result = await api("/api/owner/login", {
-                        method: "POST",
-                        body: JSON.stringify({
-                            username,
-                            password
-                        })
-                    });
+                    try {
+                        const result =
+                            await api(
+                                "/api/owner/login",
+                                {
+                                    method: "POST",
+                                    body:
+                                        JSON.stringify({
+                                            username,
+                                            password
+                                        })
+                                }
+                            );
 
-                    ownerToken = result.token;
+                        ownerToken =
+                            result.token;
 
-                    localStorage.setItem(
-                        "yjs_world_owner_token",
-                        ownerToken
-                    );
+                        localStorage.setItem(
+                            "yjs_world_owner_token",
+                            ownerToken
+                        );
 
-                    showStatus(
-                        status,
-                        "Welcome back, YeetJeepo!"
-                    );
+                        showStatus(
+                            status,
+                            "Welcome back, YeetJeepo!"
+                        );
 
-                    document.getElementById("ownerControls").style.display =
-                        "block";
+                        document.getElementById(
+                            "ownerControls"
+                        ).style.display =
+                            "block";
 
-                    document.getElementById("ownerLoginForm").style.display =
-                        "none";
+                        document.getElementById(
+                            "ownerLoginForm"
+                        ).style.display =
+                            "none";
 
-                    document.getElementById("admin").style.display =
-                        "block";
+                        document.getElementById(
+                            "admin"
+                        ).style.display =
+                            "block";
 
-                    renderMembers();
-                } catch (error) {
-                    showStatus(status, error.message, true);
+                        renderMembers();
+
+                    } catch (error) {
+                        showStatus(
+                            status,
+                            error.message,
+                            true
+                        );
+                    }
                 }
-            });
+            );
 
         document
             .getElementById("ownerLogout")
-            .addEventListener("click", () => {
-                ownerToken = "";
-                localStorage.removeItem("yjs_world_owner_token");
+            .addEventListener(
+                "click",
+                () => {
+                    ownerToken = "";
 
-                document.getElementById("ownerLoginForm").reset();
-                document.getElementById("ownerLoginForm").style.display = "block";
-                document.getElementById("ownerControls").style.display = "none";
-                document.getElementById("admin").style.display = "none";
-                document.getElementById("ownerStatus").style.display = "none";
+                    localStorage.removeItem(
+                        "yjs_world_owner_token"
+                    );
 
-                renderMembers();
-            });
+                    document
+                        .getElementById(
+                            "ownerLoginForm"
+                        )
+                        .reset();
+
+                    document.getElementById(
+                        "ownerLoginForm"
+                    ).style.display =
+                        "block";
+
+                    document.getElementById(
+                        "ownerControls"
+                    ).style.display =
+                        "none";
+
+                    document.getElementById(
+                        "admin"
+                    ).style.display =
+                        "none";
+
+                    document.getElementById(
+                        "ownerStatus"
+                    ).style.display =
+                        "none";
+
+                    renderMembers();
+                }
+            );
 
         document
             .getElementById("postForm")
-            .addEventListener("submit", async event => {
-                event.preventDefault();
+            .addEventListener(
+                "submit",
+                async event => {
+                    event.preventDefault();
 
-                const title =
-                    document.getElementById("postTitle").value.trim();
+                    const title =
+                        document.getElementById(
+                            "postTitle"
+                        ).value.trim();
 
-                const text =
-                    document.getElementById("postText").value.trim();
+                    const text =
+                        document.getElementById(
+                            "postText"
+                        ).value.trim();
 
-                const status =
-                    document.getElementById("postStatus");
+                    const status =
+                        document.getElementById(
+                            "postStatus"
+                        );
 
-                if (!currentUser || !memberToken) {
-                    showStatus(
-                        status,
-                        "Please log in before posting.",
-                        true
-                    );
-                    return;
+                    if (
+                        !currentUser ||
+                        !memberToken
+                    ) {
+                        showStatus(
+                            status,
+                            "Please log in before posting.",
+                            true
+                        );
+
+                        return;
+                    }
+
+                    if (!title || !text) {
+                        showStatus(
+                            status,
+                            "Please enter a topic and message.",
+                            true
+                        );
+
+                        return;
+                    }
+
+                    try {
+                        await api(
+                            "/api/posts",
+                            {
+                                method: "POST",
+                                headers:
+                                    memberHeaders(),
+                                body:
+                                    JSON.stringify({
+                                        title,
+                                        text
+                                    })
+                            }
+                        );
+
+                        await loadPosts();
+
+                        document.getElementById(
+                            "postTitle"
+                        ).value = "";
+
+                        document.getElementById(
+                            "postText"
+                        ).value = "";
+
+                        showStatus(
+                            status,
+                            "Your message has been posted!"
+                        );
+
+                    } catch (error) {
+                        showStatus(
+                            status,
+                            error.message,
+                            true
+                        );
+                    }
                 }
-
-                if (!title || !text) {
-                    showStatus(
-                        status,
-                        "Please enter a topic and message.",
-                        true
-                    );
-                    return;
-                }
-
-                try {
-                    await api("/api/posts", {
-                        method: "POST",
-                        headers: memberHeaders(),
-                        body: JSON.stringify({
-                            title,
-                            text
-                        })
-                    });
-
-                    await loadPosts();
-
-                    document.getElementById("postTitle").value = "";
-                    document.getElementById("postText").value = "";
-
-                    showStatus(
-                        status,
-                        "Your message has been posted!"
-                    );
-                } catch (error) {
-                    showStatus(status, error.message, true);
-                }
-            });
+            );
 
         document
             .getElementById("appointAdmin")
-            .addEventListener("click", async () => {
-                const username =
-                    document.getElementById("adminUsername").value.trim();
+            .addEventListener(
+                "click",
+                async () => {
+                    const username =
+                        document.getElementById(
+                            "adminUsername"
+                        ).value.trim();
 
-                const status =
-                    document.getElementById("adminStatus");
+                    const status =
+                        document.getElementById(
+                            "adminStatus"
+                        );
 
-                const member = members.find(
-                    item =>
-                        item.username.toLowerCase() ===
-                        username.toLowerCase()
-                );
+                    const member =
+                        members.find(
+                            item =>
+                                item.username.toLowerCase() ===
+                                username.toLowerCase()
+                        );
 
-                if (!member) {
-                    showStatus(
-                        status,
-                        "That username does not exist.",
-                        true
-                    );
-                    return;
+                    if (!member) {
+                        showStatus(
+                            status,
+                            "That username does not exist.",
+                            true
+                        );
+
+                        return;
+                    }
+
+                    try {
+                        await api(
+                            `/api/admin/members/${member.id}/admin`,
+                            {
+                                method: "POST",
+                                headers:
+                                    ownerHeaders(),
+                                body:
+                                    JSON.stringify({
+                                        isAdmin: true
+                                    })
+                            }
+                        );
+
+                        await loadMembers();
+
+                        document.getElementById(
+                            "adminUsername"
+                        ).value = "";
+
+                        showStatus(
+                            status,
+                            `${member.username} has been appointed as an administrator.`
+                        );
+
+                    } catch (error) {
+                        showStatus(
+                            status,
+                            error.message,
+                            true
+                        );
+                    }
                 }
-
-                try {
-                    await api(`/api/admin/members/${member.id}/admin`, {
-                        method: "POST",
-                        headers: ownerHeaders(),
-                        body: JSON.stringify({
-                            isAdmin: true
-                        })
-                    });
-
-                    await loadMembers();
-
-                    document.getElementById("adminUsername").value = "";
-
-                    showStatus(
-                        status,
-                        `${member.username} has been appointed as an administrator.`
-                    );
-                } catch (error) {
-                    showStatus(status, error.message, true);
-                }
-            });
+            );
 
         async function makeAdmin(id) {
             try {
-                await api(`/api/admin/members/${id}/admin`, {
-                    method: "POST",
-                    headers: ownerHeaders(),
-                    body: JSON.stringify({
-                        isAdmin: true
-                    })
-                });
+                await api(
+                    `/api/admin/members/${id}/admin`,
+                    {
+                        method: "POST",
+                        headers:
+                            ownerHeaders(),
+                        body:
+                            JSON.stringify({
+                                isAdmin: true
+                            })
+                    }
+                );
 
                 await loadMembers();
+
             } catch (error) {
                 showStatus(
-                    document.getElementById("adminStatus"),
+                    document.getElementById(
+                        "adminStatus"
+                    ),
                     error.message,
                     true
                 );
@@ -1427,18 +1763,26 @@
 
         async function removeAdmin(id) {
             try {
-                await api(`/api/admin/members/${id}/admin`, {
-                    method: "POST",
-                    headers: ownerHeaders(),
-                    body: JSON.stringify({
-                        isAdmin: false
-                    })
-                });
+                await api(
+                    `/api/admin/members/${id}/admin`,
+                    {
+                        method: "POST",
+                        headers:
+                            ownerHeaders(),
+                        body:
+                            JSON.stringify({
+                                isAdmin: false
+                            })
+                    }
+                );
 
                 await loadMembers();
+
             } catch (error) {
                 showStatus(
-                    document.getElementById("adminStatus"),
+                    document.getElementById(
+                        "adminStatus"
+                    ),
                     error.message,
                     true
                 );
@@ -1447,10 +1791,14 @@
 
         async function removeMember(id) {
             try {
-                await api(`/api/admin/members/${id}`, {
-                    method: "DELETE",
-                    headers: ownerHeaders()
-                });
+                await api(
+                    `/api/admin/members/${id}`,
+                    {
+                        method: "DELETE",
+                        headers:
+                            ownerHeaders()
+                    }
+                );
 
                 if (
                     currentUser &&
@@ -1458,15 +1806,22 @@
                 ) {
                     memberToken = "";
                     currentUser = null;
-                    localStorage.removeItem("yjs_world_member_token");
+
+                    localStorage.removeItem(
+                        "yjs_world_member_token"
+                    );
+
                     updateMemberControls();
                 }
 
                 await loadMembers();
                 await loadPosts();
+
             } catch (error) {
                 showStatus(
-                    document.getElementById("adminStatus"),
+                    document.getElementById(
+                        "adminStatus"
+                    ),
                     error.message,
                     true
                 );
@@ -1474,36 +1829,53 @@
         }
 
         function readImage(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
+            return new Promise(
+                (resolve, reject) => {
+                    const reader =
+                        new FileReader();
 
-                reader.onload = () => {
-                    resolve(reader.result);
-                };
+                    reader.onload = () => {
+                        resolve(
+                            reader.result
+                        );
+                    };
 
-                reader.onerror = () => {
-                    reject(new Error("Could not read image."));
-                };
+                    reader.onerror = () => {
+                        reject(
+                            new Error(
+                                "Could not read image."
+                            )
+                        );
+                    };
 
-                reader.readAsDataURL(file);
-            });
+                    reader.readAsDataURL(
+                        file
+                    );
+                }
+            );
         }
 
-               async function startPage() {
+        async function startPage() {
             let membersLoaded = false;
 
             try {
                 await loadMembers();
                 membersLoaded = true;
+
             } catch (error) {
-                document.getElementById("memberList").innerHTML =
+                document.getElementById(
+                    "memberList"
+                ).innerHTML =
                     `<div class="small">Could not load members: ${escapeHTML(error.message)}</div>`;
             }
 
             try {
                 await loadPosts();
+
             } catch (error) {
-                document.getElementById("postList").innerHTML =
+                document.getElementById(
+                    "postList"
+                ).innerHTML =
                     `<div class="small">Could not load posts: ${escapeHTML(error.message)}</div>`;
             }
 
@@ -1511,21 +1883,35 @@
 
             if (ownerToken) {
                 try {
-                    await api("/api/members", {
-                        headers: ownerHeaders()
-                    });
+                    await api(
+                        "/api/members",
+                        {
+                            headers:
+                                ownerHeaders()
+                        }
+                    );
 
-                    document.getElementById("ownerLoginForm").style.display =
+                    document.getElementById(
+                        "ownerLoginForm"
+                    ).style.display =
                         "none";
 
-                    document.getElementById("ownerControls").style.display =
+                    document.getElementById(
+                        "ownerControls"
+                    ).style.display =
                         "block";
 
-                    document.getElementById("admin").style.display =
+                    document.getElementById(
+                        "admin"
+                    ).style.display =
                         "block";
+
                 } catch {
                     ownerToken = "";
-                    localStorage.removeItem("yjs_world_owner_token");
+
+                    localStorage.removeItem(
+                        "yjs_world_owner_token"
+                    );
                 }
             }
 
@@ -1536,7 +1922,7 @@
             renderPosts();
             updateMemberControls();
         }
-        
+
         startPage();
     </script>
 
