@@ -1746,96 +1746,69 @@
            ========================================================= */
 
         function renderPosts() {
+    const list = document.getElementById("postList");
 
-            const list =
-                document.getElementById(
-                    "postList"
-                );
+    if (posts.length === 0) {
+        list.innerHTML =
+            '<div class="small">No posts yet.</div>';
+        return;
+    }
 
-            if (!list) {
-                return;
-            }
+    list.innerHTML = posts.map(post => {
+        const member = members.find(
+            m => m._id === post.authorId
+        );
 
-            if (posts.length === 0) {
+        const deleteButton = ownerToken
+            ? `
+                <button
+                    type="button"
+                    class="delete-post"
+                    data-post-id="${post._id}"
+                >
+                    Delete Post
+                </button>
+            `
+            : "";
 
-                list.innerHTML =
-                    '<div class="small">No posts yet.</div>';
+        return `
+            <div class="post">
+                <div class="post-header">
+                    ${escapeHTML(post.title)}
+                    <span class="small">
+                        — ${escapeHTML(post.date)}
+                    </span>
+                </div>
 
-                return;
-            }
-
-            list.innerHTML =
-                posts
-                    .map(
-                        post => {
-
-                            const member =
-                                members.find(
-                                    m =>
-                                        m.id ===
-                                        post.authorId
-                                );
-
-                            return `
-
-                                <div class="post">
-
-                                    <div class="post-header">
-
-                                        ${escapeHTML(
-                                            post.title
-                                        )}
-
-                                        <span class="small">
-                                            —
-                                            ${escapeHTML(
-                                                post.date
-                                            )}
-                                        </span>
-
-                                    </div>
-
-                                    <div class="post-content">
-
-                                        <div class="post-user">
-
-                                            ${
-                                                member
-                                                    ? `
-                                                        <img
-                                                            src="${member.image || ""}"
-                                                            alt=""
-                                                        >
-                                                    `
-                                                    : ""
-                                            }
-
-                                            <br>
-
-                                            <strong>
-                                                ${escapeHTML(
-                                                    post.author
-                                                )}
-                                            </strong>
-
-                                        </div>
-
-                                        <div class="post-body">
-                                            ${escapeHTML(
-                                                post.text
-                                            )}
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                            `;
+                <div class="post-content">
+                    <div class="post-user">
+                        ${
+                            member
+                                ? `<img src="${member.image}" alt="">`
+                                : ""
                         }
-                    )
-                    .join("");
-        }
+                        <br>
+                        <strong>${escapeHTML(post.author)}</strong>
+                    </div>
 
+                    <div class="post-body">
+                        ${escapeHTML(post.text)}
+
+                        ${
+                            ownerToken
+                                ? `
+                                    <div style="margin-top:10px;">
+                                        ${deleteButton}
+                                    </div>
+                                `
+                                : ""
+                        }
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join("");
+}
 
         /* =========================================================
            MEMBER REGISTRATION
@@ -2208,95 +2181,68 @@
            ========================================================= */
 
         document
-            .getElementById(
-                "ownerLoginForm"
-            )
-            .addEventListener(
-                "submit",
-                async event => {
+    .getElementById("ownerLoginForm")
+    .addEventListener("submit", async event => {
+        event.preventDefault();
 
-                    event.preventDefault();
+        const username =
+            document.getElementById("ownerUsername").value.trim();
 
-                    const username =
-                        document.getElementById(
-                            "ownerUsername"
-                        ).value.trim();
+        const password =
+            document.getElementById("ownerPassword").value;
 
-                    const password =
-                        document.getElementById(
-                            "ownerPassword"
-                        ).value;
+        const status =
+            document.getElementById("ownerStatus");
 
-                    const status =
-                        document.getElementById(
-                            "ownerStatus"
-                        );
+        try {
+            const result = await api("/api/owner/login", {
+                method: "POST",
+                body: JSON.stringify({
+                    username,
+                    password
+                })
+            });
 
-                    try {
+            ownerToken = result.token;
 
-                        const result =
-                            await api(
-                                "/api/owner/login",
-                                {
-                                    method: "POST",
-
-                                    body:
-                                        JSON.stringify({
-                                            username,
-                                            password
-                                        })
-                                }
-                            );
-
-                        ownerToken =
-                            result.token;
-
-                        localStorage.setItem(
-                            "yjs_world_owner_token",
-                            ownerToken
-                        );
-
-                        showStatus(
-                            status,
-                            "Welcome back, YeetJeepo!"
-                        );
-
-                        document.getElementById(
-                            "ownerLoginArea"
-                        ).style.display =
-                            "none";
-
-                        document.getElementById(
-                            "ownerLoginGate"
-                        ).style.display =
-                            "none";
-
-                        document.getElementById(
-                            "ownerControls"
-                        ).style.display =
-                            "block";
-
-                        document.getElementById(
-                            "admin"
-                        ).style.display =
-                            "block";
-
-                        renderMembers();
-
-                    } catch (error) {
-
-                        showStatus(
-                            status,
-                            error.message,
-                            true
-                        );
-
-                    }
-
-                }
+            localStorage.setItem(
+                "yjs_world_owner_token",
+                ownerToken
             );
 
+            showStatus(
+                status,
+                "Welcome back, YeetJeepo!"
+            );
 
+            document.getElementById("ownerControls").style.display =
+                "block";
+
+            document.getElementById("ownerLoginForm").style.display =
+                "none";
+
+            document.getElementById("admin").style.display =
+                "block";
+
+            /*
+             * Owner is now the active poster.
+             */
+
+            
+            /*
+             * Re-render posts so Delete buttons appear.
+             */
+            renderPosts();
+
+            /*
+             * Re-render members so owner moderation controls appear.
+             */
+            renderMembers();
+
+        } catch (error) {
+            showStatus(status, error.message, true);
+        }
+    });
         /* =========================================================
            OWNER LOGOUT
            ========================================================= */
@@ -2363,132 +2309,106 @@
            ========================================================= */
 
         document
-            .getElementById(
-                "postForm"
-            )
-            .addEventListener(
-                "submit",
-                async event => {
+    .getElementById("postForm")
+    .addEventListener("submit", async event => {
+        event.preventDefault();
 
-                    event.preventDefault();
+        const title =
+            document.getElementById("postTitle").value.trim();
 
-                    const title =
-                        document.getElementById(
-                            "postTitle"
-                        ).value.trim();
+        const text =
+            document.getElementById("postText").value.trim();
 
-                    const text =
-                        document.getElementById(
-                            "postText"
-                        ).value.trim();
+        const status =
+            document.getElementById("postStatus");
 
-                    const status =
-                        document.getElementById(
-                            "postStatus"
-                        );
+        /*
+         * Either a logged-in member OR the site owner
+         * is allowed to post.
+         */
+        if (!memberToken && !ownerToken) {
+            showStatus(
+                status,
+                "Please log in before posting.",
+                true
+            );
+            return;
+        }
 
+        if (!title || !text) {
+            showStatus(
+                status,
+                "Please enter a topic and message.",
+                true
+            );
+            return;
+        }
 
-                    /*
-                     * Posting requires a valid logged-in
-                     * member session.
-                     */
+        /*
+         * Use the owner token when the owner is logged in.
+         * Otherwise use the member token.
+         */
+        const headers = ownerToken
+            ? ownerHeaders()
+            : memberHeaders();
 
-                    if (
-                        !currentUser ||
-                        !memberToken
-                    ) {
+        try {
+            await api("/api/posts", {
+                method: "POST",
+                headers,
+                body: JSON.stringify({
+                    title,
+                    text
+                })
+            });
 
-                        showStatus(
-                            status,
-                            "Please log in before posting.",
-                            true
-                        );
+            await loadPosts();
 
-                        return;
-                    }
+            document.getElementById("postTitle").value = "";
+            document.getElementById("postText").value = "";
 
-
-                    if (
-                        !title ||
-                        !text
-                    ) {
-
-                        showStatus(
-                            status,
-                            "Please enter a topic and message.",
-                            true
-                        );
-
-                        return;
-                    }
-
-
-                    try {
-
-                        /*
-                         * The member JWT is sent to the backend.
-                         *
-                         * The backend can therefore determine
-                         * which member created the post.
-                         */
-
-                        await api(
-                            "/api/posts",
-                            {
-                                method: "POST",
-
-                                headers:
-                                    memberHeaders(),
-
-                                body:
-                                    JSON.stringify({
-                                        title,
-                                        text
-                                    })
-                            }
-                        );
-
-
-                        /*
-                         * Refresh the post list.
-                         */
-
-                        await loadPosts();
-
-
-                        /*
-                         * Clear the form.
-                         */
-
-                        document.getElementById(
-                            "postTitle"
-                        ).value =
-                            "";
-
-                        document.getElementById(
-                            "postText"
-                        ).value =
-                            "";
-
-
-                        showStatus(
-                            status,
-                            "Your message has been posted!"
-                        );
-
-                    } catch (error) {
-
-                        showStatus(
-                            status,
-                            error.message,
-                            true
-                        );
-
-                    }
-
-                }
+            showStatus(
+                status,
+                "Your message has been posted!"
             );
 
+        } catch (error) {
+            showStatus(status, error.message, true);
+        }
+    });
+
+        document.addEventListener("click", async event => {
+    const button =
+        event.target.closest(".delete-post");
+
+    if (!button) {
+        return;
+    }
+
+    if (!ownerToken) {
+        alert("Owner login required.");
+        return;
+    }
+
+    const postId =
+        button.dataset.postId;
+
+    if (!confirm("Delete this post?")) {
+        return;
+    }
+
+    try {
+        await api(`/api/posts/${postId}`, {
+            method: "DELETE",
+            headers: ownerHeaders()
+        });
+
+        await loadPosts();
+
+    } catch (error) {
+        alert(error.message);
+    }
+});
 
         /* =========================================================
            APPOINT ADMIN
