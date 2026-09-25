@@ -146,6 +146,39 @@
             font-size: 11px;
         }
 
+        .role-tag {
+            display: inline-block;
+            padding: 2px 5px;
+            margin-left: 4px;
+            border: 1px solid #777;
+            background: #e6e6e6;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .lookup-box {
+            margin-bottom: 8px;
+        }
+
+        .lookup-box input {
+            max-width: 260px;
+        }
+
+        .lookup-results {
+            margin-top: 8px;
+        }
+
+        .lookup-result {
+            margin-bottom: 6px;
+            padding: 5px;
+            background: white;
+            border: 1px solid #aaa;
+        }
+
+        .lookup-result:last-child {
+            margin-bottom: 0;
+        }
+
         .status {
             padding: 6px;
             background: #e5ffe5;
@@ -285,6 +318,33 @@
                     </div>
 
                     <div class="box-body">
+
+                        <div class="lookup-box">
+                            <label for="memberLookup">
+                                <strong>
+                                    User Lookup:
+                                </strong>
+                            </label>
+
+                            <input
+                                id="memberLookup"
+                                type="text"
+                                maxlength="24"
+                                placeholder="Enter a username"
+                            >
+
+                            <button
+                                type="button"
+                                id="lookupMember"
+                            >
+                                Look Up User
+                            </button>
+
+                            <div
+                                id="memberLookupResults"
+                                class="lookup-results"
+                            ></div>
+                        </div>
 
                         <div
                             id="memberStatus"
@@ -542,6 +602,90 @@
            LOAD MEMBERS
            ========================================================= */
 
+        function profileURL(memberId) {
+
+            return `profile.html?id=${encodeURIComponent(
+                memberId
+            )}`;
+
+        }
+
+
+        function roleLabel(member) {
+
+            if (member.role === "co-owner") {
+                return "Co-Owner";
+            }
+
+            if (
+                member.role === "admin" ||
+                member.isAdmin
+            ) {
+                return "Administrator";
+            }
+
+            return "Member";
+
+        }
+
+
+        function renderRoleTag(member) {
+
+            return `
+                <span class="role-tag">
+                    ${escapeHTML(
+                        roleLabel(member)
+                    )}
+                </span>
+            `;
+
+        }
+
+
+        function renderLookupResults(matches) {
+
+            const results =
+                document.getElementById(
+                    "memberLookupResults"
+                );
+
+            if (!matches.length) {
+
+                results.innerHTML =
+                    `<div class="small">
+                        No users found.
+                    </div>`;
+
+                return;
+
+            }
+
+            results.innerHTML =
+                matches
+                    .map(
+                        member => `
+                            <div class="lookup-result">
+
+                                <a
+                                    href="${profileURL(member._id)}"
+                                >
+                                    <strong>
+                                        ${escapeHTML(
+                                            member.username
+                                        )}
+                                    </strong>
+                                </a>
+
+                                ${renderRoleTag(member)}
+
+                            </div>
+                        `
+                    )
+                    .join("");
+
+        }
+
+
         async function loadMembers() {
 
             const list =
@@ -598,19 +742,23 @@
                                     <div>
 
                                         <div class="user-name">
-                                            ${escapeHTML(
-                                                member.username
-                                            )}
+                                            <a
+                                                href="${profileURL(member._id)}"
+                                            >
+                                                ${escapeHTML(
+                                                    member.username
+                                                )}
+                                            </a>
+                                            ${renderRoleTag(member)}
                                         </div>
 
                                         <div class="user-role">
-
-                                            ${
-                                                member.isAdmin
-                                                    ? "Administrator"
-                                                    : "Member"
-                                            }
-
+                                            Profile page:
+                                            <a
+                                                href="${profileURL(member._id)}"
+                                            >
+                                                View Profile
+                                            </a>
                                         </div>
 
                                     </div>
@@ -620,6 +768,17 @@
                             `
                         )
                         .join("");
+
+                renderLookupResults(members);
+
+
+                document.getElementById(
+                    "memberLookup"
+                ).dataset.loaded = "true";
+
+
+                window.yjsWorldMembers =
+                    members;
 
 
             } catch (error) {
@@ -644,6 +803,66 @@
             }
 
         }
+
+
+        function runMemberLookup() {
+
+            const input =
+                document.getElementById(
+                    "memberLookup"
+                );
+
+            const query =
+                input.value
+                    .trim()
+                    .toLowerCase();
+
+            const members =
+                window.yjsWorldMembers || [];
+
+            if (!query) {
+
+                renderLookupResults(members);
+
+                return;
+
+            }
+
+            const matches =
+                members.filter(
+                    member =>
+                        String(
+                            member.username || ""
+                        )
+                            .toLowerCase()
+                            .includes(query)
+                );
+
+            renderLookupResults(matches);
+
+        }
+
+
+        document.getElementById(
+            "lookupMember"
+        ).addEventListener(
+            "click",
+            runMemberLookup
+        );
+
+
+        document.getElementById(
+            "memberLookup"
+        ).addEventListener(
+            "keydown",
+            event => {
+
+                if (event.key === "Enter") {
+                    runMemberLookup();
+                }
+
+            }
+        );
 
 
         /* =========================================================
