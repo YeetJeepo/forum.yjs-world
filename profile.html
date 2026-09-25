@@ -359,6 +359,14 @@
             background: #ffeaea;
         }
 
+        .profile-moderation-button.admin-action {
+            background: #ffffcc;
+        }
+
+        .profile-moderation-button.admin-action:hover {
+            background: #ffffee;
+        }
+
         @media (max-width: 650px) {
 
             .profile-card {
@@ -550,9 +558,6 @@
 
     /*
      * The member currently being displayed.
-     *
-     * This avoids putting the entire member object
-     * inside onclick HTML attributes.
      */
 
     let profileMember = null;
@@ -686,10 +691,6 @@
 
     /*
      * Determine the logged-in user's role.
-     *
-     * Owner uses /api/owner/me.
-     *
-     * Members use /api/me.
      */
 
     async function loadCurrentAuth() {
@@ -697,20 +698,23 @@
         currentAuth = null;
 
 
+        /*
+         * OWNER
+         */
+
         if (ownerToken) {
 
             try {
 
-                const data =
-                    await api(
-                        "/api/owner/me",
-                        {
-                            headers: {
-                                Authorization:
-                                    `Bearer ${ownerToken}`
-                            }
+                await api(
+                    "/api/owner/me",
+                    {
+                        headers: {
+                            Authorization:
+                                `Bearer ${ownerToken}`
                         }
-                    );
+                    }
+                );
 
 
                 currentAuth = {
@@ -733,6 +737,10 @@
 
         }
 
+
+        /*
+         * MEMBER
+         */
 
         if (memberToken) {
 
@@ -757,6 +765,7 @@
 
                 currentAuth = {
                     type: "member",
+
                     role:
                         member.role ||
                         (
@@ -764,6 +773,7 @@
                                 ? "admin"
                                 : "member"
                         ),
+
                     member
                 };
 
@@ -802,6 +812,11 @@
             return member.role;
         }
 
+
+        /*
+         * Backwards compatibility with
+         * older accounts using admin: true.
+         */
 
         if (member.admin) {
             return "admin";
@@ -855,7 +870,7 @@
 
 
         /*
-         * Ordinary members cannot moderate.
+         * Only moderators can moderate.
          */
 
         if (
@@ -870,18 +885,21 @@
 
 
         /*
-         * Owner cannot be moderated through
-         * this profile page.
+         * Nobody can moderate the Owner.
          */
 
-        if (targetRole === "owner") {
+        if (
+            targetRole === "owner"
+        ) {
+
             return false;
+
         }
 
 
         /*
-         * Co-Owner cannot be moderated by
-         * another moderator here.
+         * Only the Owner can moderate
+         * the Co-Owner.
          */
 
         if (
@@ -895,8 +913,8 @@
 
 
         /*
-         * Admins may only moderate ordinary
-         * members.
+         * Admins can only moderate
+         * ordinary members.
          */
 
         if (
@@ -915,172 +933,196 @@
 
 
     /*
-     * Create the moderation controls.
+     * BUILD MODERATION CONTROLS
+     *
+     * This was the missing function that
+     * caused:
+     *
+     * "buildModerationControls is not defined"
+     */
+
+    function buildModerationControls(member) {
+
+        /*
+         * No authenticated moderator =
+         * no controls.
+         */
+
+        if (!currentAuth) {
+            return "";
+        }
+
+
+        /*
+         * Check whether the current user
+         * may moderate this target.
+         */
+
+        if (
+            !canModerateTarget(member)
+        ) {
+
+            return "";
+
+        }
+
+
+        const actorRole =
+            currentAuth.role ||
+            "member";
+
+
+        const targetRole =
+            getMemberRole(member);
+
+
+        let buttons = "";
+
+
+        /*
+         * KICK
+         *
+         * Owner, Co-Owner and Admin can
+         * kick anyone they are allowed
+         * to target.
+         */
+
+        buttons += `
+            <button
+                type="button"
+                class="profile-moderation-button"
+                onclick="moderateMember('kick')"
+            >
+                Kick Member
+            </button>
+        `;
+
+
+        /*
+         * BAN
+         *
+         * Owner, Co-Owner and Admin can
+         * ban anyone they are allowed
+         * to target.
+         */
+
+        buttons += `
+            <button
+                type="button"
+                class="profile-moderation-button danger"
+                onclick="moderateMember('ban')"
+            >
+                Ban Member
+            </button>
+        `;
+
+
+        /*
+         * MAKE ADMIN
+         *
+         * Only Owner and Co-Owner.
+         *
+         * Only ordinary members may
+         * be promoted.
+         */
+
+        if (
+            (
+                actorRole === "owner" ||
+                actorRole === "co-owner"
+            ) &&
+            targetRole === "member"
+        ) {
+
+            buttons += `
+                <button
+                    type="button"
+                    class="profile-moderation-button admin-action"
+                    onclick="moderateMember('make-admin')"
+                >
+                    Make Admin
+                </button>
+            `;
+
+        }
+
+
+        /*
+         * REMOVE ADMIN
+         *
+         * Only Owner and Co-Owner.
+         *
+         * Only administrators can have
+         * this control.
+         */
+
+        if (
+            (
+                actorRole === "owner" ||
+                actorRole === "co-owner"
+            ) &&
+            targetRole === "admin"
+        ) {
+
+            buttons += `
+                <button
+                    type="button"
+                    class="profile-moderation-button admin-action"
+                    onclick="moderateMember('remove-admin')"
+                >
+                    Remove Admin
+                </button>
+            `;
+
+        }
+
+
+        /*
+         * If there somehow are no buttons,
+         * don't display an empty box.
+         */
+
+        if (!buttons.trim()) {
+            return "";
+        }
+
+
+        return `
+            <div class="profile-moderation">
+
+                <div class="profile-moderation-title">
+                    Moderation Controls
+                </div>
+
+                <div class="profile-moderation-buttons">
+
+                    ${buttons}
+
+                </div>
+
+            </div>
+        `;
+
+    }
+
+
+    /*
+     * Perform a moderation action.
      */
 
     async function moderateMember(action) {
 
-    const member =
-        profileMember;
-
-
-    if (!member || !member._id) {
-
-        alert(
-            "No member was selected."
-        );
-
-        return;
-
-    }
-
-
-    if (
-        !canModerateTarget(member)
-    ) {
-
-        alert(
-            "You are not allowed to moderate this member."
-        );
-
-        return;
-
-    }
-
-
-    const token =
-        ownerToken ||
-        memberToken;
-
-
-    if (!token) {
-
-        alert(
-            "You must be logged in to moderate members."
-        );
-
-        return;
-
-    }
-
-
-    let endpoint = "";
-    let method = "POST";
-    let body = undefined;
-
-
-    /*
-     * KICK
-     */
-
-    if (action === "kick") {
-
-        const duration =
-            prompt(
-                "Kick duration in minutes:\n\n" +
-                "10 = 10 minutes\n" +
-                "30 = 30 minutes\n" +
-                "60 = 1 hour\n" +
-                "360 = 6 hours\n" +
-                "1440 = 1 day\n" +
-                "10080 = 7 days",
-                "10"
-            );
-
-
-        if (duration === null) {
-            return;
-        }
-
-
-        const minutes =
-            Number(duration);
-
-
-        const allowedDurations = [
-            10,
-            30,
-            60,
-            360,
-            1440,
-            10080
-        ];
+        const member =
+            profileMember;
 
 
         if (
-            !allowedDurations.includes(
-                minutes
-            )
+            !member ||
+            !member._id
         ) {
 
             alert(
-                "Invalid kick duration."
-            );
-
-            return;
-
-        }
-
-
-        const confirmed =
-            confirm(
-                `Kick ${member.username} for ${minutes} minutes?`
-            );
-
-
-        if (!confirmed) {
-            return;
-        }
-
-
-        endpoint =
-            `/api/moderation/members/${encodeURIComponent(member._id)}/kick`;
-
-
-        body =
-            JSON.stringify({
-                minutes
-            });
-
-    }
-
-
-    /*
-     * BAN
-     */
-
-    else if (action === "ban") {
-
-        const confirmed =
-            confirm(
-                `Permanently ban ${member.username}?`
-            );
-
-
-        if (!confirmed) {
-            return;
-        }
-
-
-        endpoint =
-            `/api/moderation/members/${encodeURIComponent(member._id)}/ban`;
-
-    }
-
-
-    /*
-     * MAKE ADMIN
-     */
-
-    else if (action === "make-admin") {
-
-        if (
-            currentAuth.role !== "owner" &&
-            currentAuth.role !== "co-owner"
-        ) {
-
-            alert(
-                "Only the Owner or Co-Owner can make members administrators."
+                "No member was selected."
             );
 
             return;
@@ -1089,11 +1131,11 @@
 
 
         if (
-            getMemberRole(member) !== "member"
+            !canModerateTarget(member)
         ) {
 
             alert(
-                "Only regular members can be made administrators."
+                "You are not allowed to moderate this member."
             );
 
             return;
@@ -1101,36 +1143,15 @@
         }
 
 
-        const confirmed =
-            confirm(
-                `Make ${member.username} a site administrator?`
-            );
+        const token =
+            ownerToken ||
+            memberToken;
 
 
-        if (!confirmed) {
-            return;
-        }
-
-
-        endpoint =
-            `/api/admin/members/${encodeURIComponent(member._id)}/admin`;
-
-    }
-
-
-    /*
-     * REMOVE ADMIN
-     */
-
-    else if (action === "remove-admin") {
-
-        if (
-            currentAuth.role !== "owner" &&
-            currentAuth.role !== "co-owner"
-        ) {
+        if (!token) {
 
             alert(
-                "Only the Owner or Co-Owner can remove administrators."
+                "You must be logged in to moderate members."
             );
 
             return;
@@ -1138,158 +1159,349 @@
         }
 
 
-        if (
-            getMemberRole(member) !== "admin"
-        ) {
-
-            alert(
-                "This member is not an administrator."
-            );
-
-            return;
-
-        }
-
-
-        const confirmed =
-            confirm(
-                `Remove Administrator privileges from ${member.username}?`
-            );
-
-
-        if (!confirmed) {
-            return;
-        }
-
-
-        endpoint =
-            `/api/admin/members/${encodeURIComponent(member._id)}/admin`;
+        let endpoint = "";
+        let method = "POST";
+        let body = undefined;
 
 
         /*
-         * Your existing server endpoint
-         * uses DELETE.
+         * KICK
          */
-        method = "DELETE";
 
-    }
+        if (
+            action === "kick"
+        ) {
 
-
-    else {
-
-        return;
-
-    }
-
-
-    try {
-
-        const response =
-            await fetch(
-                `${API_BASE}${endpoint}`,
-                {
-                    method,
-
-                    headers: {
-                        "Content-Type":
-                            "application/json",
-
-                        Authorization:
-                            `Bearer ${token}`
-                    },
-
-                    ...(body
-                        ? {
-                            body
-                        }
-                        : {})
-                }
-            );
+            const duration =
+                prompt(
+                    "Kick duration in minutes:\n\n" +
+                    "10 = 10 minutes\n" +
+                    "30 = 30 minutes\n" +
+                    "60 = 1 hour\n" +
+                    "360 = 6 hours\n" +
+                    "1440 = 1 day\n" +
+                    "10080 = 7 days",
+                    "10"
+                );
 
 
-        let data = null;
+            if (
+                duration === null
+            ) {
+
+                return;
+
+            }
+
+
+            const minutes =
+                Number(duration);
+
+
+            const allowedDurations = [
+                10,
+                30,
+                60,
+                360,
+                1440,
+                10080
+            ];
+
+
+            if (
+                !allowedDurations.includes(
+                    minutes
+                )
+            ) {
+
+                alert(
+                    "Invalid kick duration."
+                );
+
+                return;
+
+            }
+
+
+            const confirmed =
+                confirm(
+                    `Kick ${member.username} for ${minutes} minutes?`
+                );
+
+
+            if (!confirmed) {
+                return;
+            }
+
+
+            endpoint =
+                `/api/moderation/members/${encodeURIComponent(member._id)}/kick`;
+
+
+            body =
+                JSON.stringify({
+                    minutes
+                });
+
+        }
+
+
+        /*
+         * BAN
+         */
+
+        else if (
+            action === "ban"
+        ) {
+
+            const confirmed =
+                confirm(
+                    `Permanently ban ${member.username}?`
+                );
+
+
+            if (!confirmed) {
+                return;
+            }
+
+
+            endpoint =
+                `/api/moderation/members/${encodeURIComponent(member._id)}/ban`;
+
+        }
+
+
+        /*
+         * MAKE ADMIN
+         */
+
+        else if (
+            action === "make-admin"
+        ) {
+
+            if (
+                currentAuth.role !== "owner" &&
+                currentAuth.role !== "co-owner"
+            ) {
+
+                alert(
+                    "Only the Owner or Co-Owner can make members administrators."
+                );
+
+                return;
+
+            }
+
+
+            if (
+                getMemberRole(member) !== "member"
+            ) {
+
+                alert(
+                    "Only regular members can be made administrators."
+                );
+
+                return;
+
+            }
+
+
+            const confirmed =
+                confirm(
+                    `Make ${member.username} a site administrator?`
+                );
+
+
+            if (!confirmed) {
+                return;
+            }
+
+
+            endpoint =
+                `/api/admin/members/${encodeURIComponent(member._id)}/admin`;
+
+        }
+
+
+        /*
+         * REMOVE ADMIN
+         */
+
+        else if (
+            action === "remove-admin"
+        ) {
+
+            if (
+                currentAuth.role !== "owner" &&
+                currentAuth.role !== "co-owner"
+            ) {
+
+                alert(
+                    "Only the Owner or Co-Owner can remove administrators."
+                );
+
+                return;
+
+            }
+
+
+            if (
+                getMemberRole(member) !== "admin"
+            ) {
+
+                alert(
+                    "This member is not an administrator."
+                );
+
+                return;
+
+            }
+
+
+            const confirmed =
+                confirm(
+                    `Remove Administrator privileges from ${member.username}?`
+                );
+
+
+            if (!confirmed) {
+                return;
+            }
+
+
+            endpoint =
+                `/api/admin/members/${encodeURIComponent(member._id)}/admin`;
+
+
+            method = "DELETE";
+
+        }
+
+
+        else {
+
+            return;
+
+        }
 
 
         try {
 
-            data =
-                await response.json();
+            const response =
+                await fetch(
+                    `${API_BASE}${endpoint}`,
+                    {
+                        method,
 
-        } catch {
+                        headers: {
+                            "Content-Type":
+                                "application/json",
 
-            data = null;
+                            Authorization:
+                                `Bearer ${token}`
+                        },
 
-        }
+                        ...(body
+                            ? {
+                                body
+                            }
+                            : {})
+                    }
+                );
 
 
-        if (!response.ok) {
+            let data = null;
 
-            throw new Error(
-                data &&
-                data.error
-                    ? data.error
-                    : `Request failed with status ${response.status}.`
+
+            try {
+
+                data =
+                    await response.json();
+
+            } catch {
+
+                data = null;
+
+            }
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data &&
+                    data.error
+                        ? data.error
+                        : `Request failed with status ${response.status}.`
+                );
+
+            }
+
+
+            if (
+                action === "kick"
+            ) {
+
+                alert(
+                    `${member.username} has been kicked.`
+                );
+
+            }
+
+            else if (
+                action === "ban"
+            ) {
+
+                alert(
+                    `${member.username} has been permanently banned.`
+                );
+
+            }
+
+            else if (
+                action === "make-admin"
+            ) {
+
+                alert(
+                    `${member.username} is now an Administrator.`
+                );
+
+            }
+
+            else if (
+                action === "remove-admin"
+            ) {
+
+                alert(
+                    `${member.username} is no longer an Administrator.`
+                );
+
+            }
+
+
+            /*
+             * Reload the profile so the
+             * updated role/state appears.
+             */
+
+            await loadProfile();
+
+        } catch (error) {
+
+            console.error(
+                "Moderation error:",
+                error
             );
 
-        }
-
-
-        if (action === "kick") {
 
             alert(
-                `${member.username} has been kicked.`
+                error.message ||
+                "Unable to complete moderation action."
             );
 
         }
-
-        else if (action === "ban") {
-
-            alert(
-                `${member.username} has been permanently banned.`
-            );
-
-        }
-
-        else if (action === "make-admin") {
-
-            alert(
-                `${member.username} is now an Administrator.`
-            );
-
-        }
-
-        else if (action === "remove-admin") {
-
-            alert(
-                `${member.username} is no longer an Administrator.`
-            );
-
-        }
-
-
-        /*
-         * Reload the profile so the new
-         * role/state appears immediately.
-         */
-
-        await loadProfile();
-
-    } catch (error) {
-
-        console.error(
-            "Moderation error:",
-            error
-        );
-
-
-        alert(
-            error.message ||
-            "Unable to complete moderation action."
-        );
 
     }
 
-}
 
     /*
      * Format member registration date.
@@ -1298,9 +1510,7 @@
     function formatMemberDate(value) {
 
         if (!value) {
-
             return "Unknown";
-
         }
 
 
@@ -1338,9 +1548,7 @@
     function formatPostDate(post) {
 
         if (post.date) {
-
             return post.date;
-
         }
 
 
@@ -1388,9 +1596,7 @@
 
             area.innerHTML = `
                 <div class="error">
-
                     Sorry, that member could not be found.
-
                 </div>
             `;
 
@@ -1400,8 +1606,7 @@
 
 
         /*
-         * Save the current profile member
-         * so moderation buttons can use it.
+         * Save the current profile member.
          */
 
         profileMember =
@@ -1409,17 +1614,22 @@
 
 
         /*
-         * Determine who is currently logged in.
+         * Determine who is logged in.
          *
-         * Failure here does NOT prevent the
-         * public profile from loading.
+         * If authentication fails, the
+         * public profile still loads.
          */
 
         await loadCurrentAuth();
 
 
         /*
-         * Build moderation buttons.
+         * Build moderation controls.
+         *
+         * This function now exists and
+         * cannot produce the previous
+         * "buildModerationControls is not defined"
+         * error.
          */
 
         const moderationControls =
