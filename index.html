@@ -271,17 +271,18 @@
 }
 
 .post-actions {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    width: 100%;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    width: auto !important;
 }
 
-.post-actions button.post-action-button {
+.post-actions .post-action-button {
     flex: 0 0 auto !important;
     width: auto !important;
-    height: auto !important;
-    display: inline-block;
+    max-width: fit-content !important;
+    display: inline-flex !important;
 }
 
         .post-action-button:active {
