@@ -307,6 +307,54 @@
             color: #0000cc;
         }
 
+        .profile-moderation {
+    margin-top: 15px;
+    padding: 8px;
+    border: 1px solid #999999;
+    background: #eeeeee;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+}
+
+.profile-moderation-title {
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+.profile-moderation-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.profile-moderation-button {
+    padding: 4px 8px;
+    background: #dddddd;
+    border: 2px outset #ffffff;
+    color: #000000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.profile-moderation-button:hover {
+    background: #ffffff;
+}
+
+.profile-moderation-button:active {
+    border-style: inset;
+}
+
+.profile-moderation-button.danger {
+    background: #ffdddd;
+    border-color: #ffffff;
+}
+
+.profile-moderation-button.danger:hover {
+    background: #ffeaea;
+}
+
         @media (max-width: 650px) {
             .profile-card {
                 flex-direction: column;
@@ -645,7 +693,213 @@
     /*
      * Show the profile itself.
      */
-    function renderProfile(member) {
+
+    async function moderateMember(
+    action,
+    member
+) {
+
+    if (!member || !member._id) {
+        return;
+    }
+
+
+    let token = "";
+
+    if (ownerToken) {
+        token = ownerToken;
+    } else if (memberToken) {
+        token = memberToken;
+    }
+
+
+    if (!token) {
+
+        alert(
+            "You must be logged in to moderate members."
+        );
+
+        return;
+
+    }
+
+
+    let endpoint = "";
+    let method = "POST";
+    let body = undefined;
+
+
+    if (action === "kick") {
+
+        const duration =
+            prompt(
+                "Kick duration in minutes:\n\n10 = 10 minutes\n30 = 30 minutes\n60 = 1 hour\n360 = 6 hours\n1440 = 1 day\n10080 = 7 days",
+                "10"
+            );
+
+
+        if (duration === null) {
+            return;
+        }
+
+
+        const minutes =
+            Number(duration);
+
+
+        if (
+            ![
+                10,
+                30,
+                60,
+                360,
+                1440,
+                10080
+            ].includes(minutes)
+        ) {
+
+            alert(
+                "Invalid kick duration."
+            );
+
+            return;
+
+        }
+
+
+        endpoint =
+            `/api/moderation/members/${encodeURIComponent(member._id)}/kick`;
+
+        body =
+            JSON.stringify({
+                minutes
+            });
+
+    }
+
+
+    else if (action === "ban") {
+
+        const confirmed =
+            confirm(
+                `Permanently ban ${member.username}?`
+            );
+
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        endpoint =
+            `/api/moderation/members/${encodeURIComponent(member._id)}/ban`;
+
+    }
+
+
+    else if (action === "make-admin") {
+
+        const confirmed =
+            confirm(
+                `Make ${member.username} a site administrator?`
+            );
+
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        endpoint =
+            `/api/admin/members/${encodeURIComponent(member._id)}/admin`;
+
+    }
+
+
+    else {
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE}${endpoint}`,
+                {
+                    method,
+
+                    headers: {
+                        "Content-Type":
+                            "application/json",
+
+                        Authorization:
+                            `Bearer ${token}`
+                    },
+
+                    ...(body
+                        ? { body }
+                        : {})
+                }
+            );
+
+
+        let data = null;
+
+        try {
+
+            data =
+                await response.json();
+
+        } catch {
+            data = null;
+        }
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data && data.error
+                    ? data.error
+                    : `Request failed with status ${response.status}.`
+            );
+
+        }
+
+
+        alert(
+            action === "kick"
+                ? `${member.username} has been kicked.`
+                : action === "ban"
+                    ? `${member.username} has been permanently banned.`
+                    : `${member.username} is now an administrator.`
+        );
+
+
+        /*
+         * Reload the profile so the new
+         * moderation state is visible.
+         */
+        await loadProfile();
+
+    } catch (error) {
+
+        console.error(
+            "Moderation error:",
+            error
+        );
+
+
+        alert(
+            error.message ||
+            "Unable to complete moderation action."
+        );
+
+    }
+
+}
+    
+       async function renderProfile(member) {
 
         const area =
             document.getElementById(
@@ -654,6 +908,106 @@
 
 
         if (!member) {
+
+                    /*
+         * Determine which moderation controls
+         * should be displayed.
+         */
+        let moderationControls = "";
+
+
+        if (ownerToken || memberToken) {
+
+            try {
+
+                const authResponse =
+                    await api(
+                        "/api/me",
+                        {
+                            headers:
+                                memberToken
+                                    ? memberHeaders()
+                                    : ownerHeaders()
+                        }
+                    );
+
+
+                const role =
+                    authResponse.type === "owner"
+                        ? "owner"
+                        : (
+                            authResponse.member?.role ||
+                            authResponse.role ||
+                            "member"
+                        );
+
+
+                if (
+                    role === "owner" ||
+                    role === "co-owner" ||
+                    role === "admin"
+                ) {
+
+                    moderationControls = `
+                        <div class="profile-moderation">
+
+                            <div class="profile-moderation-title">
+                                Moderation
+                            </div>
+
+                            <div class="profile-moderation-buttons">
+
+                                <button
+                                    type="button"
+                                    class="profile-moderation-button"
+                                    onclick='moderateMember("kick", ${JSON.stringify(member)})'
+                                >
+                                    Kick User
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="profile-moderation-button danger"
+                                    onclick='moderateMember("ban", ${JSON.stringify(member)})'
+                                >
+                                    Ban User
+                                </button>
+
+                                ${
+                                    (
+                                        role === "owner" ||
+                                        role === "co-owner"
+                                    ) &&
+                                    member.role === "member"
+                                        ? `
+                                            <button
+                                                type="button"
+                                                class="profile-moderation-button"
+                                                onclick='moderateMember("make-admin", ${JSON.stringify(member)})'
+                                            >
+                                                Make Admin
+                                            </button>
+                                        `
+                                        : ""
+                                }
+
+                            </div>
+
+                        </div>
+                    `;
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Unable to determine moderation role:",
+                    error
+                );
+
+            }
+
+        }
 
             area.innerHTML = `
                 <div class="error">
@@ -784,6 +1138,8 @@ if (member.role === "co-owner") {
 </tr>
 
                     </table>
+                    
+${moderationControls}
 
                 </div>
 
@@ -1020,7 +1376,7 @@ if (member.role === "co-owner") {
             }
 
 
-            renderProfile(member);
+            await renderProfile(member);
 
             renderPosts(
                 member,
