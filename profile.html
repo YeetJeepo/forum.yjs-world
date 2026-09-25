@@ -1009,6 +1009,70 @@
 
         }
 
+            let moderationControls = "";
+
+const myRole =
+    currentUser?.role ||
+    (currentUser?.admin ? "admin" : "member");
+
+const targetRole =
+    member.role ||
+    (member.admin ? "admin" : "member");
+
+const isOwner = !!ownerToken;
+const isCoOwner =
+    !isOwner &&
+    myRole === "co-owner";
+
+const isAdmin =
+    !isOwner &&
+    !isCoOwner &&
+    myRole === "admin";
+
+const viewingSelf =
+    currentUser &&
+    String(currentUser._id) === String(member._id);
+
+if (!viewingSelf) {
+    if (
+        (isOwner || isCoOwner || isAdmin) &&
+        targetRole !== "owner" &&
+        targetRole !== "co-owner"
+    ) {
+        moderationControls = `
+            <div class="moderation-controls">
+                <strong>Moderation</strong><br>
+
+                <button onclick="kickMember('${member._id}')">
+                    Kick
+                </button>
+
+                <button onclick="banMember('${member._id}')">
+                    Ban
+                </button>
+        `;
+
+        /*
+         * Owner and Co-Owner can promote
+         * ordinary members to Admin.
+         */
+        if (
+            (isOwner || isCoOwner) &&
+            targetRole === "member"
+        ) {
+            moderationControls += `
+                <button onclick="makeAdmin('${member._id}')">
+                    Make Admin
+                </button>
+            `;
+        }
+
+        moderationControls += `
+            </div>
+        `;
+    }
+}
+            
             area.innerHTML = `
                 <div class="error">
                     Sorry, that member could not be found.
