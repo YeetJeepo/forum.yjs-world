@@ -288,24 +288,6 @@
             border-style: inset;
         }
 
-        .post-list-wrap {
-            position: relative;
-        }
-
-        .post-list-collapsed {
-            max-height: 650px;
-            overflow: hidden;
-        }
-
-        .post-list-controls {
-            margin-top: 8px;
-            text-align: center;
-        }
-
-        .post-list-controls button {
-            margin: 2px;
-        }
-
         .admin-panel {
             display: none;
         }
@@ -1083,40 +1065,10 @@
                         </div>
 
 
-                        <div class="post-list-wrap">
+                        <div id="postList">
 
-                            <div
-                                id="postList"
-                                class="post-list-collapsed"
-                            >
-
-                                <div class="small">
-                                    No posts yet.
-                                </div>
-
-                            </div>
-
-                            <div
-                                id="postListControls"
-                                class="post-list-controls"
-                                style="display:none;"
-                            >
-
-                                <button
-                                    type="button"
-                                    id="readMorePosts"
-                                >
-                                    Read More
-                                </button>
-
-                                <button
-                                    type="button"
-                                    id="readLessPosts"
-                                    style="display:none;"
-                                >
-                                    Read Less
-                                </button>
-
+                            <div class="small">
+                                No posts yet.
                             </div>
 
                         </div>
@@ -1160,30 +1112,24 @@
 
                             <br><br>
 
-                            <label for="userLookup">
+                            <label for="adminUsername">
                                 <strong>
-                                    User Lookup:
+                                    Appoint Administrator:
                                 </strong>
                             </label>
 
                             <input
-                                id="userLookup"
+                                id="adminUsername"
                                 type="text"
-                                maxlength="24"
-                                placeholder="Enter a username"
+                                placeholder="Enter an existing username"
                             >
 
                             <button
                                 type="button"
-                                id="lookupUser"
+                                id="appointAdmin"
                             >
-                                Look Up User
+                                Appoint as Admin
                             </button>
-
-                            <div
-                                id="userLookupResults"
-                                style="margin-top:8px;"
-                            ></div>
 
                             <hr>
 
@@ -1356,8 +1302,6 @@
         let members = [];
 
         let posts = [];
-
-        let postsExpanded = false;
 
         let currentUser = null;
 
@@ -1843,88 +1787,6 @@
             return `profile.html?id=${encodeURIComponent(
                 memberId
             )}`;
-
-        }
-
-
-        function renderUserLookupResults(
-            matches
-        ) {
-
-            const results =
-                document.getElementById(
-                    "userLookupResults"
-                );
-
-            if (!results) {
-                return;
-            }
-
-            if (!matches.length) {
-
-                results.innerHTML =
-                    '<div class="small">No users found.</div>';
-
-                return;
-
-            }
-
-            results.innerHTML =
-                matches
-                    .map(
-                        member => {
-
-                            const image =
-                                escapeHTML(
-                                    member.image || ""
-                                );
-
-                            return `
-                                <div class="user-card">
-
-                                    <img
-                                        src="${image}"
-                                        alt=""
-                                    >
-
-                                    <div>
-
-                                        <a
-                                            href="${profileURL(member._id)}"
-                                        >
-                                            ${escapeHTML(
-                                                member.username
-                                            )}
-                                        </a>
-
-                                        <div>
-                                            ${roleBadge(member)}
-                                        </div>
-
-                                        ${
-                                            member.banned
-                                                ? `
-                                                    <div class="moderation-badge">
-                                                        BANNED
-                                                    </div>
-                                                `
-                                                : member.kickedUntil
-                                                    ? `
-                                                        <div class="moderation-badge">
-                                                            KICKED
-                                                        </div>
-                                                    `
-                                                    : ""
-                                        }
-
-                                    </div>
-
-                                </div>
-                            `;
-
-                        }
-                    )
-                    .join("");
 
         }
 
@@ -2611,21 +2473,6 @@
                     "postSort"
                 );
 
-            const controls =
-                document.getElementById(
-                    "postListControls"
-                );
-
-            const readMoreButton =
-                document.getElementById(
-                    "readMorePosts"
-                );
-
-            const readLessButton =
-                document.getElementById(
-                    "readLessPosts"
-                );
-
 
             if (!list) {
                 return;
@@ -2638,15 +2485,6 @@
 
                 list.innerHTML =
                     '<div class="small">No posts yet.</div>';
-
-                list.classList.remove(
-                    "post-list-collapsed"
-                );
-
-                if (controls) {
-                    controls.style.display =
-                        "none";
-                }
 
                 return;
 
@@ -2748,6 +2586,12 @@
                                                 ${authorContent}
                                             </strong>
 
+                                            ${
+                                                member
+                                                    ? roleBadge(member)
+                                                    : ""
+                                            }
+
                                         </a>
                                     `
                                     : `
@@ -2758,6 +2602,12 @@
                                         <strong>
                                             ${authorContent}
                                         </strong>
+
+                                        ${
+                                            member
+                                                ? roleBadge(member)
+                                                : ""
+                                        }
                                     `;
 
 
@@ -2834,56 +2684,7 @@
                     )
                     .join("");
 
-
-            if (postsExpanded) {
-
-                list.classList.remove(
-                    "post-list-collapsed"
-                );
-
-            } else {
-
-                list.classList.add(
-                    "post-list-collapsed"
-                );
-
-            }
-
-
-            if (controls) {
-                controls.style.display =
-                    "block";
-            }
-
-            if (readMoreButton) {
-                readMoreButton.style.display =
-                    postsExpanded
-                        ? "none"
-                        : "inline-block";
-            }
-
-            if (readLessButton) {
-                readLessButton.style.display =
-                    postsExpanded
-                        ? "inline-block"
-                        : "none";
-            }
-
         }
-
-
-        function setPostsExpanded(
-            expanded
-        ) {
-
-            postsExpanded =
-                expanded;
-
-            renderPosts();
-
-        }
-
-
 
 
         document
@@ -2895,38 +2696,6 @@
                 () => {
 
                     renderPosts();
-
-                }
-            );
-
-
-        document
-            .getElementById(
-                "readMorePosts"
-            )
-            .addEventListener(
-                "click",
-                () => {
-
-                    setPostsExpanded(
-                        true
-                    );
-
-                }
-            );
-
-
-        document
-            .getElementById(
-                "readLessPosts"
-            )
-            .addEventListener(
-                "click",
-                () => {
-
-                    setPostsExpanded(
-                        false
-                    );
 
                 }
             );
@@ -3525,25 +3294,6 @@
                         "none";
 
 
-                    const userLookup =
-                        document.getElementById(
-                            "userLookup"
-                        );
-
-                    const userLookupResults =
-                        document.getElementById(
-                            "userLookupResults"
-                        );
-
-                    if (userLookup) {
-                        userLookup.value = "";
-                    }
-
-                    if (userLookupResults) {
-                        userLookupResults.innerHTML = "";
-                    }
-
-
                     updateModeratorPanel();
 
                     renderMembers();
@@ -3980,16 +3730,16 @@
 
 
         /* =========================================================
-           USER LOOKUP
+           APPOINT ADMIN
            ========================================================= */
 
         document
             .getElementById(
-                "lookupUser"
+                "appointAdmin"
             )
             .addEventListener(
                 "click",
-                () => {
+                async () => {
 
                     if (
                         currentRole() !==
@@ -4001,23 +3751,36 @@
                     }
 
 
-                    const input =
+                    const username =
+                        document
+                            .getElementById(
+                                "adminUsername"
+                            )
+                            .value
+                            .trim();
+
+
+                    const status =
                         document.getElementById(
-                            "userLookup"
+                            "adminStatus"
                         );
 
-                    const query =
-                        input
-                            ? input.value
-                                .trim()
-                                .toLowerCase()
-                            : "";
+
+                    const member =
+                        members.find(
+                            item =>
+                                item.username
+                                    .toLowerCase() ===
+                                username.toLowerCase()
+                        );
 
 
-                    if (!query) {
+                    if (!member) {
 
-                        renderUserLookupResults(
-                            []
+                        showStatus(
+                            status,
+                            "That username does not exist.",
+                            true
                         );
 
                         return;
@@ -4025,46 +3788,47 @@
                     }
 
 
-                    const matches =
-                        members.filter(
-                            member =>
-                                String(
-                                    member.username ||
-                                    ""
-                                )
-                                    .toLowerCase()
-                                    .includes(query)
+                    try {
+
+                        await api(
+                            `/api/admin/members/${member._id}/admin`,
+                            {
+                                method: "POST",
+
+                                headers:
+                                    ownerHeaders(),
+
+                                body:
+                                    JSON.stringify({
+                                        isAdmin: true
+                                    })
+                            }
                         );
 
 
-                    renderUserLookupResults(
-                        matches
-                    );
+                        await loadMembers();
 
-                }
-            );
-
-
-        document
-            .getElementById(
-                "userLookup"
-            )
-            .addEventListener(
-                "keydown",
-                event => {
-
-                    if (
-                        event.key ===
-                        "Enter"
-                    ) {
-
-                        event.preventDefault();
 
                         document
                             .getElementById(
-                                "lookupUser"
+                                "adminUsername"
                             )
-                            .click();
+                            .value =
+                            "";
+
+
+                        showStatus(
+                            status,
+                            `${member.username} has been appointed as an administrator.`
+                        );
+
+                    } catch (error) {
+
+                        showStatus(
+                            status,
+                            error.message,
+                            true
+                        );
 
                     }
 
