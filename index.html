@@ -2357,7 +2357,7 @@
                             >
                                 Ban Permanently
                             </button>
-
+                            
                         </div>
 
                     `;
@@ -3881,50 +3881,47 @@
 
         async function removeAdmin(id) {
 
-            if (
-                currentRole() !==
-                "owner"
-            ) {
+    if (
+        currentRole() !==
+        "owner"
+    ) {
+        return;
+    }
 
-                return;
+    try {
 
+        await api(
+            `/api/admin/members/${id}/admin`,
+            {
+                method: "DELETE",
+
+                headers:
+                    ownerHeaders()
             }
+        );
 
+        await loadMembers();
 
-            try {
+        showStatus(
+            document.getElementById(
+                "adminStatus"
+            ),
+            "Administrator role removed."
+        );
 
-                await api(
-                    `/api/admin/members/${id}/admin`,
-                    {
-                        method: "POST",
+    } catch (error) {
 
-                        headers:
-                            ownerHeaders(),
+        showStatus(
+            document.getElementById(
+                "adminStatus"
+            ),
+            error.message,
+            true
+        );
 
-                        body:
-                            JSON.stringify({
-                                isAdmin: false
-                            })
-                    }
-                );
+    }
 
-
-                await loadMembers();
-
-            } catch (error) {
-
-                showStatus(
-                    document.getElementById(
-                        "adminStatus"
-                    ),
-                    error.message,
-                    true
-                );
-
-            }
-
-        }
-
+}
 
         /* =========================================================
            MAKE CO-OWNER
@@ -4143,9 +4140,9 @@
                                 : memberHeaders(),
 
                         body:
-                            JSON.stringify({
-                                durationMinutes
-                            })
+    JSON.stringify({
+        minutes: durationMinutes
+    })
                     }
                 );
 
