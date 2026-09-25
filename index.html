@@ -1044,10 +1044,9 @@
                             style="margin-top:7px;"
                         >
                             You must be logged in to post.
-                            Your username is automatically taken
-                            from your account.
-                        </div>
+                            Your username, profile avatar, and profile link will be associated with your post
 
+                        </div>
                     </div>
 
                 </section>
@@ -1059,7 +1058,7 @@
                 >
 
                     <div class="box-title">
-                        Latest Posts
+                        Posts
                     </div>
 
                     <div class="box-body">
@@ -1288,43 +1287,8 @@
                         </div>
 
                         <div class="small">
-                            You are visiting YJ's World?
+                            These people don't touch grass
                         </div>
-
-                    </div>
-
-                </section>
-
-
-                <section class="box">
-
-                    <div class="box-title">
-                        Quick Links
-                    </div>
-
-                    <div class="box-body">
-
-                        <a href="#signup">
-                            Create Account
-                        </a>
-
-                        <br><br>
-
-                        <a href="#forums">
-                            Forum Index
-                        </a>
-
-                        <br><br>
-
-                        <a href="members.html">
-                            Members
-                        </a>
-
-                        <br><br>
-
-                        <a href="#owner-login">
-                            Owner Login
-                        </a>
 
                     </div>
 
@@ -1398,7 +1362,7 @@
            ========================================================= */
 
         const API_BASE =
-            "https://retry-yjs-world-2.onrender.com";
+            "https://api.yjs-world.com";
 
         const SITE_VERSION =
             "alpha";
@@ -1947,20 +1911,20 @@
 
         async function loadReports() {
 
-            if (!isModerator()) {
-                return;
-            }
+    if (!isModerator()) {
+        return;
+    }
 
-            reports = await api(
-                "https://api.yjs-world.com/api/reports",
-                {
-                    headers: currentRole() === "owner" ? ownerHeaders() : memberHeaders()
-                }
-            );
-
-            renderReports();
-
+    reports = await api(
+        "https://api.yjs-world.com/api/reports",
+        {
+            headers: currentRole() === "owner" ? ownerHeaders() : memberHeaders()
         }
+    );
+
+    renderReports();
+
+}
 
 
         function renderReports() {
