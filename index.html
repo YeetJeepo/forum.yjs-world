@@ -270,20 +270,18 @@
     text-align: left;
 }
 
-.post-action-button {
-    flex: none !important;
-    width: auto !important;
-    padding: 4px 12px !important;
-    margin: 0 !important;
-}
-
 .post-actions {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    gap: 5px;
-    padding: 0;
-    margin: 0;
+    width: 100%;
+}
+
+.post-actions button.post-action-button {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    height: auto !important;
+    display: inline-block;
 }
 
         .post-action-button:active {
