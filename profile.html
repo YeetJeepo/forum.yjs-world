@@ -160,16 +160,34 @@
             color: #003399;
         }
 
-        .admin-badge {
-            display: inline-block;
-            background: #ffff99;
-            border: 1px solid #999900;
-            padding: 2px 6px;
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 11px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
+        .admin-badge,
+.co-owner-badge,
+.member-badge {
+    display: inline-block;
+    padding: 2px 6px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.admin-badge {
+    background: #ffff99;
+    border: 1px solid #999900;
+    color: #333300;
+}
+
+.co-owner-badge {
+    background: #d9ccff;
+    border: 1px solid #7755aa;
+    color: #332255;
+}
+
+.member-badge {
+    background: #dddddd;
+    border: 1px solid #999999;
+    color: #333333;
+}
 
         .info-table {
             border-collapse: collapse;
@@ -672,14 +690,33 @@
                 `;
 
 
-        const adminBadge =
-            member.admin
-                ? `
-                    <div class="admin-badge">
-                        ★ SITE ADMIN ★
-                    </div>
-                `
-                : "";
+        let roleBadge = "";
+
+if (member.role === "co-owner") {
+
+    roleBadge = `
+        <div class="co-owner-badge">
+            ★ CO-OWNER ★
+        </div>
+    `;
+
+} else if (member.role === "admin" || member.admin) {
+
+    roleBadge = `
+        <div class="admin-badge">
+            ★ SITE ADMIN ★
+        </div>
+    `;
+
+} else {
+
+    roleBadge = `
+        <div class="member-badge">
+            ★ MEMBER ★
+        </div>
+    `;
+
+}
 
 
         area.innerHTML = `
@@ -699,7 +736,7 @@
                         ${escapeHTML(member.username)}
                     </h2>
 
-                    ${adminBadge}
+                    ${roleBadge}
 
 
                     <table class="info-table">
@@ -731,18 +768,20 @@
 
 
                         <tr>
-                            <td>
-                                Status
-                            </td>
+    <td>
+        Status
+    </td>
 
-                            <td>
-                                ${
-                                    member.admin
-                                        ? "Site Administrator"
-                                        : "Registered Member"
-                                }
-                            </td>
-                        </tr>
+    <td>
+        ${
+            member.role === "co-owner"
+                ? "Co-Owner"
+                : member.role === "admin" || member.admin
+                    ? "Site Administrator"
+                    : "Registered Member"
+        }
+    </td>
+</tr>
 
                     </table>
 
