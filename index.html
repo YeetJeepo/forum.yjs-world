@@ -211,17 +211,20 @@
         }
 
         .post-content {
-            display: grid;
-            grid-template-columns: 100px 1fr;
-            min-height: 100px;
-        }
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    min-height: 100px;
+    align-items: stretch;
+}
 
-        .post-user {
-            background: #eeeeee;
-            border-right: 1px solid #aaa;
-            padding: 7px;
-            text-align: center;
-        }
+.post-user {
+    background: #eeeeee;
+    border-right: 1px solid #aaa;
+    padding: 7px;
+    text-align: center;
+    box-sizing: border-box;
+    height: 100%;
+}
 
         .post-user img {
             width: 70px;
