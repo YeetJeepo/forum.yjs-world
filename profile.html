@@ -161,33 +161,33 @@
         }
 
         .admin-badge,
-.co-owner-badge,
-.member-badge {
-    display: inline-block;
-    padding: 2px 6px;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 11px;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
+        .co-owner-badge,
+        .member-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
 
-.admin-badge {
-    background: #ffff99;
-    border: 1px solid #999900;
-    color: #333300;
-}
+        .admin-badge {
+            background: #ffff99;
+            border: 1px solid #999900;
+            color: #333300;
+        }
 
-.co-owner-badge {
-    background: #d9ccff;
-    border: 1px solid #7755aa;
-    color: #332255;
-}
+        .co-owner-badge {
+            background: #d9ccff;
+            border: 1px solid #7755aa;
+            color: #332255;
+        }
 
-.member-badge {
-    background: #dddddd;
-    border: 1px solid #999999;
-    color: #333333;
-}
+        .member-badge {
+            background: #dddddd;
+            border: 1px solid #999999;
+            color: #333333;
+        }
 
         .info-table {
             border-collapse: collapse;
@@ -307,55 +307,60 @@
             color: #0000cc;
         }
 
+        /* ================================
+           PROFILE MODERATION
+           ================================ */
+
         .profile-moderation {
-    margin-top: 15px;
-    padding: 8px;
-    border: 1px solid #999999;
-    background: #eeeeee;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 12px;
-}
+            margin-top: 15px;
+            padding: 8px;
+            border: 1px solid #999999;
+            background: #eeeeee;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12px;
+        }
 
-.profile-moderation-title {
-    font-weight: bold;
-    margin-bottom: 6px;
-}
+        .profile-moderation-title {
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
 
-.profile-moderation-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-}
+        .profile-moderation-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
 
-.profile-moderation-button {
-    padding: 4px 8px;
-    background: #dddddd;
-    border: 2px outset #ffffff;
-    color: #000000;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 11px;
-    font-weight: bold;
-    cursor: pointer;
-}
+        .profile-moderation-button {
+            padding: 4px 8px;
+            background: #dddddd;
+            border: 2px outset #ffffff;
+            color: #000000;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+        }
 
-.profile-moderation-button:hover {
-    background: #ffffff;
-}
+        .profile-moderation-button:hover {
+            background: #ffffff;
+        }
 
-.profile-moderation-button:active {
-    border-style: inset;
-}
+        .profile-moderation-button:active {
+            border-style: inset;
+        }
 
-.profile-moderation-button.danger {
-    background: #ffdddd;
-    border-color: #ffffff;
-}
+        .profile-moderation-button.danger {
+            background: #ffdddd;
+            border-color: #ffffff;
+        }
 
-.profile-moderation-button.danger:hover {
-    background: #ffeaea;
-}
+        .profile-moderation-button.danger:hover {
+            background: #ffeaea;
+        }
 
         @media (max-width: 650px) {
+
             .profile-card {
                 flex-direction: column;
                 align-items: center;
@@ -383,6 +388,7 @@
             .header h1 {
                 font-size: 26px;
             }
+
         }
     </style>
 </head>
@@ -392,12 +398,15 @@
 <div class="page">
 
     <div class="header">
+
         <h1>YJ's World?</h1>
 
         <p>
             This page isn't looking quite right.
         </p>
+
     </div>
+
 
     <div class="nav">
 
@@ -423,21 +432,27 @@
 
     </div>
 
+
     <div class="marquee">
+
         *** Welcome to YJ's World! Checking out a member profile... ***
 
     </div>
 
+
     <div class="content">
 
         <div style="margin-bottom: 10px;">
+
             <a
                 href="members.html"
                 class="back-button"
             >
                 &lt;&lt; Back to Members
             </a>
+
         </div>
+
 
         <div class="section">
 
@@ -457,6 +472,7 @@
             </div>
 
         </div>
+
 
         <div class="section">
 
@@ -479,6 +495,7 @@
 
     </div>
 
+
     <div class="footer">
 
         <strong>
@@ -492,6 +509,7 @@
         <br><br>
 
         Contact me:
+
         <a href="mailto:yeetjeepo@outlook.com">
             yeetjeepo@outlook.com
         </a>
@@ -506,13 +524,9 @@
     /*
      * YJ's World profile page
      *
-     * This page expects:
+     * Expected URL:
      *
      * profile.html?id=MEMBER_ID
-     *
-     * Example:
-     *
-     * profile.html?id=6ab5a47a18aa43705adb6d43
      */
 
     const API_BASE =
@@ -520,8 +534,41 @@
 
 
     /*
+     * Stored authentication tokens.
+     */
+
+    const memberToken =
+        localStorage.getItem(
+            "yjs_world_member_token"
+        ) || "";
+
+    const ownerToken =
+        localStorage.getItem(
+            "yjs_world_owner_token"
+        ) || "";
+
+
+    /*
+     * The member currently being displayed.
+     *
+     * This avoids putting the entire member object
+     * inside onclick HTML attributes.
+     */
+
+    let profileMember = null;
+
+
+    /*
+     * Current authenticated user's information.
+     */
+
+    let currentAuth = null;
+
+
+    /*
      * Escape text before inserting it into HTML.
      */
+
     function escapeHTML(value) {
 
         return String(value ?? "")
@@ -537,6 +584,7 @@
     /*
      * API helper.
      */
+
     async function api(
         path,
         options = {}
@@ -559,6 +607,7 @@
 
 
         let data = null;
+
 
         try {
 
@@ -594,12 +643,14 @@
      *
      * profile.html?id=...
      */
+
     function getMemberId() {
 
         const params =
             new URLSearchParams(
                 window.location.search
             );
+
 
         return (
             params.get("id") ||
@@ -610,9 +661,663 @@
 
 
     /*
-     * Format the date that comes from
-     * the backend.
+     * Return the authentication header.
      */
+
+    function authHeaders() {
+
+        const token =
+            ownerToken ||
+            memberToken;
+
+
+        if (!token) {
+            return {};
+        }
+
+
+        return {
+            Authorization:
+                `Bearer ${token}`
+        };
+
+    }
+
+
+    /*
+     * Determine the logged-in user's role.
+     *
+     * Owner uses /api/owner/me.
+     *
+     * Members use /api/me.
+     */
+
+    async function loadCurrentAuth() {
+
+        currentAuth = null;
+
+
+        if (ownerToken) {
+
+            try {
+
+                const data =
+                    await api(
+                        "/api/owner/me",
+                        {
+                            headers: {
+                                Authorization:
+                                    `Bearer ${ownerToken}`
+                            }
+                        }
+                    );
+
+
+                currentAuth = {
+                    type: "owner",
+                    role: "owner",
+                    member: null
+                };
+
+
+                return currentAuth;
+
+            } catch (error) {
+
+                console.warn(
+                    "Owner authentication check failed:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        if (memberToken) {
+
+            try {
+
+                const data =
+                    await api(
+                        "/api/me",
+                        {
+                            headers: {
+                                Authorization:
+                                    `Bearer ${memberToken}`
+                            }
+                        }
+                    );
+
+
+                const member =
+                    data.member ||
+                    data;
+
+
+                currentAuth = {
+                    type: "member",
+                    role:
+                        member.role ||
+                        (
+                            member.admin
+                                ? "admin"
+                                : "member"
+                        ),
+                    member
+                };
+
+
+                return currentAuth;
+
+            } catch (error) {
+
+                console.warn(
+                    "Member authentication check failed:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        return null;
+
+    }
+
+
+    /*
+     * Get the role of a member.
+     */
+
+    function getMemberRole(member) {
+
+        if (!member) {
+            return "member";
+        }
+
+
+        if (member.role) {
+            return member.role;
+        }
+
+
+        if (member.admin) {
+            return "admin";
+        }
+
+
+        return "member";
+
+    }
+
+
+    /*
+     * Determine whether the logged-in user
+     * is allowed to moderate this profile.
+     */
+
+    function canModerateTarget(target) {
+
+        if (!currentAuth || !target) {
+            return false;
+        }
+
+
+        /*
+         * Nobody can moderate themselves.
+         */
+
+        if (
+            currentAuth.member &&
+            currentAuth.member._id &&
+            target._id &&
+            String(
+                currentAuth.member._id
+            ) === String(
+                target._id
+            )
+        ) {
+
+            return false;
+
+        }
+
+
+        const actorRole =
+            currentAuth.role ||
+            "member";
+
+
+        const targetRole =
+            getMemberRole(target);
+
+
+        /*
+         * Ordinary members cannot moderate.
+         */
+
+        if (
+            actorRole !== "owner" &&
+            actorRole !== "co-owner" &&
+            actorRole !== "admin"
+        ) {
+
+            return false;
+
+        }
+
+
+        /*
+         * Owner cannot be moderated through
+         * this profile page.
+         */
+
+        if (targetRole === "owner") {
+            return false;
+        }
+
+
+        /*
+         * Co-Owner cannot be moderated by
+         * another moderator here.
+         */
+
+        if (
+            targetRole === "co-owner" &&
+            actorRole !== "owner"
+        ) {
+
+            return false;
+
+        }
+
+
+        /*
+         * Admins may only moderate ordinary
+         * members.
+         */
+
+        if (
+            actorRole === "admin" &&
+            targetRole !== "member"
+        ) {
+
+            return false;
+
+        }
+
+
+        return true;
+
+    }
+
+
+    /*
+     * Create the moderation controls.
+     */
+
+    function buildModerationControls(member) {
+
+        if (
+            !canModerateTarget(member)
+        ) {
+
+            return "";
+
+        }
+
+
+        const actorRole =
+            currentAuth.role;
+
+
+        const targetRole =
+            getMemberRole(member);
+
+
+        let controls = `
+            <div class="profile-moderation">
+
+                <div class="profile-moderation-title">
+                    Moderation
+                </div>
+
+                <div class="profile-moderation-buttons">
+
+                    <button
+                        type="button"
+                        class="profile-moderation-button"
+                        onclick="moderateMember('kick')"
+                    >
+                        Kick User
+                    </button>
+
+                    <button
+                        type="button"
+                        class="profile-moderation-button danger"
+                        onclick="moderateMember('ban')"
+                    >
+                        Ban User
+                    </button>
+        `;
+
+
+        /*
+         * Only Owner and Co-Owner can
+         * promote regular members to Admin.
+         */
+
+        if (
+            (
+                actorRole === "owner" ||
+                actorRole === "co-owner"
+            ) &&
+            targetRole === "member"
+        ) {
+
+            controls += `
+                    <button
+                        type="button"
+                        class="profile-moderation-button"
+                        onclick="moderateMember('make-admin')"
+                    >
+                        Make Admin
+                    </button>
+            `;
+
+        }
+
+
+        controls += `
+                </div>
+
+            </div>
+        `;
+
+
+        return controls;
+
+    }
+
+
+    /*
+     * Perform moderation actions.
+     */
+
+    async function moderateMember(action) {
+
+        const member =
+            profileMember;
+
+
+        if (!member || !member._id) {
+
+            alert(
+                "No member was selected."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            !canModerateTarget(member)
+        ) {
+
+            alert(
+                "You are not allowed to moderate this member."
+            );
+
+            return;
+
+        }
+
+
+        const token =
+            ownerToken ||
+            memberToken;
+
+
+        if (!token) {
+
+            alert(
+                "You must be logged in to moderate members."
+            );
+
+            return;
+
+        }
+
+
+        let endpoint = "";
+        let body = undefined;
+
+
+        /*
+         * KICK
+         */
+
+        if (action === "kick") {
+
+            const duration =
+                prompt(
+                    "Kick duration in minutes:\n\n" +
+                    "10 = 10 minutes\n" +
+                    "30 = 30 minutes\n" +
+                    "60 = 1 hour\n" +
+                    "360 = 6 hours\n" +
+                    "1440 = 1 day\n" +
+                    "10080 = 7 days",
+                    "10"
+                );
+
+
+            if (duration === null) {
+                return;
+            }
+
+
+            const minutes =
+                Number(duration);
+
+
+            const allowedDurations = [
+                10,
+                30,
+                60,
+                360,
+                1440,
+                10080
+            ];
+
+
+            if (
+                !allowedDurations.includes(
+                    minutes
+                )
+            ) {
+
+                alert(
+                    "Invalid kick duration."
+                );
+
+                return;
+
+            }
+
+
+            const confirmed =
+                confirm(
+                    `Kick ${member.username} for ${minutes} minutes?`
+                );
+
+
+            if (!confirmed) {
+                return;
+            }
+
+
+            endpoint =
+                `/api/moderation/members/${encodeURIComponent(member._id)}/kick`;
+
+
+            body =
+                JSON.stringify({
+                    minutes
+                });
+
+        }
+
+
+        /*
+         * BAN
+         */
+
+        else if (action === "ban") {
+
+            const confirmed =
+                confirm(
+                    `Permanently ban ${member.username}?`
+                );
+
+
+            if (!confirmed) {
+                return;
+            }
+
+
+            endpoint =
+                `/api/moderation/members/${encodeURIComponent(member._id)}/ban`;
+
+        }
+
+
+        /*
+         * MAKE ADMIN
+         */
+
+        else if (action === "make-admin") {
+
+            if (
+                currentAuth.role !== "owner" &&
+                currentAuth.role !== "co-owner"
+            ) {
+
+                alert(
+                    "Only the Owner or Co-Owner can make members administrators."
+                );
+
+                return;
+
+            }
+
+
+            if (
+                getMemberRole(member) !== "member"
+            ) {
+
+                alert(
+                    "Only regular members can be made administrators."
+                );
+
+                return;
+
+            }
+
+
+            const confirmed =
+                confirm(
+                    `Make ${member.username} a site administrator?`
+                );
+
+
+            if (!confirmed) {
+                return;
+            }
+
+
+            endpoint =
+                `/api/admin/members/${encodeURIComponent(member._id)}/admin`;
+
+        }
+
+
+        else {
+
+            return;
+
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_BASE}${endpoint}`,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json",
+
+                            Authorization:
+                                `Bearer ${token}`
+                        },
+
+                        ...(body
+                            ? {
+                                body
+                            }
+                            : {})
+                    }
+                );
+
+
+            let data = null;
+
+
+            try {
+
+                data =
+                    await response.json();
+
+            } catch {
+
+                data = null;
+
+            }
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data &&
+                    data.error
+                        ? data.error
+                        : `Request failed with status ${response.status}.`
+                );
+
+            }
+
+
+            if (action === "kick") {
+
+                alert(
+                    `${member.username} has been kicked.`
+                );
+
+            }
+
+            else if (action === "ban") {
+
+                alert(
+                    `${member.username} has been permanently banned.`
+                );
+
+            }
+
+            else if (action === "make-admin") {
+
+                alert(
+                    `${member.username} is now an Administrator.`
+                );
+
+            }
+
+
+            /*
+             * Reload the profile so the new
+             * role/state appears immediately.
+             */
+
+            await loadProfile();
+
+        } catch (error) {
+
+            console.error(
+                "Moderation error:",
+                error
+            );
+
+
+            alert(
+                error.message ||
+                "Unable to complete moderation action."
+            );
+
+        }
+
+    }
+
+
+    /*
+     * Format member registration date.
+     */
+
     function formatMemberDate(value) {
 
         if (!value) {
@@ -650,11 +1355,9 @@
 
 
     /*
-     * Format post timestamps.
-     *
-     * The backend also supplies "date",
-     * which is the site's displayed date.
+     * Format post date.
      */
+
     function formatPostDate(post) {
 
         if (post.date) {
@@ -667,7 +1370,9 @@
         if (post.created) {
 
             const date =
-                new Date(post.created);
+                new Date(
+                    post.created
+                );
 
 
             if (
@@ -691,215 +1396,10 @@
 
 
     /*
-     * Show the profile itself.
+     * Render the member profile.
      */
 
-    async function moderateMember(
-    action,
-    member
-) {
-
-    if (!member || !member._id) {
-        return;
-    }
-
-
-    let token = "";
-
-    if (ownerToken) {
-        token = ownerToken;
-    } else if (memberToken) {
-        token = memberToken;
-    }
-
-
-    if (!token) {
-
-        alert(
-            "You must be logged in to moderate members."
-        );
-
-        return;
-
-    }
-
-
-    let endpoint = "";
-    let method = "POST";
-    let body = undefined;
-
-
-    if (action === "kick") {
-
-        const duration =
-            prompt(
-                "Kick duration in minutes:\n\n10 = 10 minutes\n30 = 30 minutes\n60 = 1 hour\n360 = 6 hours\n1440 = 1 day\n10080 = 7 days",
-                "10"
-            );
-
-
-        if (duration === null) {
-            return;
-        }
-
-
-        const minutes =
-            Number(duration);
-
-
-        if (
-            ![
-                10,
-                30,
-                60,
-                360,
-                1440,
-                10080
-            ].includes(minutes)
-        ) {
-
-            alert(
-                "Invalid kick duration."
-            );
-
-            return;
-
-        }
-
-
-        endpoint =
-            `/api/moderation/members/${encodeURIComponent(member._id)}/kick`;
-
-        body =
-            JSON.stringify({
-                minutes
-            });
-
-    }
-
-
-    else if (action === "ban") {
-
-        const confirmed =
-            confirm(
-                `Permanently ban ${member.username}?`
-            );
-
-
-        if (!confirmed) {
-            return;
-        }
-
-
-        endpoint =
-            `/api/moderation/members/${encodeURIComponent(member._id)}/ban`;
-
-    }
-
-
-    else if (action === "make-admin") {
-
-        const confirmed =
-            confirm(
-                `Make ${member.username} a site administrator?`
-            );
-
-
-        if (!confirmed) {
-            return;
-        }
-
-
-        endpoint =
-            `/api/admin/members/${encodeURIComponent(member._id)}/admin`;
-
-    }
-
-
-    else {
-        return;
-    }
-
-
-    try {
-
-        const response =
-            await fetch(
-                `${API_BASE}${endpoint}`,
-                {
-                    method,
-
-                    headers: {
-                        "Content-Type":
-                            "application/json",
-
-                        Authorization:
-                            `Bearer ${token}`
-                    },
-
-                    ...(body
-                        ? { body }
-                        : {})
-                }
-            );
-
-
-        let data = null;
-
-        try {
-
-            data =
-                await response.json();
-
-        } catch {
-            data = null;
-        }
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                data && data.error
-                    ? data.error
-                    : `Request failed with status ${response.status}.`
-            );
-
-        }
-
-
-        alert(
-            action === "kick"
-                ? `${member.username} has been kicked.`
-                : action === "ban"
-                    ? `${member.username} has been permanently banned.`
-                    : `${member.username} is now an administrator.`
-        );
-
-
-        /*
-         * Reload the profile so the new
-         * moderation state is visible.
-         */
-        await loadProfile();
-
-    } catch (error) {
-
-        console.error(
-            "Moderation error:",
-            error
-        );
-
-
-        alert(
-            error.message ||
-            "Unable to complete moderation action."
-        );
-
-    }
-
-}
-    
-       async function renderProfile(member) {
+    async function renderProfile(member) {
 
         const area =
             document.getElementById(
@@ -909,173 +1409,11 @@
 
         if (!member) {
 
-                    /*
-         * Determine which moderation controls
-         * should be displayed.
-         */
-        let moderationControls = "";
-
-
-        if (ownerToken || memberToken) {
-
-            try {
-
-                const authResponse =
-                    await api(
-                        "/api/me",
-                        {
-                            headers:
-                                memberToken
-                                    ? memberHeaders()
-                                    : ownerHeaders()
-                        }
-                    );
-
-
-                const role =
-                    authResponse.type === "owner"
-                        ? "owner"
-                        : (
-                            authResponse.member?.role ||
-                            authResponse.role ||
-                            "member"
-                        );
-
-
-                if (
-                    role === "owner" ||
-                    role === "co-owner" ||
-                    role === "admin"
-                ) {
-
-                    moderationControls = `
-                        <div class="profile-moderation">
-
-                            <div class="profile-moderation-title">
-                                Moderation
-                            </div>
-
-                            <div class="profile-moderation-buttons">
-
-                                <button
-                                    type="button"
-                                    class="profile-moderation-button"
-                                    onclick='moderateMember("kick", ${JSON.stringify(member)})'
-                                >
-                                    Kick User
-                                </button>
-
-                                <button
-                                    type="button"
-                                    class="profile-moderation-button danger"
-                                    onclick='moderateMember("ban", ${JSON.stringify(member)})'
-                                >
-                                    Ban User
-                                </button>
-
-                                ${
-                                    (
-                                        role === "owner" ||
-                                        role === "co-owner"
-                                    ) &&
-                                    member.role === "member"
-                                        ? `
-                                            <button
-                                                type="button"
-                                                class="profile-moderation-button"
-                                                onclick='moderateMember("make-admin", ${JSON.stringify(member)})'
-                                            >
-                                                Make Admin
-                                            </button>
-                                        `
-                                        : ""
-                                }
-
-                            </div>
-
-                        </div>
-                    `;
-
-                }
-
-            } catch (error) {
-
-                console.error(
-                    "Unable to determine moderation role:",
-                    error
-                );
-
-            }
-
-        }
-
-            let moderationControls = "";
-
-const myRole =
-    currentUser?.role ||
-    (currentUser?.admin ? "admin" : "member");
-
-const targetRole =
-    member.role ||
-    (member.admin ? "admin" : "member");
-
-const isOwner = !!ownerToken;
-const isCoOwner =
-    !isOwner &&
-    myRole === "co-owner";
-
-const isAdmin =
-    !isOwner &&
-    !isCoOwner &&
-    myRole === "admin";
-
-const viewingSelf =
-    currentUser &&
-    String(currentUser._id) === String(member._id);
-
-if (!viewingSelf) {
-    if (
-        (isOwner || isCoOwner || isAdmin) &&
-        targetRole !== "owner" &&
-        targetRole !== "co-owner"
-    ) {
-        moderationControls = `
-            <div class="moderation-controls">
-                <strong>Moderation</strong><br>
-
-                <button onclick="kickMember('${member._id}')">
-                    Kick
-                </button>
-
-                <button onclick="banMember('${member._id}')">
-                    Ban
-                </button>
-        `;
-
-        /*
-         * Owner and Co-Owner can promote
-         * ordinary members to Admin.
-         */
-        if (
-            (isOwner || isCoOwner) &&
-            targetRole === "member"
-        ) {
-            moderationControls += `
-                <button onclick="makeAdmin('${member._id}')">
-                    Make Admin
-                </button>
-            `;
-        }
-
-        moderationControls += `
-            </div>
-        `;
-    }
-}
-            
             area.innerHTML = `
                 <div class="error">
+
                     Sorry, that member could not be found.
+
                 </div>
             `;
 
@@ -1083,6 +1421,39 @@ if (!viewingSelf) {
 
         }
 
+
+        /*
+         * Save the current profile member
+         * so moderation buttons can use it.
+         */
+
+        profileMember =
+            member;
+
+
+        /*
+         * Determine who is currently logged in.
+         *
+         * Failure here does NOT prevent the
+         * public profile from loading.
+         */
+
+        await loadCurrentAuth();
+
+
+        /*
+         * Build moderation buttons.
+         */
+
+        const moderationControls =
+            buildModerationControls(
+                member
+            );
+
+
+        /*
+         * Profile image.
+         */
 
         const image =
             member.image
@@ -1108,34 +1479,52 @@ if (!viewingSelf) {
                 `;
 
 
+        /*
+         * Role badge.
+         */
+
         let roleBadge = "";
 
-if (member.role === "co-owner") {
 
-    roleBadge = `
-        <div class="co-owner-badge">
-            ★ CO-OWNER ★
-        </div>
-    `;
+        if (
+            member.role === "co-owner"
+        ) {
 
-} else if (member.role === "admin" || member.admin) {
+            roleBadge = `
+                <div class="co-owner-badge">
+                    ★ CO-OWNER ★
+                </div>
+            `;
 
-    roleBadge = `
-        <div class="admin-badge">
-            ★ SITE ADMIN ★
-        </div>
-    `;
+        }
 
-} else {
+        else if (
+            member.role === "admin" ||
+            member.admin
+        ) {
 
-    roleBadge = `
-        <div class="member-badge">
-            ★ MEMBER ★
-        </div>
-    `;
+            roleBadge = `
+                <div class="admin-badge">
+                    ★ SITE ADMIN ★
+                </div>
+            `;
 
-}
+        }
 
+        else {
+
+            roleBadge = `
+                <div class="member-badge">
+                    ★ MEMBER ★
+                </div>
+            `;
+
+        }
+
+
+        /*
+         * Profile HTML.
+         */
 
         area.innerHTML = `
 
@@ -1160,17 +1549,22 @@ if (member.role === "co-owner") {
                     <table class="info-table">
 
                         <tr>
+
                             <td>
                                 Username
                             </td>
 
                             <td>
-                                ${escapeHTML(member.username)}
+                                ${escapeHTML(
+                                    member.username
+                                )}
                             </td>
+
                         </tr>
 
 
                         <tr>
+
                             <td>
                                 Member Since
                             </td>
@@ -1182,28 +1576,35 @@ if (member.role === "co-owner") {
                                     )
                                 )}
                             </td>
+
                         </tr>
 
 
                         <tr>
-    <td>
-        Status
-    </td>
 
-    <td>
-        ${
-            member.role === "co-owner"
-                ? "Co-Owner"
-                : member.role === "admin" || member.admin
-                    ? "Site Administrator"
-                    : "Registered Member"
-        }
-    </td>
-</tr>
+                            <td>
+                                Status
+                            </td>
+
+                            <td>
+
+                                ${
+                                    member.role === "co-owner"
+                                        ? "Co-Owner"
+                                        : member.role === "admin" ||
+                                          member.admin
+                                            ? "Site Administrator"
+                                            : "Registered Member"
+                                }
+
+                            </td>
+
+                        </tr>
 
                     </table>
-                    
-${moderationControls}
+
+
+                    ${moderationControls}
 
                 </div>
 
@@ -1219,8 +1620,9 @@ ${moderationControls}
 
 
     /*
-     * Show posts written by this member.
+     * Render posts made by this member.
      */
+
     function renderPosts(
         member,
         allPosts
@@ -1264,10 +1666,12 @@ ${moderationControls}
                                     a.created || 0
                                 ).getTime();
 
+
                             const dateB =
                                 new Date(
                                     b.created || 0
                                 ).getTime();
+
 
                             return dateB - dateA;
 
@@ -1282,8 +1686,13 @@ ${moderationControls}
 
             area.innerHTML = `
                 <div class="empty">
-                    ${escapeHTML(member.username)}
+
+                    ${escapeHTML(
+                        member.username
+                    )}
+
                     hasn't made any posts yet.
+
                 </div>
             `;
 
@@ -1309,7 +1718,9 @@ ${moderationControls}
                                 <span class="post-date">
 
                                     ${escapeHTML(
-                                        formatPostDate(post)
+                                        formatPostDate(
+                                            post
+                                        )
                                     )}
 
                                 </span>
@@ -1320,9 +1731,12 @@ ${moderationControls}
                             <div class="post-body">
 
                                 <div class="post-text">
+
                                     ${escapeHTML(
-                                        post.text || ""
+                                        post.text ||
+                                        ""
                                     )}
+
                                 </div>
 
                             </div>
@@ -1339,12 +1753,14 @@ ${moderationControls}
     /*
      * Load the profile and posts.
      */
+
     async function loadProfile() {
 
         const profileArea =
             document.getElementById(
                 "profileArea"
             );
+
 
         const postsArea =
             document.getElementById(
@@ -1366,9 +1782,11 @@ ${moderationControls}
                     <br><br>
 
                     Please return to the
+
                     <a href="members.html">
                         members page
                     </a>
+
                     and choose a member.
 
                 </div>
@@ -1381,6 +1799,7 @@ ${moderationControls}
                 </div>
             `;
 
+
             return;
 
         }
@@ -1389,9 +1808,9 @@ ${moderationControls}
         try {
 
             /*
-             * These are public API routes,
-             * so no login token is required.
+             * Public API routes.
              */
+
             const [
                 members,
                 posts
@@ -1435,12 +1854,16 @@ ${moderationControls}
                     </div>
                 `;
 
+
                 return;
 
             }
 
 
-            await renderProfile(member);
+            await renderProfile(
+                member
+            );
+
 
             renderPosts(
                 member,
@@ -1491,6 +1914,7 @@ ${moderationControls}
     /*
      * Start the page.
      */
+
     loadProfile();
 
 </script>
