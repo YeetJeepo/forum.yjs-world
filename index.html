@@ -2851,11 +2851,7 @@
                                         </div>
 
 
-                                        <div class="post-body">
-
-                                            ${escapeHTML(
-                                                post.text
-                                            )}
+                                        <div class="post-body">${escapeHTML(post.text.trimStart())}</div>
 
 
                                             ${
