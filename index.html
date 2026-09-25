@@ -247,18 +247,22 @@
 }
 
 .post-actions {
+    grid-column: 2;
     display: flex !important;
-    flex-direction: row !important;
     justify-content: flex-end !important;
     align-items: center !important;
-    width: auto !important;
+    gap: 4px;
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
 .post-actions .post-action-button {
     flex: 0 0 auto !important;
     width: auto !important;
-    max-width: fit-content !important;
-    display: inline-flex !important;
+    max-width: none !important;
+    padding: 2px 6px !important;
+    margin: 0 !important;
+    font-size: 11px;
 }
 
         .post-action-button:active {
