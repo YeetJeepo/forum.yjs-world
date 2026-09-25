@@ -918,104 +918,169 @@
      * Create the moderation controls.
      */
 
-    function buildModerationControls(member) {
+    async function moderateMember(action) {
+
+    const member =
+        profileMember;
+
+
+    if (!member || !member._id) {
+
+        alert(
+            "No member was selected."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        !canModerateTarget(member)
+    ) {
+
+        alert(
+            "You are not allowed to moderate this member."
+        );
+
+        return;
+
+    }
+
+
+    const token =
+        ownerToken ||
+        memberToken;
+
+
+    if (!token) {
+
+        alert(
+            "You must be logged in to moderate members."
+        );
+
+        return;
+
+    }
+
+
+    let endpoint = "";
+    let method = "POST";
+    let body = undefined;
+
+
+    /*
+     * KICK
+     */
+
+    if (action === "kick") {
+
+        const duration =
+            prompt(
+                "Kick duration in minutes:\n\n" +
+                "10 = 10 minutes\n" +
+                "30 = 30 minutes\n" +
+                "60 = 1 hour\n" +
+                "360 = 6 hours\n" +
+                "1440 = 1 day\n" +
+                "10080 = 7 days",
+                "10"
+            );
+
+
+        if (duration === null) {
+            return;
+        }
+
+
+        const minutes =
+            Number(duration);
+
+
+        const allowedDurations = [
+            10,
+            30,
+            60,
+            360,
+            1440,
+            10080
+        ];
+
 
         if (
-            !canModerateTarget(member)
+            !allowedDurations.includes(
+                minutes
+            )
         ) {
 
-            return "";
+            alert(
+                "Invalid kick duration."
+            );
+
+            return;
 
         }
 
 
-        const actorRole =
-            currentAuth.role;
+        const confirmed =
+            confirm(
+                `Kick ${member.username} for ${minutes} minutes?`
+            );
 
 
-        const targetRole =
-            getMemberRole(member);
-
-
-        let controls = `
-            <div class="profile-moderation">
-
-                <div class="profile-moderation-title">
-                    Moderation
-                </div>
-
-                <div class="profile-moderation-buttons">
-
-                    <button
-                        type="button"
-                        class="profile-moderation-button"
-                        onclick="moderateMember('kick')"
-                    >
-                        Kick User
-                    </button>
-
-                    <button
-                        type="button"
-                        class="profile-moderation-button danger"
-                        onclick="moderateMember('ban')"
-                    >
-                        Ban User
-                    </button>
-        `;
-
-
-        /*
-         * Only Owner and Co-Owner can
-         * promote regular members to Admin.
-         */
-
-        if (
-            (
-                actorRole === "owner" ||
-                actorRole === "co-owner"
-            ) &&
-            targetRole === "member"
-        ) {
-
-            controls += `
-                    <button
-                        type="button"
-                        class="profile-moderation-button"
-                        onclick="moderateMember('make-admin')"
-                    >
-                        Make Admin
-                    </button>
-            `;
-
+        if (!confirmed) {
+            return;
         }
 
 
-        controls += `
-                </div>
-
-            </div>
-        `;
+        endpoint =
+            `/api/moderation/members/${encodeURIComponent(member._id)}/kick`;
 
 
-        return controls;
+        body =
+            JSON.stringify({
+                minutes
+            });
 
     }
 
 
     /*
-     * Perform moderation actions.
+     * BAN
      */
 
-    async function moderateMember(action) {
+    else if (action === "ban") {
 
-        const member =
-            profileMember;
+        const confirmed =
+            confirm(
+                `Permanently ban ${member.username}?`
+            );
 
 
-        if (!member || !member._id) {
+        if (!confirmed) {
+            return;
+        }
+
+
+        endpoint =
+            `/api/moderation/members/${encodeURIComponent(member._id)}/ban`;
+
+    }
+
+
+    /*
+     * MAKE ADMIN
+     */
+
+    else if (action === "make-admin") {
+
+        if (
+            currentAuth.role !== "owner" &&
+            currentAuth.role !== "co-owner"
+        ) {
 
             alert(
-                "No member was selected."
+                "Only the Owner or Co-Owner can make members administrators."
             );
 
             return;
@@ -1024,11 +1089,11 @@
 
 
         if (
-            !canModerateTarget(member)
+            getMemberRole(member) !== "member"
         ) {
 
             alert(
-                "You are not allowed to moderate this member."
+                "Only regular members can be made administrators."
             );
 
             return;
@@ -1036,15 +1101,36 @@
         }
 
 
-        const token =
-            ownerToken ||
-            memberToken;
+        const confirmed =
+            confirm(
+                `Make ${member.username} a site administrator?`
+            );
 
 
-        if (!token) {
+        if (!confirmed) {
+            return;
+        }
+
+
+        endpoint =
+            `/api/admin/members/${encodeURIComponent(member._id)}/admin`;
+
+    }
+
+
+    /*
+     * REMOVE ADMIN
+     */
+
+    else if (action === "remove-admin") {
+
+        if (
+            currentAuth.role !== "owner" &&
+            currentAuth.role !== "co-owner"
+        ) {
 
             alert(
-                "You must be logged in to moderate members."
+                "Only the Owner or Co-Owner can remove administrators."
             );
 
             return;
@@ -1052,267 +1138,158 @@
         }
 
 
-        let endpoint = "";
-        let body = undefined;
+        if (
+            getMemberRole(member) !== "admin"
+        ) {
 
-
-        /*
-         * KICK
-         */
-
-        if (action === "kick") {
-
-            const duration =
-                prompt(
-                    "Kick duration in minutes:\n\n" +
-                    "10 = 10 minutes\n" +
-                    "30 = 30 minutes\n" +
-                    "60 = 1 hour\n" +
-                    "360 = 6 hours\n" +
-                    "1440 = 1 day\n" +
-                    "10080 = 7 days",
-                    "10"
-                );
-
-
-            if (duration === null) {
-                return;
-            }
-
-
-            const minutes =
-                Number(duration);
-
-
-            const allowedDurations = [
-                10,
-                30,
-                60,
-                360,
-                1440,
-                10080
-            ];
-
-
-            if (
-                !allowedDurations.includes(
-                    minutes
-                )
-            ) {
-
-                alert(
-                    "Invalid kick duration."
-                );
-
-                return;
-
-            }
-
-
-            const confirmed =
-                confirm(
-                    `Kick ${member.username} for ${minutes} minutes?`
-                );
-
-
-            if (!confirmed) {
-                return;
-            }
-
-
-            endpoint =
-                `/api/moderation/members/${encodeURIComponent(member._id)}/kick`;
-
-
-            body =
-                JSON.stringify({
-                    minutes
-                });
-
-        }
-
-
-        /*
-         * BAN
-         */
-
-        else if (action === "ban") {
-
-            const confirmed =
-                confirm(
-                    `Permanently ban ${member.username}?`
-                );
-
-
-            if (!confirmed) {
-                return;
-            }
-
-
-            endpoint =
-                `/api/moderation/members/${encodeURIComponent(member._id)}/ban`;
-
-        }
-
-
-        /*
-         * MAKE ADMIN
-         */
-
-        else if (action === "make-admin") {
-
-            if (
-                currentAuth.role !== "owner" &&
-                currentAuth.role !== "co-owner"
-            ) {
-
-                alert(
-                    "Only the Owner or Co-Owner can make members administrators."
-                );
-
-                return;
-
-            }
-
-
-            if (
-                getMemberRole(member) !== "member"
-            ) {
-
-                alert(
-                    "Only regular members can be made administrators."
-                );
-
-                return;
-
-            }
-
-
-            const confirmed =
-                confirm(
-                    `Make ${member.username} a site administrator?`
-                );
-
-
-            if (!confirmed) {
-                return;
-            }
-
-
-            endpoint =
-                `/api/admin/members/${encodeURIComponent(member._id)}/admin`;
-
-        }
-
-
-        else {
+            alert(
+                "This member is not an administrator."
+            );
 
             return;
 
         }
+
+
+        const confirmed =
+            confirm(
+                `Remove Administrator privileges from ${member.username}?`
+            );
+
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        endpoint =
+            `/api/admin/members/${encodeURIComponent(member._id)}/admin`;
+
+
+        /*
+         * Your existing server endpoint
+         * uses DELETE.
+         */
+        method = "DELETE";
+
+    }
+
+
+    else {
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE}${endpoint}`,
+                {
+                    method,
+
+                    headers: {
+                        "Content-Type":
+                            "application/json",
+
+                        Authorization:
+                            `Bearer ${token}`
+                    },
+
+                    ...(body
+                        ? {
+                            body
+                        }
+                        : {})
+                }
+            );
+
+
+        let data = null;
 
 
         try {
 
-            const response =
-                await fetch(
-                    `${API_BASE}${endpoint}`,
-                    {
-                        method: "POST",
+            data =
+                await response.json();
 
-                        headers: {
-                            "Content-Type":
-                                "application/json",
+        } catch {
 
-                            Authorization:
-                                `Bearer ${token}`
-                        },
+            data = null;
 
-                        ...(body
-                            ? {
-                                body
-                            }
-                            : {})
-                    }
-                );
+        }
 
 
-            let data = null;
+        if (!response.ok) {
 
-
-            try {
-
-                data =
-                    await response.json();
-
-            } catch {
-
-                data = null;
-
-            }
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    data &&
-                    data.error
-                        ? data.error
-                        : `Request failed with status ${response.status}.`
-                );
-
-            }
-
-
-            if (action === "kick") {
-
-                alert(
-                    `${member.username} has been kicked.`
-                );
-
-            }
-
-            else if (action === "ban") {
-
-                alert(
-                    `${member.username} has been permanently banned.`
-                );
-
-            }
-
-            else if (action === "make-admin") {
-
-                alert(
-                    `${member.username} is now an Administrator.`
-                );
-
-            }
-
-
-            /*
-             * Reload the profile so the new
-             * role/state appears immediately.
-             */
-
-            await loadProfile();
-
-        } catch (error) {
-
-            console.error(
-                "Moderation error:",
-                error
-            );
-
-
-            alert(
-                error.message ||
-                "Unable to complete moderation action."
+            throw new Error(
+                data &&
+                data.error
+                    ? data.error
+                    : `Request failed with status ${response.status}.`
             );
 
         }
 
+
+        if (action === "kick") {
+
+            alert(
+                `${member.username} has been kicked.`
+            );
+
+        }
+
+        else if (action === "ban") {
+
+            alert(
+                `${member.username} has been permanently banned.`
+            );
+
+        }
+
+        else if (action === "make-admin") {
+
+            alert(
+                `${member.username} is now an Administrator.`
+            );
+
+        }
+
+        else if (action === "remove-admin") {
+
+            alert(
+                `${member.username} is no longer an Administrator.`
+            );
+
+        }
+
+
+        /*
+         * Reload the profile so the new
+         * role/state appears immediately.
+         */
+
+        await loadProfile();
+
+    } catch (error) {
+
+        console.error(
+            "Moderation error:",
+            error
+        );
+
+
+        alert(
+            error.message ||
+            "Unable to complete moderation action."
+        );
+
     }
 
+}
 
     /*
      * Format member registration date.
