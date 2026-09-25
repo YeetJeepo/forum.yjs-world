@@ -1919,7 +1919,7 @@
 
             members =
                 await api(
-                    "/api/members"
+                    "api.yjs-world.com/api/members"
                 );
 
             renderMembers();
@@ -1935,7 +1935,7 @@
 
             posts =
                 await api(
-                    "/api/posts"
+                    "yjs.world.com/api/posts"
                 );
 
             renderPosts();
@@ -1950,7 +1950,7 @@
             }
 
             reports = await api(
-                "/api/reports",
+                "api.yjs-world.com/api/reports",
                 {
                     headers: currentRole() === "owner" ? ownerHeaders() : memberHeaders()
                 }
@@ -2103,7 +2103,7 @@
 
                 currentUser =
                     await api(
-                        "/api/me",
+                        "api.yjs-world.com/api/me",
                         {
                             headers:
                                 memberHeaders()
@@ -3221,7 +3221,7 @@
 
                         const result =
                             await api(
-                                "/api/register",
+                                "api.yjs-world.com/api/register",
                                 {
                                     method: "POST",
 
@@ -3324,7 +3324,7 @@
 
                         const result =
                             await api(
-                                "/api/login",
+                                "api.yjs-world.com/api/login",
                                 {
                                     method: "POST",
 
@@ -3552,7 +3552,7 @@
 
                         const result =
                             await api(
-                                "/api/owner/login",
+                                "api.yjs-world.com/api/owner/login",
                                 {
                                     method: "POST",
 
@@ -3740,7 +3740,7 @@
             try {
 
                 await api(
-                    "/api/owner/me",
+                    "api.yjs-world.com/api/owner/me",
                     {
                         headers:
                             ownerHeaders()
@@ -3870,7 +3870,7 @@
                     try {
 
                         await api(
-                            "/api/posts",
+                            "api.yjs-world.com/api/posts",
                             {
                                 method: "POST",
 
@@ -4043,7 +4043,7 @@
                 try {
 
                     await api(
-                        `/api/posts/${postId}`,
+                        `api.yjs-world.com/api/posts/${postId}`,
                         {
                             method: "PATCH",
 
@@ -4123,7 +4123,7 @@
                 try {
 
                     await api(
-                        `/api/posts/${postId}`,
+                        `api.yjs-world.com/api/posts/${postId}`,
                         {
                             method: "DELETE",
 
@@ -4259,7 +4259,7 @@
             try {
 
                 await api(
-                    `/api/admin/members/${id}/admin`,
+                    `api.yjs-world.com/api/admin/members/${id}/admin`,
                     {
                         method: "POST",
 
@@ -4307,7 +4307,7 @@
     try {
 
         await api(
-            `/api/admin/members/${id}/admin`,
+            `api.yjs-world.com/api/admin/members/${id}/admin`,
             {
                 method: "DELETE",
 
@@ -4381,7 +4381,7 @@
             try {
 
                 await api(
-                    `/api/owner/members/${id}/co-owner`,
+                    `api.yjs-world.com/api/owner/members/${id}/co-owner`,
                     {
                         method: "PUT",
 
@@ -4457,7 +4457,7 @@
             try {
 
                 await api(
-                    `/api/owner/members/${id}/co-owner`,
+                    `api.yjs-world.com/api/owner/members/${id}/co-owner`,
                     {
                         method: "DELETE",
 
@@ -4546,7 +4546,7 @@
             try {
 
                 await api(
-                    `/api/moderation/members/${id}/kick`,
+                    `api.yjs-world.com/api/moderation/members/${id}/kick`,
                     {
                         method: "POST",
 
@@ -4628,7 +4628,7 @@
             try {
 
                 await api(
-                    `/api/moderation/members/${id}/ban`,
+                    `api.yjs-world.com/api/moderation/members/${id}/ban`,
                     {
                         method: "POST",
 
@@ -4694,7 +4694,7 @@
             try {
 
                 await api(
-                    `/api/moderation/members/${id}/unban`,
+                    `api.yjs-world.com/api/moderation/members/${id}/unban`,
                     {
                         method: "POST",
 
@@ -4772,7 +4772,7 @@
             try {
 
                 await api(
-                    `/api/admin/members/${id}`,
+                    `api.yjs-world.com/api/admin/members/${id}`,
                     {
                         method: "DELETE",
 
@@ -4835,7 +4835,7 @@
             }
 
             try {
-                await api("/api/reports", {
+                await api("api.yjs-world.com/api/reports", {
                     method: "POST",
                     headers: memberHeaders(),
                     body: JSON.stringify({
@@ -4866,7 +4866,7 @@
         async function handleReport(id) {
 
             try {
-                await api(`/api/reports/${id}`, {
+                await api(`api.yjs-world.com/api/reports/${id}`, {
                     method: "DELETE",
                     headers: currentRole() === "owner" ? ownerHeaders() : memberHeaders()
                 });
