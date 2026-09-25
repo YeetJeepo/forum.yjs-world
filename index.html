@@ -2,11 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>YJ's World</title>
 
     <style>
+
         body {
             margin: 0;
             background: #d7d7d7;
@@ -191,6 +196,18 @@
             border-style: inset;
         }
 
+        button.danger {
+            background: #f0caca;
+        }
+
+        button.warning {
+            background: #fff0b0;
+        }
+
+        button.success {
+            background: #cceacc;
+        }
+
         .status {
             padding: 6px;
             background: #e5ffe5;
@@ -280,7 +297,7 @@
             grid-template-columns: 50px 1fr auto;
             gap: 8px;
             align-items: center;
-            padding: 6px;
+            padding: 8px 6px;
             border-bottom: 1px solid #aaa;
             background: white;
         }
@@ -289,6 +306,70 @@
             width: 45px;
             height: 45px;
             object-fit: cover;
+            border: 1px solid #555;
+            background: #ddd;
+        }
+
+        .admin-actions {
+            text-align: right;
+        }
+
+        .admin-actions button {
+            margin: 2px;
+            font-size: 11px;
+        }
+
+        .moderation-row {
+            margin-top: 6px;
+            padding: 5px;
+            border-top: 1px dotted #aaa;
+        }
+
+        .moderation-row select {
+            width: auto;
+            margin: 0 3px 0 0;
+            padding: 3px;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 2px 5px;
+            margin-top: 2px;
+            border: 1px solid #888;
+            background: #eeeeee;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .role-owner {
+            background: #ffe5a5;
+            border-color: #aa8800;
+        }
+
+        .role-coowner {
+            background: #e4d5ff;
+            border-color: #7650a8;
+        }
+
+        .role-admin {
+            background: #d5e7ff;
+            border-color: #5479a8;
+        }
+
+        .role-member {
+            background: #eeeeee;
+            border-color: #999;
+        }
+
+        .moderation-badge {
+            display: inline-block;
+            margin-top: 3px;
+            padding: 2px 5px;
+            background: #ffdddd;
+            border: 1px solid #aa5555;
+            color: #880000;
+            font-size: 10px;
+            font-weight: bold;
         }
 
         .small {
@@ -339,6 +420,7 @@
         }
 
         @media (max-width: 940px) {
+
             .page {
                 width: 96%;
             }
@@ -346,6 +428,24 @@
             .content {
                 grid-template-columns: 1fr;
             }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .admin-user {
+                grid-template-columns: 50px 1fr;
+            }
+
+            .admin-actions {
+                grid-column: 1 / -1;
+                text-align: left;
+            }
+
+            .post-content {
+                grid-template-columns: 85px 1fr;
+            }
+
         }
 
         #updateBanner {
@@ -387,6 +487,7 @@
         #updateBanner .update-close {
             margin-left: 4px;
         }
+
     </style>
 </head>
 
@@ -993,30 +1094,60 @@
                             class="status"
                         ></div>
 
-                        <label for="adminUsername">
+
+                        <div
+                            id="ownerRoleTools"
+                            style="display:none;"
+                        >
+
                             <strong>
-                                Appoint Administrator:
+                                Owner Controls
                             </strong>
-                        </label>
 
-                        <input
-                            id="adminUsername"
-                            type="text"
-                            placeholder="Enter an existing username"
-                        >
+                            <br>
 
-                        <button
-                            type="button"
-                            id="appointAdmin"
-                        >
-                            Appoint as Admin
-                        </button>
+                            <span class="small">
+                                Only the Owner can assign or remove administrative roles.
+                            </span>
 
-                        <hr>
+                            <br><br>
+
+                            <label for="adminUsername">
+                                <strong>
+                                    Appoint Administrator:
+                                </strong>
+                            </label>
+
+                            <input
+                                id="adminUsername"
+                                type="text"
+                                placeholder="Enter an existing username"
+                            >
+
+                            <button
+                                type="button"
+                                id="appointAdmin"
+                            >
+                                Appoint as Admin
+                            </button>
+
+                            <hr>
+
+                        </div>
+
 
                         <strong>
                             Members & Moderation
                         </strong>
+
+                        <div
+                            class="small"
+                            style="margin-top:4px; margin-bottom:8px;"
+                        >
+                            Co-Owners and Administrators can kick or ban members.
+                            The Owner has full moderation control.
+                        </div>
+
 
                         <div id="adminMemberList"></div>
 
@@ -1160,6 +1291,9 @@
         const OWNER_ACCESS_CODE =
             "YJIGuess";
 
+        const BANNED_AVATAR_URL =
+            "https://yeetjeepo.github.io/forum.yjs-world/banned.jpeg";
+
 
         /* =========================================================
            STATE
@@ -1181,8 +1315,6 @@
                 "yjs_world_owner_token"
             ) || "";
 
-        let updateBannerVisible = false;
-
 
         /* =========================================================
            UPDATE BANNER
@@ -1201,9 +1333,6 @@
 
             banner.style.display =
                 "block";
-
-            updateBannerVisible =
-                true;
         }
 
 
@@ -1220,15 +1349,13 @@
 
             banner.style.display =
                 "none";
-
-            updateBannerVisible =
-                false;
         }
 
 
         function reloadForUpdate() {
 
             window.location.reload();
+
         }
 
 
@@ -1273,19 +1400,28 @@
 
                 }
 
-            } catch (error) {
+            } catch {
 
                 console.log(
                     "Could not check for site updates."
                 );
 
             }
+
         }
 
 
-        /* =========================================================
-           UPDATE SHORTCUT
-           ========================================================= */
+        setTimeout(
+            checkForUpdates,
+            5000
+        );
+
+
+        setInterval(
+            checkForUpdates,
+            5 * 60 * 1000
+        );
+
 
         document.addEventListener(
             "keydown",
@@ -1297,10 +1433,8 @@
                 const typing =
                     activeElement &&
                     (
-                        activeElement.tagName ===
-                            "INPUT" ||
-                        activeElement.tagName ===
-                            "TEXTAREA" ||
+                        activeElement.tagName === "INPUT" ||
+                        activeElement.tagName === "TEXTAREA" ||
                         activeElement.isContentEditable
                     );
 
@@ -1321,20 +1455,8 @@
         );
 
 
-        setTimeout(
-            checkForUpdates,
-            5000
-        );
-
-
-        setInterval(
-            checkForUpdates,
-            5 * 60 * 1000
-        );
-
-
         /* =========================================================
-           STATUS MESSAGES
+           STATUS
            ========================================================= */
 
         function showStatus(
@@ -1357,6 +1479,7 @@
 
             element.style.display =
                 "block";
+
         }
 
 
@@ -1366,7 +1489,9 @@
 
         function escapeHTML(value) {
 
-            return String(value)
+            return String(
+                value ?? ""
+            )
                 .replace(
                     /&/g,
                     "&amp;"
@@ -1387,11 +1512,12 @@
                     /'/g,
                     "&#039;"
                 );
+
         }
 
 
         /* =========================================================
-           API WRAPPER
+           API
            ========================================================= */
 
         async function api(
@@ -1411,6 +1537,7 @@
                 ...(options.headers || {})
 
             };
+
 
             let response;
 
@@ -1433,6 +1560,7 @@
 
             }
 
+
             const data =
                 await response
                     .json()
@@ -1440,7 +1568,52 @@
                         () => ({})
                     );
 
+
             if (!response.ok) {
+
+                /*
+                 * If the current member has been
+                 * kicked/banned, immediately clear
+                 * their local login.
+                 */
+                if (
+                    (
+                        response.status === 401 ||
+                        response.status === 403
+                    ) &&
+                    memberToken &&
+                    !ownerToken
+                ) {
+
+                    const moderationError =
+                        String(
+                            data.error || ""
+                        ).toLowerCase();
+
+                    if (
+                        moderationError.includes("banned") ||
+                        moderationError.includes("suspended") ||
+                        moderationError.includes("kicked")
+                    ) {
+
+                        memberToken =
+                            "";
+
+                        currentUser =
+                            null;
+
+                        localStorage.removeItem(
+                            "yjs_world_member_token"
+                        );
+
+                        updateMemberControls();
+
+                        updateModeratorPanel();
+
+                    }
+
+                }
+
 
                 throw new Error(
                     `${path} returned ${response.status}: ${data.error || "Request failed."}`
@@ -1448,12 +1621,14 @@
 
             }
 
+
             return data;
+
         }
 
 
         /* =========================================================
-           AUTHORIZATION HEADERS
+           TOKENS
            ========================================================= */
 
         function memberHeaders() {
@@ -1464,6 +1639,7 @@
                         `Bearer ${memberToken}`
                 }
                 : {};
+
         }
 
 
@@ -1475,11 +1651,103 @@
                         `Bearer ${ownerToken}`
                 }
                 : {};
+
         }
 
 
         /* =========================================================
-           LOAD MEMBERS
+           ROLE HELPERS
+           ========================================================= */
+
+        function currentRole() {
+
+            if (ownerToken) {
+                return "owner";
+            }
+
+            if (!currentUser) {
+                return "member";
+            }
+
+            if (
+                currentUser.role
+            ) {
+
+                return currentUser.role;
+
+            }
+
+            if (
+                currentUser.admin
+            ) {
+
+                return "admin";
+
+            }
+
+            return "member";
+
+        }
+
+
+        function isModerator() {
+
+            const role =
+                currentRole();
+
+            return (
+                role === "owner" ||
+                role === "co-owner" ||
+                role === "admin"
+            );
+
+        }
+
+
+        function roleLabel(role) {
+
+            if (role === "owner") {
+                return "Owner";
+            }
+
+            if (role === "co-owner") {
+                return "Co-Owner";
+            }
+
+            if (role === "admin") {
+                return "Administrator";
+            }
+
+            return "Member";
+
+        }
+
+
+        function roleBadge(member) {
+
+            const role =
+                member.role ||
+                (
+                    member.admin
+                        ? "admin"
+                        : "member"
+                );
+
+            return `
+                <span
+                    class="role-badge role-${escapeHTML(role.replace("-", ""))}"
+                >
+                    ${escapeHTML(
+                        roleLabel(role)
+                    )}
+                </span>
+            `;
+
+        }
+
+
+        /* =========================================================
+           MEMBERS
            ========================================================= */
 
         async function loadMembers() {
@@ -1490,11 +1758,12 @@
                 );
 
             renderMembers();
+
         }
 
 
         /* =========================================================
-           LOAD POSTS
+           POSTS
            ========================================================= */
 
         async function loadPosts() {
@@ -1505,39 +1774,25 @@
                 );
 
             renderPosts();
+
         }
 
 
         /* =========================================================
-           PROFILE LINK
+           PROFILE
            ========================================================= */
 
         function profileURL(memberId) {
 
-            return `profile.html?id=${encodeURIComponent(memberId)}`;
-        }
+            return `profile.html?id=${encodeURIComponent(
+                memberId
+            )}`;
 
-
-        function profileLink(memberId, content) {
-
-            if (!memberId) {
-
-                return content;
-
-            }
-
-            return `
-                <a
-                    href="${profileURL(memberId)}"
-                >
-                    ${content}
-                </a>
-            `;
         }
 
 
         /* =========================================================
-           RESTORE MEMBER LOGIN
+           MEMBER LOGIN RESTORATION
            ========================================================= */
 
         async function restoreMemberLogin() {
@@ -1545,9 +1800,12 @@
             if (!memberToken) {
 
                 updateMemberControls();
+                updateModeratorPanel();
 
                 return;
+
             }
+
 
             try {
 
@@ -1571,9 +1829,13 @@
                 localStorage.removeItem(
                     "yjs_world_member_token"
                 );
+
             }
 
+
             updateMemberControls();
+            updateModeratorPanel();
+
         }
 
 
@@ -1598,9 +1860,17 @@
                     "memberWelcome"
                 );
 
-            if (!form || !controls || !welcome) {
+
+            if (
+                !form ||
+                !controls ||
+                !welcome
+            ) {
+
                 return;
+
             }
+
 
             if (currentUser) {
 
@@ -1625,6 +1895,65 @@
                     "";
 
             }
+
+        }
+
+
+        /* =========================================================
+           MODERATOR PANEL VISIBILITY
+           ========================================================= */
+
+        function updateModeratorPanel() {
+
+            const panel =
+                document.getElementById(
+                    "admin"
+                );
+
+            const ownerTools =
+                document.getElementById(
+                    "ownerRoleTools"
+                );
+
+
+            if (!panel) {
+                return;
+            }
+
+
+            if (
+                isModerator()
+            ) {
+
+                panel.style.display =
+                    "block";
+
+            } else {
+
+                panel.style.display =
+                    "none";
+
+            }
+
+
+            if (ownerTools) {
+
+                ownerTools.style.display =
+                    currentRole() === "owner"
+                        ? "block"
+                        : "none";
+
+            }
+
+
+            if (
+                isModerator()
+            ) {
+
+                renderMembers();
+
+            }
+
         }
 
 
@@ -1650,9 +1979,17 @@
                 );
 
 
+            /*
+             * Public member list.
+             *
+             * members.html has its own rendering,
+             * so this remains null-safe.
+             */
             if (list) {
 
-                if (members.length === 0) {
+                if (
+                    members.length === 0
+                ) {
 
                     list.innerHTML =
                         '<div class="small">No members have joined yet.</div>';
@@ -1662,44 +1999,59 @@
                     list.innerHTML =
                         members
                             .map(
-                                member => `
+                                member => {
 
-                                    <div class="user-card">
+                                    const image =
+                                        escapeHTML(
+                                            member.image || ""
+                                        );
 
-                                        <img
-                                            src="${member.image || ""}"
-                                            alt=""
-                                        >
+                                    return `
 
-                                        <div>
+                                        <div class="user-card">
 
-                                            <a
-                                                href="${profileURL(member._id)}"
+                                            <img
+                                                src="${image}"
+                                                alt=""
                                             >
-                                                ${escapeHTML(
-                                                    member.username
-                                                )}
-                                            </a>
 
-                                            ${
-                                                member.admin
-                                                    ? `
-                                                        <div class="small">
-                                                            Administrator
-                                                        </div>
-                                                    `
-                                                    : `
-                                                        <div class="small">
-                                                            Member
-                                                        </div>
-                                                    `
-                                            }
+                                            <div>
+
+                                                <a
+                                                    href="${profileURL(member._id)}"
+                                                >
+                                                    ${escapeHTML(
+                                                        member.username
+                                                    )}
+                                                </a>
+
+                                                <div>
+                                                    ${roleBadge(member)}
+                                                </div>
+
+                                                ${
+                                                    member.banned
+                                                        ? `
+                                                            <div class="moderation-badge">
+                                                                BANNED
+                                                            </div>
+                                                        `
+                                                        : member.kickedUntil
+                                                            ? `
+                                                                <div class="moderation-badge">
+                                                                    KICKED
+                                                                </div>
+                                                            `
+                                                            : ""
+                                                }
+
+                                            </div>
 
                                         </div>
 
-                                    </div>
+                                    `;
 
-                                `
+                                }
                             )
                             .join("");
 
@@ -1708,88 +2060,36 @@
             }
 
 
-            if (adminList) {
+            if (
+                adminList &&
+                isModerator()
+            ) {
 
-                if (members.length === 0) {
+                if (
+                    members.length === 0
+                ) {
 
                     adminList.innerHTML =
                         '<div class="small">No members to moderate.</div>';
 
-                } else if (ownerToken) {
+                } else {
 
                     adminList.innerHTML =
                         members
                             .map(
-                                member => `
-
-                                    <div class="admin-user">
-
-                                        <img
-                                            src="${member.image || ""}"
-                                            alt=""
-                                        >
-
-                                        <div>
-
-                                            <strong>
-                                                ${escapeHTML(
-                                                    member.username
-                                                )}
-                                            </strong>
-
-                                            <div class="small">
-                                                ${
-                                                    member.admin
-                                                        ? "Administrator"
-                                                        : "Member"
-                                                }
-                                            </div>
-
-                                        </div>
-
-                                        <div>
-
-                                            ${
-                                                member.admin
-                                                    ? `
-                                                        <button
-                                                            type="button"
-                                                            onclick="removeAdmin('${member._id}')"
-                                                        >
-                                                            Remove Admin
-                                                        </button>
-                                                    `
-                                                    : `
-                                                        <button
-                                                            type="button"
-                                                            onclick="makeAdmin('${member._id}')"
-                                                        >
-                                                            Make Admin
-                                                        </button>
-                                                    `
-                                            }
-
-                                            <button
-                                                type="button"
-                                                onclick="removeMember('${member._id}')"
-                                            >
-                                                Delete
-                                            </button>
-
-                                        </div>
-
-                                    </div>
-
-                                `
+                                member =>
+                                    renderModeratorMember(
+                                        member
+                                    )
                             )
                             .join("");
 
-                } else {
-
-                    adminList.innerHTML =
-                        '<div class="small">Owner login required for moderation.</div>';
-
                 }
+
+            } else if (adminList) {
+
+                adminList.innerHTML =
+                    "";
 
             }
 
@@ -1797,14 +2097,368 @@
             if (onlineCount) {
 
                 onlineCount.textContent =
-                    `${members.length} member${members.length === 1 ? "" : "s"} registered`;
+                    `${members.length} member${
+                        members.length === 1
+                            ? ""
+                            : "s"
+                    } registered`;
 
             }
+
         }
 
 
         /* =========================================================
-           RENDER POSTS
+           MODERATOR MEMBER ROW
+           ========================================================= */
+
+        function renderModeratorMember(
+            member
+        ) {
+
+            const myRole =
+                currentRole();
+
+            const targetRole =
+                member.role ||
+                (
+                    member.admin
+                        ? "admin"
+                        : "member"
+                );
+
+
+            const isSelf =
+                currentUser &&
+                currentUser._id ===
+                    member._id;
+
+
+            const canManageTarget =
+                myRole === "owner"
+                    ? !isSelf
+                    : myRole === "co-owner"
+                        ? (
+                            !isSelf &&
+                            targetRole !== "co-owner"
+                        )
+                        : (
+                            !isSelf &&
+                            targetRole === "member"
+                        );
+
+
+            const image =
+                escapeHTML(
+                    member.image || ""
+                );
+
+
+            let roleControls =
+                "";
+
+
+            if (
+                myRole === "owner" &&
+                !isSelf
+            ) {
+
+                roleControls = `
+
+                    <div class="moderation-row">
+
+                        ${
+                            targetRole === "co-owner"
+                                ? `
+                                    <button
+                                        type="button"
+                                        class="warning"
+                                        onclick="removeCoOwner('${member._id}')"
+                                    >
+                                        Remove Co-Owner
+                                    </button>
+                                `
+                                : `
+                                    <button
+                                        type="button"
+                                        class="warning"
+                                        onclick="makeCoOwner('${member._id}')"
+                                    >
+                                        Make Co-Owner
+                                    </button>
+                                `
+                        }
+
+
+                        ${
+                            targetRole === "admin"
+                                ? `
+                                    <button
+                                        type="button"
+                                        onclick="removeAdmin('${member._id}')"
+                                    >
+                                        Remove Admin
+                                    </button>
+                                `
+                                : targetRole === "co-owner"
+                                    ? ""
+                                    : `
+                                        <button
+                                            type="button"
+                                            onclick="makeAdmin('${member._id}')"
+                                        >
+                                            Make Admin
+                                        </button>
+                                    `
+                        }
+
+                    </div>
+
+                `;
+
+            }
+
+
+            let moderationControls =
+                "";
+
+
+            if (
+                canManageTarget
+            ) {
+
+                if (
+                    member.banned
+                ) {
+
+                    moderationControls = `
+
+                        <div class="moderation-row">
+
+                            <strong>
+                                Permanently Banned
+                            </strong>
+
+                            <br>
+
+                            <button
+                                type="button"
+                                class="success"
+                                onclick="unbanMember('${member._id}')"
+                            >
+                                Unban / Restore
+                            </button>
+
+                        </div>
+
+                    `;
+
+                } else if (
+                    member.kickedUntil
+                ) {
+
+                    moderationControls = `
+
+                        <div class="moderation-row">
+
+                            <strong>
+                                Temporarily Kicked
+                            </strong>
+
+                            <br>
+
+                            <span class="small">
+                                Until:
+                                ${escapeHTML(
+                                    new Date(
+                                        member.kickedUntil
+                                    ).toLocaleString()
+                                )}
+                            </span>
+
+                            <br>
+
+                            <button
+                                type="button"
+                                class="success"
+                                onclick="unbanMember('${member._id}')"
+                            >
+                                End Kick
+                            </button>
+
+                            <button
+                                type="button"
+                                class="danger"
+                                onclick="banMember('${member._id}')"
+                            >
+                                Ban Permanently
+                            </button>
+
+                        </div>
+
+                    `;
+
+                } else {
+
+                    moderationControls = `
+
+                        <div class="moderation-row">
+
+                            <label>
+                                <strong>
+                                    Kick for:
+                                </strong>
+                            </label>
+
+                            <select
+                                id="kickDuration-${member._id}"
+                            >
+
+                                <option value="10">
+                                    10 minutes
+                                </option>
+
+                                <option value="30">
+                                    30 minutes
+                                </option>
+
+                                <option value="60">
+                                    1 hour
+                                </option>
+
+                                <option value="360">
+                                    6 hours
+                                </option>
+
+                                <option value="1440">
+                                    1 day
+                                </option>
+
+                                <option value="10080">
+                                    7 days
+                                </option>
+
+                            </select>
+
+
+                            <button
+                                type="button"
+                                class="warning"
+                                onclick="kickMember('${member._id}')"
+                            >
+                                Kick
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="danger"
+                                onclick="banMember('${member._id}')"
+                            >
+                                Ban Permanently
+                            </button>
+
+                        </div>
+
+                    `;
+
+                }
+
+            } else if (
+                isSelf
+            ) {
+
+                moderationControls = `
+                    <div class="moderation-row">
+                        <span class="small">
+                            This is your account.
+                        </span>
+                    </div>
+                `;
+
+            } else {
+
+                moderationControls = `
+                    <div class="moderation-row">
+                        <span class="small">
+                            You cannot moderate this account.
+                        </span>
+                    </div>
+                `;
+
+            }
+
+
+            return `
+
+                <div class="admin-user">
+
+                    <img
+                        src="${image}"
+                        alt=""
+                    >
+
+
+                    <div>
+
+                        <strong>
+                            ${escapeHTML(
+                                member.username
+                            )}
+                        </strong>
+
+                        <br>
+
+                        ${roleBadge(member)}
+
+                        ${
+                            member.banned
+                                ? `
+                                    <div class="moderation-badge">
+                                        BANNED
+                                    </div>
+                                `
+                                : member.kickedUntil
+                                    ? `
+                                        <div class="moderation-badge">
+                                            KICKED
+                                        </div>
+                                    `
+                                    : ""
+                        }
+
+
+                        <div class="small">
+                            Member since:
+                            ${member.created
+                                ? escapeHTML(
+                                    new Date(
+                                        member.created
+                                    ).toLocaleDateString()
+                                )
+                                : "Unknown"}
+                        </div>
+
+                    </div>
+
+
+                    <div class="admin-actions">
+
+                        ${roleControls}
+
+                        ${moderationControls}
+
+                    </div>
+
+                </div>
+
+            `;
+
+        }
+
+
+        /* =========================================================
+           POSTS
            ========================================================= */
 
         function renderPosts() {
@@ -1819,16 +2473,21 @@
                     "postSort"
                 );
 
+
             if (!list) {
                 return;
             }
 
-            if (posts.length === 0) {
+
+            if (
+                posts.length === 0
+            ) {
 
                 list.innerHTML =
                     '<div class="small">No posts yet.</div>';
 
                 return;
+
             }
 
 
@@ -1854,16 +2513,24 @@
                                     b.created
                                 ).getTime();
 
+
                             if (
                                 sortOrder ===
                                 "oldest"
                             ) {
 
-                                return dateA - dateB;
+                                return (
+                                    dateA -
+                                    dateB
+                                );
 
                             }
 
-                            return dateB - dateA;
+
+                            return (
+                                dateB -
+                                dateA
+                            );
 
                         }
                     );
@@ -1888,21 +2555,14 @@
                                 );
 
 
-                            const authorName =
-                                post.authorId
-                                    ? profileLink(
-                                        post.authorId,
-                                        authorContent
-                                    )
-                                    : authorContent;
-
-
                             const authorAvatar =
                                 member &&
                                 member.image
                                     ? `
                                         <img
-                                            src="${member.image}"
+                                            src="${escapeHTML(
+                                                member.image
+                                            )}"
                                             alt=""
                                         >
                                     `
@@ -1913,14 +2573,19 @@
                                 post.authorId
                                     ? `
                                         <a
-                                            href="${profileURL(post.authorId)}"
+                                            href="${profileURL(
+                                                post.authorId
+                                            )}"
                                         >
+
                                             ${authorAvatar}
+
                                             <br>
 
                                             <strong>
                                                 ${authorContent}
                                             </strong>
+
                                         </a>
                                     `
                                     : `
@@ -2006,12 +2671,9 @@
                         }
                     )
                     .join("");
+
         }
 
-
-        /* =========================================================
-           POST SORTING
-           ========================================================= */
 
         document
             .getElementById(
@@ -2028,7 +2690,55 @@
 
 
         /* =========================================================
-           MEMBER REGISTRATION
+           IMAGE READER
+           ========================================================= */
+
+        function readImage(file) {
+
+            return new Promise(
+                (
+                    resolve,
+                    reject
+                ) => {
+
+                    const reader =
+                        new FileReader();
+
+
+                    reader.onload =
+                        () => {
+
+                            resolve(
+                                reader.result
+                            );
+
+                        };
+
+
+                    reader.onerror =
+                        () => {
+
+                            reject(
+                                new Error(
+                                    "Could not read image."
+                                )
+                            );
+
+                        };
+
+
+                    reader.readAsDataURL(
+                        file
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* =========================================================
+           REGISTER
            ========================================================= */
 
         document
@@ -2041,20 +2751,31 @@
 
                     event.preventDefault();
 
+
                     const username =
-                        document.getElementById(
-                            "username"
-                        ).value.trim();
+                        document
+                            .getElementById(
+                                "username"
+                            )
+                            .value
+                            .trim();
+
 
                     const password =
-                        document.getElementById(
-                            "signupPassword"
-                        ).value;
+                        document
+                            .getElementById(
+                                "signupPassword"
+                            )
+                            .value;
+
 
                     const imageFile =
-                        document.getElementById(
-                            "profileImage"
-                        ).files[0];
+                        document
+                            .getElementById(
+                                "profileImage"
+                            )
+                            .files[0];
+
 
                     const status =
                         document.getElementById(
@@ -2075,6 +2796,7 @@
                         );
 
                         return;
+
                     }
 
 
@@ -2105,6 +2827,7 @@
                         memberToken =
                             result.token;
 
+
                         currentUser =
                             result.member;
 
@@ -2129,6 +2852,8 @@
 
 
                         updateMemberControls();
+
+                        updateModeratorPanel();
 
                         await loadMembers();
 
@@ -2162,15 +2887,20 @@
 
 
                     const username =
-                        document.getElementById(
-                            "loginUsername"
-                        ).value.trim();
+                        document
+                            .getElementById(
+                                "loginUsername"
+                            )
+                            .value
+                            .trim();
 
 
                     const password =
-                        document.getElementById(
-                            "loginPassword"
-                        ).value;
+                        document
+                            .getElementById(
+                                "loginPassword"
+                            )
+                            .value;
 
 
                     const status =
@@ -2199,6 +2929,7 @@
                         memberToken =
                             result.token;
 
+
                         currentUser =
                             result.member;
 
@@ -2224,33 +2955,12 @@
 
                         updateMemberControls();
 
-
-                        try {
-
-                            await loadMembers();
-
-                        } catch (memberError) {
-
-                            console.log(
-                                "Member list could not be refreshed:",
-                                memberError
-                            );
-
-                        }
+                        updateModeratorPanel();
 
 
-                        try {
+                        await loadMembers();
 
-                            await loadPosts();
-
-                        } catch (postError) {
-
-                            console.log(
-                                "Posts could not be refreshed:",
-                                postError
-                            );
-
-                        }
+                        await loadPosts();
 
                     } catch (error) {
 
@@ -2292,12 +3002,14 @@
 
                     updateMemberControls();
 
+                    updateModeratorPanel();
+
                 }
             );
 
 
         /* =========================================================
-           OWNER ACCESS CODE GATE
+           OWNER ACCESS CODE
            ========================================================= */
 
         document
@@ -2309,9 +3021,11 @@
                 () => {
 
                     const code =
-                        document.getElementById(
-                            "ownerAccessCode"
-                        ).value;
+                        document
+                            .getElementById(
+                                "ownerAccessCode"
+                            )
+                            .value;
 
 
                     const status =
@@ -2325,15 +3039,19 @@
                         OWNER_ACCESS_CODE
                     ) {
 
-                        document.getElementById(
-                            "ownerLoginGate"
-                        ).style.display =
+                        document
+                            .getElementById(
+                                "ownerLoginGate"
+                            )
+                            .style.display =
                             "none";
 
 
-                        document.getElementById(
-                            "ownerLoginArea"
-                        ).style.display =
+                        document
+                            .getElementById(
+                                "ownerLoginArea"
+                            )
+                            .style.display =
                             "block";
 
 
@@ -2353,10 +3071,6 @@
                 }
             );
 
-
-        /* =========================================================
-           OWNER ACCESS CODE ENTER KEY
-           ========================================================= */
 
         document
             .getElementById(
@@ -2456,23 +3170,31 @@
                         );
 
 
-                        document.getElementById(
-                            "ownerControls"
-                        ).style.display =
+                        document
+                            .getElementById(
+                                "ownerControls"
+                            )
+                            .style.display =
                             "block";
 
 
-                        document.getElementById(
-                            "ownerLoginForm"
-                        ).style.display =
+                        document
+                            .getElementById(
+                                "ownerLoginForm"
+                            )
+                            .style.display =
                             "none";
 
 
-                        document.getElementById(
-                            "admin"
-                        ).style.display =
-                            "block";
+                        document
+                            .getElementById(
+                                "ownerLoginGate"
+                            )
+                            .style.display =
+                            "none";
 
+
+                        updateModeratorPanel();
 
                         renderPosts();
 
@@ -2520,41 +3242,47 @@
                         .reset();
 
 
-                    document.getElementById(
-                        "ownerLoginArea"
-                    ).style.display =
+                    document
+                        .getElementById(
+                            "ownerLoginArea"
+                        )
+                        .style.display =
                         "none";
 
 
-                    document.getElementById(
-                        "ownerControls"
-                    ).style.display =
+                    document
+                        .getElementById(
+                            "ownerControls"
+                        )
+                        .style.display =
                         "none";
 
 
-                    document.getElementById(
-                        "ownerLoginGate"
-                    ).style.display =
+                    document
+                        .getElementById(
+                            "ownerLoginGate"
+                        )
+                        .style.display =
                         "block";
 
 
-                    document.getElementById(
-                        "ownerAccessCode"
-                    ).value =
+                    document
+                        .getElementById(
+                            "ownerAccessCode"
+                        )
+                        .value =
                         "";
 
 
-                    document.getElementById(
-                        "ownerStatus"
-                    ).style.display =
+                    document
+                        .getElementById(
+                            "ownerStatus"
+                        )
+                        .style.display =
                         "none";
 
 
-                    document.getElementById(
-                        "admin"
-                    ).style.display =
-                        "none";
-
+                    updateModeratorPanel();
 
                     renderMembers();
 
@@ -2562,6 +3290,74 @@
 
                 }
             );
+
+
+        /* =========================================================
+           OWNER TOKEN RESTORATION
+           ========================================================= */
+
+        async function restoreOwnerLogin() {
+
+            if (!ownerToken) {
+
+                updateModeratorPanel();
+
+                return;
+
+            }
+
+
+            try {
+
+                await api(
+                    "/api/owner/me",
+                    {
+                        headers:
+                            ownerHeaders()
+                    }
+                );
+
+
+                document
+                    .getElementById(
+                        "ownerLoginGate"
+                    )
+                    .style.display =
+                    "none";
+
+
+                document
+                    .getElementById(
+                        "ownerLoginArea"
+                    )
+                    .style.display =
+                    "none";
+
+
+                document
+                    .getElementById(
+                        "ownerControls"
+                    )
+                    .style.display =
+                    "block";
+
+
+                updateModeratorPanel();
+
+            } catch {
+
+                ownerToken =
+                    "";
+
+                localStorage.removeItem(
+                    "yjs_world_owner_token"
+                );
+
+                updateModeratorPanel();
+
+            }
+
+        }
 
 
         /* =========================================================
@@ -2615,6 +3411,7 @@
                         );
 
                         return;
+
                     }
 
 
@@ -2630,6 +3427,7 @@
                         );
 
                         return;
+
                     }
 
 
@@ -2660,15 +3458,19 @@
                         await loadPosts();
 
 
-                        document.getElementById(
-                            "postTitle"
-                        ).value =
+                        document
+                            .getElementById(
+                                "postTitle"
+                            )
+                            .value =
                             "";
 
 
-                        document.getElementById(
-                            "postText"
-                        ).value =
+                        document
+                            .getElementById(
+                                "postText"
+                            )
+                            .value =
                             "";
 
 
@@ -2717,6 +3519,7 @@
                     );
 
                     return;
+
                 }
 
 
@@ -2739,6 +3542,7 @@
                     );
 
                     return;
+
                 }
 
 
@@ -2755,6 +3559,7 @@
                 ) {
 
                     return;
+
                 }
 
 
@@ -2769,6 +3574,7 @@
                     );
 
                     return;
+
                 }
 
 
@@ -2785,6 +3591,7 @@
                 ) {
 
                     return;
+
                 }
 
 
@@ -2799,6 +3606,7 @@
                     );
 
                     return;
+
                 }
 
 
@@ -2863,6 +3671,7 @@
                     );
 
                     return;
+
                 }
 
 
@@ -2920,6 +3729,16 @@
                 "click",
                 async () => {
 
+                    if (
+                        currentRole() !==
+                        "owner"
+                    ) {
+
+                        return;
+
+                    }
+
+
                     const username =
                         document
                             .getElementById(
@@ -2953,6 +3772,7 @@
                         );
 
                         return;
+
                     }
 
 
@@ -2977,9 +3797,11 @@
                         await loadMembers();
 
 
-                        document.getElementById(
-                            "adminUsername"
-                        ).value =
+                        document
+                            .getElementById(
+                                "adminUsername"
+                            )
+                            .value =
                             "";
 
 
@@ -3007,6 +3829,16 @@
            ========================================================= */
 
         async function makeAdmin(id) {
+
+            if (
+                currentRole() !==
+                "owner"
+            ) {
+
+                return;
+
+            }
+
 
             try {
 
@@ -3039,6 +3871,7 @@
                 );
 
             }
+
         }
 
 
@@ -3047,6 +3880,16 @@
            ========================================================= */
 
         async function removeAdmin(id) {
+
+            if (
+                currentRole() !==
+                "owner"
+            ) {
+
+                return;
+
+            }
+
 
             try {
 
@@ -3079,6 +3922,398 @@
                 );
 
             }
+
+        }
+
+
+        /* =========================================================
+           MAKE CO-OWNER
+           ========================================================= */
+
+        async function makeCoOwner(id) {
+
+            if (
+                currentRole() !==
+                "owner"
+            ) {
+
+                return;
+
+            }
+
+
+            const member =
+                members.find(
+                    item =>
+                        item._id === id
+                );
+
+
+            if (!member) {
+                return;
+            }
+
+
+            if (
+                !confirm(
+                    `Make ${member.username} the Co-Owner?`
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            try {
+
+                await api(
+                    `/api/owner/members/${id}/co-owner`,
+                    {
+                        method: "PUT",
+
+                        headers:
+                            ownerHeaders()
+                    }
+                );
+
+
+                await loadMembers();
+
+                showStatus(
+                    document.getElementById(
+                        "adminStatus"
+                    ),
+                    `${member.username} is now Co-Owner.`
+                );
+
+            } catch (error) {
+
+                showStatus(
+                    document.getElementById(
+                        "adminStatus"
+                    ),
+                    error.message,
+                    true
+                );
+
+            }
+
+        }
+
+
+        /* =========================================================
+           REMOVE CO-OWNER
+           ========================================================= */
+
+        async function removeCoOwner(id) {
+
+            if (
+                currentRole() !==
+                "owner"
+            ) {
+
+                return;
+
+            }
+
+
+            const member =
+                members.find(
+                    item =>
+                        item._id === id
+                );
+
+
+            if (!member) {
+                return;
+            }
+
+
+            if (
+                !confirm(
+                    `Remove Co-Owner status from ${member.username}?`
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            try {
+
+                await api(
+                    `/api/owner/members/${id}/co-owner`,
+                    {
+                        method: "DELETE",
+
+                        headers:
+                            ownerHeaders()
+                    }
+                );
+
+
+                await loadMembers();
+
+                showStatus(
+                    document.getElementById(
+                        "adminStatus"
+                    ),
+                    `${member.username} is no longer Co-Owner.`
+                );
+
+            } catch (error) {
+
+                showStatus(
+                    document.getElementById(
+                        "adminStatus"
+                    ),
+                    error.message,
+                    true
+                );
+
+            }
+
+        }
+
+
+        /* =========================================================
+           KICK MEMBER
+           ========================================================= */
+
+        async function kickMember(id) {
+
+            if (
+                !isModerator()
+            ) {
+
+                return;
+
+            }
+
+
+            const select =
+                document.getElementById(
+                    `kickDuration-${id}`
+                );
+
+
+            const durationMinutes =
+                select
+                    ? Number(
+                        select.value
+                    )
+                    : 60;
+
+
+            const member =
+                members.find(
+                    item =>
+                        item._id === id
+                );
+
+
+            if (!member) {
+                return;
+            }
+
+
+            if (
+                !confirm(
+                    `Kick ${member.username} for the selected amount of time?`
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            try {
+
+                await api(
+                    `/api/moderation/members/${id}/kick`,
+                    {
+                        method: "POST",
+
+                        headers:
+                            currentRole() === "owner"
+                                ? ownerHeaders()
+                                : memberHeaders(),
+
+                        body:
+                            JSON.stringify({
+                                durationMinutes
+                            })
+                    }
+                );
+
+
+                await loadMembers();
+
+                showStatus(
+                    document.getElementById(
+                        "adminStatus"
+                    ),
+                    `${member.username} has been kicked.`
+                );
+
+            } catch (error) {
+
+                showStatus(
+                    document.getElementById(
+                        "adminStatus"
+                    ),
+                    error.message,
+                    true
+                );
+
+            }
+
+        }
+
+
+        /* =========================================================
+           BAN MEMBER
+           ========================================================= */
+
+        async function banMember(id) {
+
+            if (
+                !isModerator()
+            ) {
+
+                return;
+
+            }
+
+
+            const member =
+                members.find(
+                    item =>
+                        item._id === id
+                );
+
+
+            if (!member) {
+                return;
+            }
+
+
+            if (
+                !confirm(
+                    `Permanently ban ${member.username}?`
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            try {
+
+                await api(
+                    `/api/moderation/members/${id}/ban`,
+                    {
+                        method: "POST",
+
+                        headers:
+                            currentRole() === "owner"
+                                ? ownerHeaders()
+                                : memberHeaders()
+                    }
+                );
+
+
+                await loadMembers();
+
+                showStatus(
+                    document.getElementById(
+                        "adminStatus"
+                    ),
+                    `${member.username} has been permanently banned.`
+                );
+
+            } catch (error) {
+
+                showStatus(
+                    document.getElementById(
+                        "adminStatus"
+                    ),
+                    error.message,
+                    true
+                );
+
+            }
+
+        }
+
+
+        /* =========================================================
+           UNBAN / END KICK
+           ========================================================= */
+
+        async function unbanMember(id) {
+
+            if (
+                !isModerator()
+            ) {
+
+                return;
+
+            }
+
+
+            const member =
+                members.find(
+                    item =>
+                        item._id === id
+                );
+
+
+            if (!member) {
+                return;
+            }
+
+
+            try {
+
+                await api(
+                    `/api/moderation/members/${id}/unban`,
+                    {
+                        method: "POST",
+
+                        headers:
+                            currentRole() === "owner"
+                                ? ownerHeaders()
+                                : memberHeaders()
+                    }
+                );
+
+
+                await loadMembers();
+
+                showStatus(
+                    document.getElementById(
+                        "adminStatus"
+                    ),
+                    `${member.username} can use their account again.`
+                );
+
+            } catch (error) {
+
+                showStatus(
+                    document.getElementById(
+                        "adminStatus"
+                    ),
+                    error.message,
+                    true
+                );
+
+            }
+
         }
 
 
@@ -3087,6 +4322,39 @@
            ========================================================= */
 
         async function removeMember(id) {
+
+            if (
+                currentRole() !==
+                "owner"
+            ) {
+
+                return;
+
+            }
+
+
+            const member =
+                members.find(
+                    item =>
+                        item._id === id
+                );
+
+
+            if (!member) {
+                return;
+            }
+
+
+            if (
+                !confirm(
+                    `Permanently delete ${member.username}'s account and posts?`
+                )
+            ) {
+
+                return;
+
+            }
+
 
             try {
 
@@ -3120,6 +4388,8 @@
 
                     updateMemberControls();
 
+                    updateModeratorPanel();
+
                 }
 
 
@@ -3138,53 +4408,7 @@
                 );
 
             }
-        }
 
-
-        /* =========================================================
-           IMAGE READER
-           ========================================================= */
-
-        function readImage(file) {
-
-            return new Promise(
-                (
-                    resolve,
-                    reject
-                ) => {
-
-                    const reader =
-                        new FileReader();
-
-
-                    reader.onload =
-                        () => {
-
-                            resolve(
-                                reader.result
-                            );
-
-                        };
-
-
-                    reader.onerror =
-                        () => {
-
-                            reject(
-                                new Error(
-                                    "Could not read image."
-                                )
-                            );
-
-                        };
-
-
-                    reader.readAsDataURL(
-                        file
-                    );
-
-                }
-            );
         }
 
 
@@ -3200,25 +4424,10 @@
 
             } catch (error) {
 
-                const memberList =
-                    document.getElementById(
-                        "memberList"
-                    );
-
-
-                if (memberList) {
-
-                    memberList.innerHTML =
-                        `<div class="small">Could not load members: ${escapeHTML(error.message)}</div>`;
-
-                } else {
-
-                    console.log(
-                        "Could not load members:",
-                        error
-                    );
-
-                }
+                console.log(
+                    "Could not load members:",
+                    error
+                );
 
             }
 
@@ -3238,7 +4447,9 @@
                 if (postList) {
 
                     postList.innerHTML =
-                        `<div class="small">Could not load posts: ${escapeHTML(error.message)}</div>`;
+                        `<div class="small">Could not load posts: ${escapeHTML(
+                            error.message
+                        )}</div>`;
 
                 }
 
@@ -3247,68 +4458,15 @@
 
             await restoreMemberLogin();
 
+            await restoreOwnerLogin();
 
-            /* =====================================================
-               RESTORE OWNER LOGIN
-               ===================================================== */
+            updateMemberControls();
 
-            if (ownerToken) {
-
-                try {
-
-                    await api(
-                        "/api/members",
-                        {
-                            headers:
-                                ownerHeaders()
-                        }
-                    );
-
-
-                    document.getElementById(
-                        "ownerLoginGate"
-                    ).style.display =
-                        "none";
-
-
-                    document.getElementById(
-                        "ownerLoginArea"
-                    ).style.display =
-                        "none";
-
-
-                    document.getElementById(
-                        "ownerControls"
-                    ).style.display =
-                        "block";
-
-
-                    document.getElementById(
-                        "admin"
-                    ).style.display =
-                        "block";
-
-
-                } catch {
-
-                    ownerToken =
-                        "";
-
-
-                    localStorage.removeItem(
-                        "yjs_world_owner_token"
-                    );
-
-                }
-
-            }
-
+            updateModeratorPanel();
 
             renderMembers();
 
             renderPosts();
-
-            updateMemberControls();
 
         }
 
