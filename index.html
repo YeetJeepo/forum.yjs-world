@@ -576,10 +576,6 @@
                 Owner Login
             </a>
 
-            <a href="#reports">
-                Reports
-            </a>
-
         </div>
 
 
@@ -605,16 +601,14 @@
 
                         Welcome to YJ's World! You are viewing this
                         site on the official YJ's World domain! (<a href="https://yjs-world.com">https://yjs-world.com/</a>)
+                        The site is currently displaying as "not secure" because we're still waiting for a TLS/SSL certificate.
+                        Please be careful when logging in.
 
                         <br><br>
 
                         The site may be temporarily down as the DNS is configured. This
                         may prevent some users from seeing posts, logging in, or posting
                         to the forum.
-
-                    <br><br>
-
-                        The issues regarding requests to the API have mostly been solved, so the website should work now.
                         
                     </div>
 
@@ -1044,9 +1038,10 @@
                             style="margin-top:7px;"
                         >
                             You must be logged in to post.
-                            Your username, profile avatar, and profile link will be associated with your post
-
+                            Your username is automatically taken
+                            from your account.
                         </div>
+
                     </div>
 
                 </section>
@@ -1058,7 +1053,7 @@
                 >
 
                     <div class="box-title">
-                        Posts
+                        Latest Posts
                     </div>
 
                     <div class="box-body">
@@ -1130,53 +1125,6 @@
 
 
                 <section
-                    class="box"
-                    id="reports"
-                >
-
-                    <div class="box-title">
-                        Report a Problem
-                    </div>
-
-                    <div class="box-body">
-
-                        <div id="reportStatus" class="status"></div>
-
-                        <form id="reportForm">
-
-                            <label for="reportUser">
-    <strong>User to Report:</strong>
-</label>
-
-<input
-    type="text"
-    id="reportUser"
-    placeholder="Enter username"
-    required
->
-
-
-<label for="reportReason">
-    <strong>Reason:</strong>
-</label>
-
-<textarea
-    id="reportReason"
-    required
-></textarea>
-
-                            <button type="submit">
-                                Submit Report
-                            </button>
-
-                        </form>
-
-                    </div>
-
-                </section>
-
-
-                <section
                     class="box admin-panel"
                     id="admin"
                 >
@@ -1191,16 +1139,6 @@
                             id="adminStatus"
                             class="status"
                         ></div>
-
-                        <strong>Reports</strong>
-
-                        <div class="small">
-                            Review reports submitted by members.
-                        </div>
-
-                        <div id="reportBox" style="margin-top:8px;"></div>
-
-                        <hr>
 
 
                         <div
@@ -1287,8 +1225,43 @@
                         </div>
 
                         <div class="small">
-                            These people don't touch grass
+                            You are visiting YJ's World?
                         </div>
+
+                    </div>
+
+                </section>
+
+
+                <section class="box">
+
+                    <div class="box-title">
+                        Quick Links
+                    </div>
+
+                    <div class="box-body">
+
+                        <a href="#signup">
+                            Create Account
+                        </a>
+
+                        <br><br>
+
+                        <a href="#forums">
+                            Forum Index
+                        </a>
+
+                        <br><br>
+
+                        <a href="members.html">
+                            Members
+                        </a>
+
+                        <br><br>
+
+                        <a href="#owner-login">
+                            Owner Login
+                        </a>
 
                     </div>
 
@@ -1362,7 +1335,7 @@
            ========================================================= */
 
         const API_BASE =
-            "https://api.yjs-world.com";
+            "https://retry-yjs-world-2.onrender.com";
 
         const SITE_VERSION =
             "alpha";
@@ -1384,8 +1357,6 @@
         let members = [];
 
         let posts = [];
-
-        let reports = [];
 
         let postsExpanded = false;
 
@@ -1885,7 +1856,7 @@
 
             members =
                 await api(
-                    "https://api.yjs-world.com/api/members"
+                    "/api/members"
                 );
 
             renderMembers();
@@ -1901,55 +1872,10 @@
 
             posts =
                 await api(
-                    "https://api.yjs.world.com/api/posts"
+                    "/api/posts"
                 );
 
             renderPosts();
-
-        }
-
-
-        async function loadReports() {
-
-    if (!isModerator()) {
-        return;
-    }
-
-    reports = await api(
-        "https://api.yjs-world.com/api/reports",
-        {
-            headers: currentRole() === "owner" ? ownerHeaders() : memberHeaders()
-        }
-    );
-
-    renderReports();
-
-}
-
-
-        function renderReports() {
-
-            const box = document.getElementById("reportBox");
-
-            if (!box) return;
-
-            if (!reports.length) {
-                box.innerHTML = '<div class="small">No reports.</div>';
-                return;
-            }
-
-            box.innerHTML = reports.map(report => `
-                <div class="post">
-                    <div class="post-header">
-                        Report from ${escapeHTML(report.username || "Unknown")}
-                    </div>
-                    <div class="post-body">
-                        ${escapeHTML(report.reason)}
-                        <br><br>
-                        <button type="button" onclick="handleReport('${report._id}')">Handled</button>
-                    </div>
-                </div>
-            `).join("");
 
         }
 
@@ -2069,7 +1995,7 @@
 
                 currentUser =
                     await api(
-                        "https://api.yjs-world.com/api/me",
+                        "/api/me",
                         {
                             headers:
                                 memberHeaders()
@@ -3187,7 +3113,7 @@
 
                         const result =
                             await api(
-                                "https://api.yjs-world.com/api/register",
+                                "/api/register",
                                 {
                                     method: "POST",
 
@@ -3290,7 +3216,7 @@
 
                         const result =
                             await api(
-                                "https://api.yjs-world.com/api/login",
+                                "/api/login",
                                 {
                                     method: "POST",
 
@@ -3518,7 +3444,7 @@
 
                         const result =
                             await api(
-                                "https://api.yjs-world.com/api/owner/login",
+                                "/api/owner/login",
                                 {
                                     method: "POST",
 
@@ -3706,7 +3632,7 @@
             try {
 
                 await api(
-                    "https://api.yjs-world.com/api/owner/me",
+                    "/api/owner/me",
                     {
                         headers:
                             ownerHeaders()
@@ -3836,7 +3762,7 @@
                     try {
 
                         await api(
-                            "https://api.yjs-world.com/api/posts",
+                            "/api/posts",
                             {
                                 method: "POST",
 
@@ -4009,7 +3935,7 @@
                 try {
 
                     await api(
-                        `https://api.yjs-world.com/api/posts/${postId}`,
+                        `/api/posts/${postId}`,
                         {
                             method: "PATCH",
 
@@ -4089,7 +4015,7 @@
                 try {
 
                     await api(
-                        `https://api.yjs-world.com/api/posts/${postId}`,
+                        `/api/posts/${postId}`,
                         {
                             method: "DELETE",
 
@@ -4225,7 +4151,7 @@
             try {
 
                 await api(
-                    `https://api.yjs-world.com/api/admin/members/${id}/admin`,
+                    `/api/admin/members/${id}/admin`,
                     {
                         method: "POST",
 
@@ -4273,7 +4199,7 @@
     try {
 
         await api(
-            `https://api.yjs-world.com/api/admin/members/${id}/admin`,
+            `/api/admin/members/${id}/admin`,
             {
                 method: "DELETE",
 
@@ -4347,7 +4273,7 @@
             try {
 
                 await api(
-                    `https://api.yjs-world.com/api/owner/members/${id}/co-owner`,
+                    `/api/owner/members/${id}/co-owner`,
                     {
                         method: "PUT",
 
@@ -4423,7 +4349,7 @@
             try {
 
                 await api(
-                    `https://api.yjs-world.com/api/owner/members/${id}/co-owner`,
+                    `/api/owner/members/${id}/co-owner`,
                     {
                         method: "DELETE",
 
@@ -4512,7 +4438,7 @@
             try {
 
                 await api(
-                    `https://api.yjs-world.com/api/moderation/members/${id}/kick`,
+                    `/api/moderation/members/${id}/kick`,
                     {
                         method: "POST",
 
@@ -4594,7 +4520,7 @@
             try {
 
                 await api(
-                    `https://api.yjs-world.com/api/moderation/members/${id}/ban`,
+                    `/api/moderation/members/${id}/ban`,
                     {
                         method: "POST",
 
@@ -4660,7 +4586,7 @@
             try {
 
                 await api(
-                    `https://api.yjs-world.com/api/moderation/members/${id}/unban`,
+                    `/api/moderation/members/${id}/unban`,
                     {
                         method: "POST",
 
@@ -4738,7 +4664,7 @@
             try {
 
                 await api(
-                    `https://api.yjs-world.com/api/admin/members/${id}`,
+                    `/api/admin/members/${id}`,
                     {
                         method: "DELETE",
 
@@ -4786,61 +4712,6 @@
                     true
                 );
 
-            }
-
-        }
-
-
-        document.getElementById("reportForm").addEventListener("submit", async event => {
-
-            event.preventDefault();
-
-            if (!memberToken || !currentUser) {
-                showStatus(document.getElementById("reportStatus"), "Please log in as a member before reporting.", true);
-                return;
-            }
-
-            try {
-                await api("https://api.yjs-world.com/api/reports", {
-                    method: "POST",
-                    headers: memberHeaders(),
-                    body: JSON.stringify({
-
-    reportedUser:
-        document.getElementById("reportUser").value.trim(),
-
-    reason:
-        document.getElementById("reportReason").value.trim(),
-
-    details:
-        document.getElementById("reportReason").value.trim()
-
-})
-                    })
-                });
-
-                document.getElementById("reportForm").reset();
-                showStatus(document.getElementById("reportStatus"), "Report submitted.");
-
-            } catch (error) {
-                showStatus(document.getElementById("reportStatus"), error.message, true);
-            }
-
-        });
-
-
-        async function handleReport(id) {
-
-            try {
-                await api(`https://api.yjs-world.com/api/reports/${id}`, {
-                    method: "DELETE",
-                    headers: currentRole() === "owner" ? ownerHeaders() : memberHeaders()
-                });
-
-                await loadReports();
-
-            } catch (error) {
-                showStatus(document.getElementById("adminStatus"), error.message, true);
             }
 
         }
@@ -4897,8 +4768,6 @@
             updateMemberControls();
 
             updateModeratorPanel();
-
-            await loadReports().catch(() => {});
 
             renderMembers();
 
