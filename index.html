@@ -214,18 +214,18 @@
     display: grid;
     grid-template-columns: 100px 1fr;
     min-height: 100px;
-    align-items: stretch;
 }
 
 .post-user {
+    grid-column: 1;
+    grid-row: 1 / -1;
+
     background: #eeeeee;
     border-right: 1px solid #aaa;
     padding: 7px;
     text-align: center;
     box-sizing: border-box;
-    height: 100%;
 }
-
         .post-user img {
             width: 70px;
             height: 70px;
@@ -251,10 +251,14 @@
 
 .post-actions {
     grid-column: 2;
+    grid-row: 2;
+
     display: flex !important;
+    flex-direction: row !important;
     justify-content: flex-end !important;
     align-items: center !important;
     gap: 4px;
+    width: auto !important;
     padding: 0 !important;
     margin: 0 !important;
 }
