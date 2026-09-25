@@ -576,6 +576,10 @@
                 Owner Login
             </a>
 
+            <a href="#reports">
+                Reports
+            </a>
+
         </div>
 
 
@@ -1125,6 +1129,36 @@
 
 
                 <section
+                    class="box"
+                    id="reports"
+                >
+
+                    <div class="box-title">
+                        Report a Problem
+                    </div>
+
+                    <div class="box-body">
+
+                        <div id="reportStatus" class="status"></div>
+
+                        <form id="reportForm">
+
+                            <label for="reportReason"><strong>Reason:</strong></label>
+
+                            <textarea id="reportReason" required></textarea>
+
+                            <button type="submit">
+                                Submit Report
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </section>
+
+
+                <section
                     class="box admin-panel"
                     id="admin"
                 >
@@ -1139,6 +1173,16 @@
                             id="adminStatus"
                             class="status"
                         ></div>
+
+                        <strong>Reports</strong>
+
+                        <div class="small">
+                            Review reports submitted by members.
+                        </div>
+
+                        <div id="reportBox" style="margin-top:8px;"></div>
+
+                        <hr>
 
 
                         <div
@@ -1357,6 +1401,8 @@
         let members = [];
 
         let posts = [];
+
+        let reports = [];
 
         let postsExpanded = false;
 
@@ -1876,6 +1922,51 @@
                 );
 
             renderPosts();
+
+        }
+
+
+        async function loadReports() {
+
+            if (!isModerator()) {
+                return;
+            }
+
+            reports = await api(
+                "/api/reports",
+                {
+                    headers: currentRole() === "owner" ? ownerHeaders() : memberHeaders()
+                }
+            );
+
+            renderReports();
+
+        }
+
+
+        function renderReports() {
+
+            const box = document.getElementById("reportBox");
+
+            if (!box) return;
+
+            if (!reports.length) {
+                box.innerHTML = '<div class="small">No reports.</div>';
+                return;
+            }
+
+            box.innerHTML = reports.map(report => `
+                <div class="post">
+                    <div class="post-header">
+                        Report from ${escapeHTML(report.username || "Unknown")}
+                    </div>
+                    <div class="post-body">
+                        ${escapeHTML(report.reason)}
+                        <br><br>
+                        <button type="button" onclick="handleReport('${report._id}')">Handled</button>
+                    </div>
+                </div>
+            `).join("");
 
         }
 
@@ -4717,6 +4808,51 @@
         }
 
 
+        document.getElementById("reportForm").addEventListener("submit", async event => {
+
+            event.preventDefault();
+
+            if (!memberToken || !currentUser) {
+                showStatus(document.getElementById("reportStatus"), "Please log in as a member before reporting.", true);
+                return;
+            }
+
+            try {
+                await api("/api/reports", {
+                    method: "POST",
+                    headers: memberHeaders(),
+                    body: JSON.stringify({
+                        reason: document.getElementById("reportReason").value.trim()
+                    })
+                });
+
+                document.getElementById("reportForm").reset();
+                showStatus(document.getElementById("reportStatus"), "Report submitted.");
+
+            } catch (error) {
+                showStatus(document.getElementById("reportStatus"), error.message, true);
+            }
+
+        });
+
+
+        async function handleReport(id) {
+
+            try {
+                await api(`/api/reports/${id}`, {
+                    method: "DELETE",
+                    headers: currentRole() === "owner" ? ownerHeaders() : memberHeaders()
+                });
+
+                await loadReports();
+
+            } catch (error) {
+                showStatus(document.getElementById("adminStatus"), error.message, true);
+            }
+
+        }
+
+
         /* =========================================================
            START PAGE
            ========================================================= */
@@ -4768,6 +4904,8 @@
             updateMemberControls();
 
             updateModeratorPanel();
+
+            await loadReports().catch(() => {});
 
             renderMembers();
 
