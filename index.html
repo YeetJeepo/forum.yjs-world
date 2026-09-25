@@ -1143,9 +1143,26 @@
 
                         <form id="reportForm">
 
-                            <label for="reportReason"><strong>Reason:</strong></label>
+                            <label for="reportUser">
+    <strong>User to Report:</strong>
+</label>
 
-                            <textarea id="reportReason" required></textarea>
+<input
+    type="text"
+    id="reportUser"
+    placeholder="Enter username"
+    required
+>
+
+
+<label for="reportReason">
+    <strong>Reason:</strong>
+</label>
+
+<textarea
+    id="reportReason"
+    required
+></textarea>
 
                             <button type="submit">
                                 Submit Report
@@ -4822,7 +4839,17 @@
                     method: "POST",
                     headers: memberHeaders(),
                     body: JSON.stringify({
-                        reason: document.getElementById("reportReason").value.trim()
+
+    reportedUser:
+        document.getElementById("reportUser").value.trim(),
+
+    reason:
+        document.getElementById("reportReason").value.trim(),
+
+    details:
+        document.getElementById("reportReason").value.trim()
+
+})
                     })
                 });
 
